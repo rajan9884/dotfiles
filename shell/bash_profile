@@ -1,0 +1,12 @@
+#
+# ~/.bash_profile
+#
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+
+# Hyprland Lua entrypoint
+export HYPRLAND_CONFIG="$HOME/.config/hypr/hyprland.lua"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/rajan/.local/bin:$PATH"

@@ -1,0 +1,22 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias ff='fzf'
+PS1='[\u@\h \W]\$ '
+
+# opencode
+export PATH=/home/rajan/.opencode/bin:$PATH
+
+# Pi
+export PATH="/home/rajan/.local/share/pi-node/node-v22.23.2-linux-x64/bin:$PATH"
+
+# Added by Antigravity CLI installer
+export PATH="/home/rajan/.local/bin:$PATH"
+
+eval "$(starship init bash)"
