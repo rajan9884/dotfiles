@@ -1,0 +1,9 @@
+COLOR tty
+TERM xterm-256color
+
+# Bright colors for dark backgrounds
+DIR 01;36
+LINK 01;36
+EXEC 01;32
+NORMAL 00
+FILE 00

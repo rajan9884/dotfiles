@@ -1,0 +1,15 @@
+[user]
+	name = rj9884
+	email = rj.vidyagyan@gmail.com
+
+[init]
+	defaultBranch = main
+
+[color]
+	ui = auto
+
+[core]
+	editor = nvim
+
+[pull]
+	rebase = false
