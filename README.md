@@ -1,14 +1,378 @@
-# dotfiles
+# Arch + Hyprland Dotfiles
 
-Personal configuration for an Arch Linux + Hyprland setup.
+A dynamic, wallpaper-driven Hyprland setup for Arch Linux. Change your wallpaper and the
+entire system re-themes itself — Waybar, Rofi, Kitty, Hyprland, GTK, Neovim, Zed, VS Code,
+the browser, notifications, everything — through a Material You color pipeline built on
+[matugen](https://github.com/InioX/matugen).
+
+<p align="center">
+  <img src="screenshots/main.png" alt="Main desktop (Noro theme)" width="800">
+</p>
+
+## Table of contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Post-install](#post-install)
+- [Repo structure](#repo-structure)
+- [Keybinds](#keybinds)
+- [Theming system](#theming-system)
+- [Wallpapers](#wallpapers)
+- [Changing defaults](#changing-defaults)
+- [Troubleshooting](#troubleshooting)
+- [Credits](#credits)
 
 ## Overview
 
-A dynamic, matugen-driven desktop environment where the entire look changes with
-your wallpaper. Includes Hyprland, Waybar, Rofi, Kitty, Neovim, Zed, and more,
-with multiple selectable themes.
+| Component    | Tool |
+|--------------|------|
+| OS           | Arch Linux (rolling) |
+| Compositor   | Hyprland (Lua config, 0.55+) |
+| Status bar   | Waybar (15 switchable styles) |
+| Launcher     | Rofi (drun / run / window + menus) |
+| Terminal     | Kitty |
+| Notifications| Dunst |
+| Shell        | Zsh + Oh My Zsh + autosuggestions |
+| Editor       | Neovim (LazyVim) / Zed |
+| Wallpaper    | awww + matugen |
+| OSD          | SwayOSD |
+| Idle/Lock    | hypridle + hyprlock |
+| System monitor| btop / fastfetch |
 
----
+The repo is written for a laptop profile (Intel i5-13500H, Iris Xe, 2880x1800@90, 2x scale)
+but every monitor / input setting lives at the top of `config/hypr/hyprland.lua` and is
+easy to adjust.
 
-> Full documentation in progress. Screenshots and setup instructions will be
-> added shortly.
+## Features
+
+- **True dynamic theming** — one keybind (Super+R) changes the wallpaper and regenerates a
+  Material You palette that propagates to every app that supports colors, live.
+- **5 full theme packs** (Noro, Material, Retro, Modern, Glass) — each defines Hyprland
+  decoration, a Waybar style, matching Rofi menus and its own wallpaper collection.
+  Switch the whole system look from one picker (Super+Ctrl+Shift+Space).
+- **Omarchy-style quality-of-life**: scratchpad, workspace cycling, window groups,
+  per-window transparency/gaps toggles, saved window sizes, monitor scaling on the fly,
+  cursor zoom, universal Super+C/V clipboard that works in terminals too.
+- **Media keys done right** — volume/brightness through SwayOSD overlays, mic mute,
+  precise 1% steps, playerctl media controls.
+- **Screenshots & recording** — region snip to clipboard, annotate with satty, full-screen
+  grab, color picker, OCR extract, wf-recorder capture with a Waybar indicator.
+- **Dictation ready** — optional voxtype push-to-talk (F9) with Waybar status.
+- **Idle automation** — screensaver at 150s, lock at 300s, lock-on-lid-close.
+
+## Screenshots
+
+> Drop your captures here; they are referenced by the README.
+>
+> | File | Shows |
+> |------|-------|
+> | `screenshots/main.png` | Default Noro desktop with Waybar |
+> | `screenshots/rofi.png` | Rofi app launcher |
+> | `screenshots/themes.png` | Theme picker / all 5 themes |
+> | `screenshots/terminal.png` | Kitty + fastfetch |
+> | `screenshots/nvim.png` | Neovim (LazyVim, matugen colors) |
+> | `screenshots/control-center.png` | macOS-style control center |
+> | `screenshots/lock.png` | hyprlock screen |
+
+## Requirements
+
+### Base system
+
+- A working Arch Linux install (any arch-based distro works, scripts assume `pacman`/`yay`)
+- Hyprland 0.55+ (the config uses the new Lua API)
+
+### Packages
+
+Core (pacman):
+
+```
+hyprland hypridle hyprlock waybar rofi kitty dunst swayosd
+awww matugen (matugen-bin on AUR) fastfetch btop
+grim slurp wl-clipboard cliphist hyprpicker wf-recorder satty
+brightnessctl pamixer playerctl networkmanager
+polkit-gnome xdg-desktop-portal-hyprland
+nautilus wiremix tmux fzf starship
+```
+
+Fonts and appearance:
+
+```
+ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols noto-fonts noto-fonts-cjk noto-fonts-emoji
+papirus-icon-theme bibata-cursor-theme (bibata-cursor-theme-bin on AUR)
+adw-gtk3 flat-remix-gtk-theme (or your preferred dark GTK theme)
+qt5ct
+```
+
+From AUR (yay):
+
+```
+yay -S matugen-bin bibata-cursor-theme-bin
+```
+
+Shell and editors:
+
+```
+yay -S zsh-autosuggestions
+```
+
+- **Oh My Zsh**: `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"` (install with "keep .zshrc" — the repo links its own)
+- **Neovim**: `pacman -S neovim` (plugins bootstrap themselves on first run via lazy.nvim)
+- **Zed**: install from [zed.dev](https://zed.dev) — the repo only ships settings + theme
+- **dictation (optional)**: voxtype, adds F9 push-to-talk when present
+
+### Optional extras the keybinds expect
+
+- `arch-theme-switcher`, `arch-wallpaper-picker`, `arch-screensaver`, `power-profiles`,
+  `menu-emoji`, `menu-calc`, `menu-clipboard`, `ocr-extract`, `night-light-toggle`,
+  `capture-satty` — personal helper scripts in `~/.local/bin`. Everything degrades
+  gracefully if they are missing (binds that call them just won't do anything).
+- `pywalfox` — live-recolored Firefox/Brave via the pywalfox extension
+- `voxtype` — dictation (see keybinds)
+
+## Installation
+
+```bash
+git clone https://github.com/rj9884/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./install.sh
+```
+
+The script:
+
+1. Backs up any existing config dirs it replaces (into `~/.config-backup-<timestamp>`)
+2. Symlinks every app config from `config/` into `~/.config/`
+3. Symlinks shell files (`zshrc`, `bashrc`, `bash_profile`, `dircolors`, `gitconfig`) into `$HOME`
+4. Wires the active-theme symlink chain (default theme: **Noro**)
+5. Installs the wallpaper collections into `~/.local/share/wallpapers`
+6. Runs matugen once so every app starts with the right palette
+
+Re-running is safe: symlinks are refreshed, real files are backed up, nothing is deleted.
+
+> Prefer a different default theme? `ACTIVE_THEME=Material ./install.sh`
+
+## Post-install
+
+1. Log out and log back in selecting the **Hyprland** session.
+2. Press `Super+K` any time for a keybind cheatsheet.
+3. First Neovim launch will install plugins (LazyVim extras: Go, Markdown, JSON).
+4. Set your browser theme via the pywalfox extension if you use Firefox/Brave.
+
+## Repo structure
+
+```
+dotfiles/
+├── install.sh                  # one-shot setup (safe to re-run)
+├── scripts/
+│   └── build-wallpapers.sh     # regenerate the optimized wallpaper set
+├── config/
+│   ├── hypr/
+│   │   ├── hyprland.lua        # monitors, keybinds, window rules, autostart
+│   │   ├── hypridle.conf       # idle: screensaver 150s, lock 300s
+│   │   ├── hyprlock.conf       # lock screen (clock + date + input)
+│   │   ├── scripts/            # 20 helper scripts (theming, windows, media)
+│   │   └── themes/             # 5 theme packs (decoration + gaps per theme)
+│   ├── waybar/
+│   │   ├── modules.jsonc        # shared module definitions
+│   │   ├── scripts/             # wifi/bt/power menus, recorder, updates...
+│   │   └── themes/              # 15 bar styles
+│   ├── rofi/
+│   │   ├── config.rasi          # drun/run/window launcher
+│   │   ├── theme.rasi           # dmenu-style picker (matugen colored)
+│   │   ├── power-menu.rasi etc. # dashboard menus
+│   │   └── themes/              # per-theme launcher/picker/scripts styles
+│   ├── kitty/kitty.conf         # fonts, padding, clipboard passthrough
+│   ├── matugen/
+│   │   ├── config.toml           # which apps get generated colors
+│   │   └── templates/            # 21 color templates (the theming engine)
+│   ├── nvim/                     # LazyVim: options, keymaps, matugen colorscheme
+│   ├── zed/settings.json
+│   ├── btop/btop.conf
+│   ├── swayosd/config.toml
+│   └── gtk-3.0/ gtk-4.0/         # settings.ini (theme, icons, cursor)
+├── shell/
+│   ├── zshrc bashrc bash_profile
+│   ├── dircolors                 # bright-cyan dirs on dark backgrounds
+│   └── gitconfig                 # identity + defaults (no credentials)
+└── wallpapers/                   # optimized per-theme collections (glass...retro)
+```
+
+## Keybinds
+
+`Super` = the Windows/Command key.
+
+### Essentials
+
+| Bind | Action |
+|------|--------|
+| Super+Return | Kitty |
+| Super+Space | Rofi launcher |
+| Super+Shift+B | Browser (helium) |
+| Super+Shift+Alt+B | Private browser window |
+| Super+Shift+N | Editor (kitty + nvim) |
+| Super+Alt+Return | Terminal with tmux |
+| Super+Shift+F | File manager (nautilus) |
+| Super+W | Close window (graceful) |
+| Super+CTRL+L | Lock (hyprlock) |
+| Super+Escape | Power menu |
+| Super+K | Keybind cheatsheet |
+
+### Theming
+
+| Bind | Action |
+|------|--------|
+| Super+R | Random wallpaper (full re-theme) |
+| Super+CTRL+Space | Wallpaper picker |
+| Super+CTRL+SHIFT+Space | **Full theme switcher** (5 packs + wallpaper + waybar style) |
+| Super+ALT+W | Waybar style selector (15 styles) |
+| Super+period | Emoji picker |
+| Super+CTRL+E | Emoji/symbol alt |
+| Super+CTRL+Q | Calculator |
+
+### Windows & workspaces
+
+| Bind | Action |
+|------|--------|
+| Super+H/J/K/L or arrows | Focus (vim-style) |
+| Super+Shift+arrows | Swap window |
+| Super+T | Toggle float |
+| Super+O | Pop out window (float + pin) |
+| Super+F / Super+ALT+F | Fullscreen / maximized |
+| Super+S | Toggle scratchpad |
+| Super+ALT+S | Send to scratchpad |
+| Super+G | Toggle group |
+| Super+ALT+G | Move out of group |
+| Super+ALT+arrows | Move into group |
+| Super+J | Toggle split layout (dwindle/master) |
+| Super+TAB / Super+Shift+TAB | Next / previous workspace |
+| Super+1..0 | Workspace 1-10 |
+| Super+Shift+1..0 | Move window to workspace |
+| Super+Shift+Space | Cycle waybar visibility |
+| Super+BACKSPACE | Toggle window transparency |
+| Super+Shift+BACKSPACE | Toggle gaps |
+| Super+Home | Restore saved window size |
+| Super+ALT+Home | Save window size |
+| Super+SLASH / Super+ALT+SLASH | Monitor scale up / down |
+| Super+CTRL+Z / reset | Cursor zoom in / reset |
+
+### Screenshots & media
+
+| Bind | Action |
+|------|--------|
+| Print | Snip region to clipboard |
+| Super+Shift+S | Snip + annotate (satty) |
+| Super+Shift+Print | Full screen to clipboard |
+| Super+Print | Color picker |
+| ALT+Print | Screen recording toggle |
+| Super+CTRL+Print | OCR extract |
+| Super+CTRL+V | Clipboard history |
+| XF86 keys | Volume/brightness (via SwayOSD) |
+| Shift+XF86Brightness | Max / min brightness |
+| ALT+XF86Brightness | Precise 1% steps |
+| XF86AudioPlay/Next/Prev | Media controls |
+| XF86AudioMicMute | Mic mute |
+| XF86TouchpadToggle | Toggle touchpad |
+
+### Notifications
+
+| Bind | Action |
+|------|--------|
+| Super+comma | Close last notification |
+| Super+Shift+comma | Close all |
+| Super+CTRL+comma | Pause/resume |
+| Super+ALT+comma | Replay last |
+| Super+Shift+Alt+comma | History in Rofi |
+
+### Universal clipboard
+
+| Bind | Action |
+|------|--------|
+| Super+C / Super+V | Copy / paste (works in terminals) |
+| Super+X | Cut |
+
+### Dictation (voxtype, if installed)
+
+| Bind | Action |
+|------|--------|
+| Super+CTRL+X | Toggle dictation |
+| F9 (hold) | Push to talk |
+| F12 | Cancel / escape submap |
+
+## Theming system
+
+The pipeline, in one line:
+
+```
+wallpaper -> awww (set) -> matugen (palette) -> 21 templates -> every app
+```
+
+1. **`swww-all.sh <image>`** is the entrypoint (used by every wallpaper script).
+2. It sets the wallpaper with a "grow" transition from the cursor position.
+3. It runs `matugen image <image> -c ~/.config/matugen/config.toml` which renders the
+   21 templates in `config/matugen/templates/` into live config files:
+   `~/.config/waybar/colors.css`, `~/.config/hypr/colors.lua`, `~/.config/kitty/colors.conf`,
+   GTK css, `~/.config/dunst/dunstrc`, `~/.config/fastfetch/config.jsonc`,
+   `~/.config/nvim/lua/matugen-colors.lua`, `~/.config/zed/themes/matugen.json`,
+   `~/.config/ghostty/config.ghostty`, swayosd css, btop theme, VS Code colors, a
+   Brave/Firefox browser theme, and more.
+4. It then pokes each app to reload: `killall -SIGUSR2 waybar`, `killall -SIGUSR1 kitty`
+   (and nvim), `hyprctl reload`, restart swayosd, refresh pywalfox.
+
+Because the *generated* files live on disk but are gitignored, a fresh install boots with
+the palette the install script generated — and any wallpaper change re-themes everything
+in about a second.
+
+### Theme packs vs bar styles
+
+- A **theme pack** (`config/hypr/themes/<name>`) sets Hyprland decoration: rounding, blur,
+  shadow, gaps, border colors, layout.
+- A **bar style** (`config/waybar/themes/<name>`) is an independent Waybar layout
+  (islands, docks, pills, mac-style, minimal...). The global theme switcher pairs each
+  pack with a matching default bar style, but you can mix freely with Super+ALT+W.
+
+## Wallpapers
+
+- Live location: `~/.local/share/wallpapers/<theme>/` (XDG data dir — safe from home-dir
+  cleanup; all scripts point here)
+- Repo copy: `wallpapers/<theme>/` — deduplicated and compressed (105 MB to 54 MB) by
+  `scripts/build-wallpapers.sh`
+- To rebuild the repo set after adding wallpapers on your system:
+  `./scripts/build-wallpapers.sh` (env overrides: `WALLPAPER_SOURCE`, `JPEG_QUALITY`)
+
+## Changing defaults
+
+| Want to change | Edit |
+|----------------|------|
+| Monitor, scale, refresh | `config/hypr/hyprland.lua` — `hl.monitor(...)` top of file |
+| Default terminal/browser/file manager | `config/hypr/hyprland.lua` — "Default Programs" |
+| Default theme at install | `ACTIVE_THEME=Material ./install.sh` |
+| Fonts | `config/kitty/kitty.conf`, `config/waybar/themes/*/style.css` |
+| Idle timings | `config/hypr/hypridle.conf` |
+| Which apps get themed | `config/matugen/config.toml` |
+| Colors of a given app | matching template in `config/matugen/templates/` |
+
+## Troubleshooting
+
+- **Colors look stale after a wallpaper change** — run `matugen image <wallpaper>
+  -c ~/.config/matugen/config.toml` manually and check for template errors.
+- **Waybar didn't reload** — `killall -SIGUSR2 waybar` or just restart waybar.
+- **Rofi shows default theme** — the `active-*.rasi` symlinks live in `~/.config/rofi/`;
+  re-run the theme switcher or `./install.sh` to rebuild the chain.
+- **GTK apps don't recolor** — GTK4 apps read css at launch; restart the app (nautilus is
+  auto-restarted by the script when open).
+- **Keys like XF86TouchpadToggle don't work** — check your laptop's Fn-lock; binds are on
+  the raw XF86 symbols.
+- **Everything is broken after install** — your old configs are in
+  `~/.config-backup-<timestamp>`; restore and open an issue.
+
+## Credits
+
+- [Hyprland](https://hyprland.org) — the compositor
+- [matugen](https://github.com/InioX/matugen) — Material You color generation
+- [LazyVim](https://www.lazyvim.org) — Neovim distribution
+- [Oh My Zsh](https://ohmyz.sh) + zsh-autosuggestions
+- [Papirus](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) icons,
+  [Bibata](https://github.com/ful1e5/Bibata_Cursor) cursors
+- Inspiration from [Omarchy](https://omarchy.org) quality-of-life patterns
