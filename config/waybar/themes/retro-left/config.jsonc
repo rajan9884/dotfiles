@@ -1,0 +1,50 @@
+{
+    "include": [
+        "/home/rajan/.config/waybar/modules.jsonc"
+    ],
+    "layer": "top",
+    "position": "left",
+    "width": 42,
+    "margin-top": 8,
+    "margin-bottom": 8,
+    "margin-left": 4,
+    "spacing": 0,
+    "gtk-layer-shell": true,
+
+    "modules-left": [
+        "custom/launcher",
+        "custom/record",
+        "custom/voxtype",
+        "hyprland/workspaces"
+    ],
+    
+    "modules-center": [
+        "clock"
+    ],
+    
+    "modules-right": [
+        "tray",
+        "pulseaudio",
+        "network",
+        "battery",
+        "custom/power"
+    ],
+
+    "custom/launcher": {
+        "format": "▶",
+        "on-click": "rofi -show drun -theme ~/.config/rofi/themes/retro/launcher.rasi",
+        "tooltip": false
+    },
+
+    "hyprland/workspaces": {
+        "format": "{name}",
+        "on-click": "activate",
+        "all-outputs": true,
+        "orientation": "vertical"
+    },
+
+    "clock": {
+        "format": "{:%H\n%M}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>"
+    }
+}

@@ -1,0 +1,88 @@
+@import "colors.css";
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font", "Roboto", sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    min-height: 0;
+}
+
+window#waybar {
+    background: transparent;
+}
+
+/* The actual "Island" pill */
+.modules-center {
+    background: alpha(#000000, 0.95);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 0 10px;
+    margin-top: 10px;
+}
+
+#workspaces {
+    background: transparent;
+}
+
+#workspaces button {
+    padding: 0px 8px;
+    color: rgba(255, 255, 255, 0.4);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+#workspaces button.active {
+    color: @surface;
+    background: @primary;
+    border-radius: 12px;
+    margin: 4px 2px;
+}
+
+#clock,
+#pulseaudio,
+#bluetooth,
+#network,
+#battery,
+#custom-updates,
+#custom-power,
+#custom-voxtype,
+#custom-record,
+#tray {
+    padding: 0 10px;
+    color: #ffffff;
+}
+
+#clock {
+    padding-left: 10px;
+}
+
+#custom-voxtype {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#custom-record {
+    color: #ffffff;
+}
+
+#custom-record.recording {
+    color: #ff3b30;
+}
+
+#custom-power {
+    padding-right: 10px;
+    color: @error;
+}
+
+#custom-updates {
+    color: @secondary;
+}
+
+#battery.charging {
+    color: #4cd964;
+}
+
+#battery.critical:not(.charging) {
+    color: #ff3b30;
+}
