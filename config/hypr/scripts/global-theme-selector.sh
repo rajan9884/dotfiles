@@ -3,7 +3,7 @@
 #   Enhanced Theme & Style Selector
 # ──────────────────────────────────────────────
 
-WALL_DIR="$HOME/wallpapers"
+WALL_DIR="$HOME/.local/share/wallpapers"
 SWWW_SCRIPT="$HOME/.config/hypr/scripts/swww-all.sh"
 ACTIVE_THEME_FILE="$HOME/.config/hypr/.active-theme"
 CURRENT=$(cat "$ACTIVE_THEME_FILE" 2>/dev/null || echo "unknown")

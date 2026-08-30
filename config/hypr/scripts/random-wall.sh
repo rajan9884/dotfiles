@@ -4,7 +4,7 @@
 #   Random Theme Switcher
 # ──────────────────────────────────────────────
 
-WALL_DIR="$HOME/wallpapers"
+WALL_DIR="$HOME/.local/share/wallpapers"
 SCRIPT="$HOME/.config/hypr/scripts/swww-all.sh"
 
 # Select a random image from the wallpapers directory
