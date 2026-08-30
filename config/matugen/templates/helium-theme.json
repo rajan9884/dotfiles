@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "Matugen Helium Theme",
+  "version": "1.0.0",
+  "description": "Auto-generated browser theme from the current wallpaper (matugen)",
+  "theme": {
+    "colors": {
+      "frame": [{{colors.surface.default.red}}, {{colors.surface.default.green}}, {{colors.surface.default.blue}}],
+      "frame_inactive": [{{colors.surface.default.red}}, {{colors.surface.default.green}}, {{colors.surface.default.blue}}],
+      "frame_incognito": [{{colors.surface.default.red}}, {{colors.surface.default.green}}, {{colors.surface.default.blue}}],
+      "frame_incognito_inactive": [{{colors.surface.default.red}}, {{colors.surface.default.green}}, {{colors.surface.default.blue}}],
+      "toolbar": [{{colors.surface.default.red}}, {{colors.surface.default.green}}, {{colors.surface.default.blue}}],
+      "tab_text": [{{colors.on_surface.default.red}}, {{colors.on_surface.default.green}}, {{colors.on_surface.default.blue}}],
+      "tab_background_text": [{{colors.on_surface_variant.default.red}}, {{colors.on_surface_variant.default.green}}, {{colors.on_surface_variant.default.blue}}],
+      "toolbar_text": [{{colors.on_surface.default.red}}, {{colors.on_surface.default.green}}, {{colors.on_surface.default.blue}}],
+      "bookmark_text": [{{colors.on_surface.default.red}}, {{colors.on_surface.default.green}}, {{colors.on_surface.default.blue}}],
+      "ntp_background": [{{colors.surface.default.red}}, {{colors.surface.default.green}}, {{colors.surface.default.blue}}],
+      "ntp_text": [{{colors.on_surface.default.red}}, {{colors.on_surface.default.green}}, {{colors.on_surface.default.blue}}],
+      "ntp_link": [{{colors.primary.default.red}}, {{colors.primary.default.green}}, {{colors.primary.default.blue}}],
+      "button_background": [{{colors.surface_variant.default.red}}, {{colors.surface_variant.default.green}}, {{colors.surface_variant.default.blue}}],
+      "control_background": [{{colors.surface_variant.default.red}}, {{colors.surface_variant.default.green}}, {{colors.surface_variant.default.blue}}],
+      "omnibox_background": [{{colors.surface_variant.default.red}}, {{colors.surface_variant.default.green}}, {{colors.surface_variant.default.blue}}],
+      "omnibox_text": [{{colors.on_surface.default.red}}, {{colors.on_surface.default.green}}, {{colors.on_surface.default.blue}}],
+      "toolbar_button_icon": [{{colors.on_surface.default.red}}, {{colors.on_surface.default.green}}, {{colors.on_surface.default.blue}}],
+      "search_entry_background": [{{colors.surface_variant.default.red}}, {{colors.surface_variant.default.green}}, {{colors.surface_variant.default.blue}}]
+    },
+    "tints": {},
+    "properties": {}
+  }
+}
