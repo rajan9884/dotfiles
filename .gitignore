@@ -2,6 +2,8 @@
 .vault/
 .ssh/
 .secrets/
+config/Secrets/
+Secrets/
 
 # Generated / dynamic color files (produced by matugen at runtime)
 config/hypr/colors.conf
