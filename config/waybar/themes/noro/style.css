@@ -1,0 +1,165 @@
+/* ──────────────────────────────────────────────
+ *   Waybar – Noro Theme (Dynamic Colors)
+ * ────────────────────────────────────────────── */
+
+@import "colors.css";
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "Inter", sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    min-height: 0;
+}
+
+window#waybar {
+    background: transparent;
+}
+
+/* ── Grouping Strategy ── */
+#clock, #custom-user,
+#workspaces, #custom-launcher,
+#battery, #network, #bluetooth, #custom-power {
+    background: @surface; /* DYNAMIC: Based on wallpaper */
+    color: @on_surface;    /* DYNAMIC: Based on wallpaper */
+    padding: 4px 12px;
+    margin: 6px 0;
+}
+
+/* --- Left Group [Clock | User] --- */
+#clock {
+    padding-right: 15px;
+}
+#custom-user {
+    border-radius: 0 12px 12px 0;
+    margin-right: 30px; 
+    background: @primary; /* DYNAMIC */
+    color: @on_primary;    /* DYNAMIC */
+    padding-left: 15px;
+    padding-right: 10px;
+}
+
+#custom-launcher {
+    color: @primary;
+    font-size: 18px;
+
+    margin-left: 10px;
+    padding-left: 15px;
+    border-radius: 12px 0 0 12px;
+    padding-right: 10px;
+}
+/* --- Shortcut Tools [Record | Dictate] --- */
+#custom-record, #custom-voxtype {
+    background: @surface;
+    color: @on_surface;
+    padding: 4px 12px;
+    margin: 6px 0;
+}
+#custom-record {
+    color: @tertiary;
+}
+#custom-record.recording {
+    color: @error;
+    animation: pulse 1s infinite;
+}
+#custom-voxtype {
+    color: @primary;
+}
+/* --- Center Group [Workspaces | Bright | Vol] --- */
+#workspaces {
+    border-radius: 12px 0 0 12px;
+    padding-left: 5px;
+    padding-right: 10px;    
+}
+#backlight {
+    padding-left: 10px;
+}
+#pulseaudio {
+    border-radius: 0 12px 12px 0;
+}
+#backlight, #pulseaudio {
+
+    padding: 4px 6px;
+    margin: 6px 0;
+    background: @primary; /* DYNAMIC */
+    color: @on_primary;    /* DYNAMIC */
+}
+
+/* --- Right Group [Bat | Wifi | BT | Power] --- */
+#battery {
+    border-radius: 12px 0 0 12px;
+    margin-left: 30px;
+    padding-left: 15px;
+
+}
+#network, #bluetooth {
+    padding-left: 8px;
+    
+}
+#network {
+    padding-right: 15px;
+}
+#bluetooth {
+    background: @primary; /* DYNAMIC */
+    padding-left: 8px;
+    color: @on_primary;    /* DYNAMIC */
+
+}
+#custom-power {
+    border-radius: 0 12px 12px 0;
+    padding-left: 10px;
+    padding-right: 15px;
+   /* color: @error;  DYNAMIC */
+    background: @primary; /* DYNAMIC */
+    color: @on_primary;    /* DYNAMIC */
+
+}
+
+/* --- Hover & Active --- */
+#workspaces button {
+    color: @on_surface_variant;
+    padding: 0 4px;
+}
+#workspaces button.active {
+    color: @primary;
+}
+#workspaces button:hover {
+    color: @secondary;
+}
+
+#battery.charging {
+    color: #a6e3a1; /* Greenish */
+    animation: pulse 1.5s infinite;
+}
+
+#network:hover {
+    color: @primary;
+}
+#custom-launcher:hover {
+    background: @surface_variant;
+    border-color: @outline;
+}
+/* ── System Tray / Background Apps ─────────── */
+#tray {
+    background: @surface;
+    color: @on_surface;
+    padding: 4px 10px;
+    margin: 6px 0;
+    border-radius: 12px;
+}
+
+#tray > .passive {
+    opacity: 0.7;
+}
+
+#tray > .active {
+    opacity: 1;
+}
+
+#tray > .needs-attention {
+    color: @error;
+}
