@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# ──────────────────────────────────────────────
+#   Power / Controls Menu for Waybar
+# ──────────────────────────────────────────────
+
+# Use active theme script style
+THEME="$HOME/.config/rofi/active-scripts.rasi"
+# Fallback if symlink missing
+[ ! -f "$THEME" ] && THEME="$HOME/.config/rofi/material-scripts.rasi"
+DIVIDER="────────────────────────────"
+
+# Handle positioning
+POSITION="$1"
+ROFI_ARGS=""
+if [[ "$POSITION" == "left" ]]; then
+    ROFI_ARGS="-location 7 -xoffset 60 -yoffset -20"
+fi
+
+# ── Build menu ───────────────────────────────
+build_menu() {
+    echo "󰌾  Lock"
+    echo "󰍃  Logout"
+    echo "󰹑  Screensaver"
+    echo "󰤁  Sleep (suspend)"
+    echo "󰜉  Reboot"
+    echo "󰐥  Shutdown"
+}
+
+# ── Confirm dangerous action ─────────────────
+confirm_action() {
+    local action="$1"
+    local choice
+    choice=$(printf "  Yes, %s\n󰅙  Cancel" "$action" \
+        | rofi -dmenu $ROFI_ARGS -p "  Confirm?" -theme "$THEME" -i)
+
+    [[ "$choice" == *"Yes"* ]] && return 0 || return 1
+}
+
+# ── Handle selection ─────────────────────────
+handle_selection() {
+    local choice="$1"
+
+    case "$choice" in
+        "󰌾  Lock")
+            hyprlock & ;;
+
+        "󰍃  Logout")
+            if confirm_action "logout"; then
+                hyprctl dispatch "hl.dsp.exit()"
+            fi ;;
+
+        "󰹑  Screensaver")
+            kitty --class arch-screensaver --start-as fullscreen --override window_padding_width=0 --override background_opacity=1.0 --override dynamic_background_opacity=no -e "$HOME/.local/bin/arch-screensaver" --now & ;;
+
+        "󰤄  Sleep (suspend)")
+            if confirm_action "suspend"; then
+                systemctl suspend
+            fi ;;
+
+        "󰜉  Reboot")
+            systemctl reboot ;;
+
+        "󰐥  Shutdown")
+            if confirm_action "shutdown"; then
+                systemctl poweroff
+            fi ;;
+    esac
+}
+
+# ── Main ─────────────────────────────────────
+main() {
+    local menu
+    menu=$(build_menu)
+
+    local choice
+    choice=$(echo "$menu" | rofi -dmenu $ROFI_ARGS -p "  Controls" -theme "$THEME" -i)
+
+    [[ -z "$choice" ]] && exit 0
+
+    handle_selection "$choice"
+}
+
+main
