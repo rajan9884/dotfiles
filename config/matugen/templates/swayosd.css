@@ -1,0 +1,56 @@
+/* Matugen Dynamic OSD Colors — swayosd
+   Mirrors the default SwayOSD layout, but uses the matugen palette and the
+   system corner radius (matches hyprland decoration.rounding = 16).
+   Applied via ~/.config/swayosd/style.css (auto-loaded by swayosd-server). */
+
+window {
+  border-radius: 16px;
+  border: none;
+  background: alpha({{colors.background.default.hex}}, 0.85);
+}
+
+window #container {
+  margin: 16px;
+}
+
+window image,
+window label {
+  color: {{colors.on_surface.default.hex}};
+}
+
+window progressbar:disabled,
+window image:disabled {
+  opacity: 0.5;
+}
+
+window progressbar,
+window segmentedprogress {
+  min-height: 6px;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+}
+
+window trough,
+window segment {
+  min-height: inherit;
+  border-radius: inherit;
+  border: none;
+  background: alpha({{colors.on_surface.default.hex}}, 0.15);
+}
+
+window progress,
+window segment.active {
+  min-height: inherit;
+  border-radius: inherit;
+  border: none;
+  background: {{colors.primary.default.hex}};
+}
+
+window segment {
+  margin-left: 8px;
+}
+
+window segment:first-child {
+  margin-left: 0;
+}
