@@ -1,0 +1,43 @@
+/* ──────────────────────────────────────────────
+ *   Rofi Configuration
+ * ────────────────────────────────────────────── */
+
+configuration {
+    modi:                "drun,run,window";
+    show-icons:          true;
+    icon-theme:          "Papirus-Dark";
+    display-drun:        " Apps";
+    display-run:         " Run";
+    display-window:      " Windows";
+    drun-display-format: "{name}";
+    font:                "NotoSansMono Nerd Font 12";
+    cycle:               false;
+    scroll-method:       0;
+}
+
+//@theme "~/.config/rofi/theme.rasi"
+
+// Compact app launcher — follows the active theme (global-theme-selector.sh)
+@theme "~/.config/rofi/active-launcher.rasi"
+
+//@theme "/usr/share/rofi/themes/docu.rasi"
+
+//@theme "/usr/share/rofi/themes/iggy.rasi"
+
+//@theme "/usr/share/rofi/themes/fullscreen-preview.rasi"
+
+//@theme "/usr/share/rofi/themes/Monokai.rasi"
+
+//@theme "/usr/share/rofi/themes/fullscreen-preview.rasi"
+
+//@theme "/usr/share/rofi/themes/arthur.rasi"
+
+//@theme "/usr/share/rofi/themes/solarized.rasi"
+
+//@theme "/usr/share/rofi/themes/dmenu.rasi"
+
+//@theme "/usr/share/rofi/themes/android_notification.rasi"
+
+//@theme "/usr/share/rofi/themes/android_notification.rasi"
+
+//@theme "/usr/share/rofi/themes/fullscreen-preview.rasi"
