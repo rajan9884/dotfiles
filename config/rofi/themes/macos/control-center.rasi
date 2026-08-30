@@ -1,0 +1,101 @@
+/* ──────────────────────────────────────────────
+ *   Rofi Control Center Theme — Material You
+ * ────────────────────────────────────────────── */
+@import "~/.config/rofi/colors.rasi"
+
+* {
+    bg:       @background;
+    bg-alt:   @background-alt;
+    bg-sel:   @active;
+    fg:       @foreground;
+    accent:   @selected;
+
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+window {
+    width:            380px;
+    height:           60%;
+    background-color: @bg;
+    border:           2px solid;
+    border-color:     @accent;
+    border-radius:    12px;
+    padding:          0;
+    location:         north east;
+    anchor:           north east;
+    x-offset:         -20;
+    y-offset:         60;
+}
+
+mainbox {
+    background-color: @bg;
+    border-radius:    12px;
+    children:         [ inputbar, message, listview ];
+    spacing:          0;
+    padding:          0;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border-radius:    12px 12px 0 0;
+    padding:          10px 18px;
+    spacing:          10px;
+    children:         [ entry ];
+}
+
+
+entry {
+    background-color: transparent;
+    text-color:       @fg;
+    placeholder:      "Search…";
+    placeholder-color: @fg;
+    vertical-align:   0.5;
+}
+
+message {
+    background-color: @bg-alt;
+    padding:          8px 20px;
+    border-color:     @accent;
+}
+
+textbox {
+    text-color:       @accent;
+    font:             "JetBrainsMono Nerd Font Italic 10";
+}
+
+listview {
+    background-color: @bg;
+    border-radius:    0 0 12px 12px;
+    columns:          1;
+    lines:            12;
+    spacing:          2px;
+    padding:          8px;
+    scrollbar:        true;
+    scrollbar-width:  2px;
+    fixed-height:     false;
+    dynamic:          true;
+    cycle:            true;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @fg;
+    padding:          8px 15px;
+    spacing:          12px;
+    border-radius:    12px;
+}
+
+element selected.normal {
+    background-color: @accent;
+    text-color:       @bg;
+}
+
+element-icon {
+    size:             20px;
+}
+
+element-text selected {
+    vertical-align:   0.5;
+    text-color:       @bg;
+}
