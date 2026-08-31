@@ -1,6 +1,8 @@
 /* ──────────────────────────────────────────────
- *   Rofi Image Grid – fullscreen thumbnail picker
+ *   Rofi Image Carousel – horizontal thumbnail picker
  *   Used by the wallpaper & theme pickers.
+ *   A centered, single-row carousel (arrow keys scroll it), matching the
+ *   original quickshell look without the overlay chrome.
  *   Colors follow the active matugen palette.
  * ────────────────────────────────────────────── */
 
@@ -17,51 +19,53 @@
 }
 
 window {
-    fullscreen:      true;
-    background-color: transparent;
-    location:        center;
-    anchor:          center;
-    border:          0px;
-    padding:         0px;
-    children:        [ mainbox ];
+    width:            92%;
+    location:         center;
+    anchor:           center;
+    background-color: @bg;
+    border-radius:    24px;
+    border:           1px;
+    border-color:     @bg-alt;
+    padding:          0px;
+    children:         [ mainbox ];
 }
 
 mainbox {
     background-color: transparent;
     orientation:      vertical;
-    vertical-align:   0.5;
     children:         [ inputbar, listview ];
     spacing:          0;
-    padding:          24px;
+    padding:          18px;
 }
 
 inputbar {
     background-color: transparent;
-    children:         [ entry ];
-    padding:          8px 16px;
-    margin:           0px 0px 16px 0px;
+    children:         [ prompt, entry ];
+    padding:          2px 6px 12px 6px;
     spacing:          10px;
-    border-radius:    12px;
-    border:           1px;
-    border-color:     @bg-alt;
+}
+
+prompt {
+    text-color:       @accent;
+    font:             "JetBrainsMono Nerd Font 11";
 }
 
 entry {
     background-color: transparent;
     text-color:       @fg;
-    placeholder:      "Search wallpapers…";
+    placeholder:      "Filter…";
     placeholder-color: @bg-alt;
-    horizontal-align: 0.5;
+    font:             "JetBrainsMono Nerd Font 11";
 }
 
 listview {
-    flow:             vertical;
+    flow:             horizontal;
     columns:          5;
-    lines:            4;
-    spacing:          20px;
-    padding:          16px;
+    lines:            1;
+    spacing:          16px;
+    padding:          4px;
     scrollbar:        false;
-    dynamic:          false;
+    dynamic:          true;
     fixed-height:     false;
     background-color: transparent;
 }
@@ -70,14 +74,12 @@ element {
     orientation:      vertical;
     background-color: @bg-alt;
     border-radius:    16px;
-    padding:          12px;
-    spacing:          10px;
+    padding:          10px;
+    spacing:          8px;
 }
 
 element-icon {
-    size:             220px;
-    horizontal-align: 0.5;
-    vertical-align:   0.5;
+    size:             260px;
     border-radius:    12px;
 }
 
@@ -90,6 +92,7 @@ element-text {
 element selected.normal,
 element selected {
     background-color: @accent;
+    border-radius:    16px;
 }
 
 element selected.normal element-text,

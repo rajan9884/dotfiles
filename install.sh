@@ -160,16 +160,16 @@ for helper in "$REPO_ROOT/bin"/*; do
     info "helper: $(basename "$helper")"
 done
 
-# ── 5c. Rofi image-grid theme ────────────────
+# ── 5c. Rofi image-carousel theme ────────────
 echo
-echo "==> Installing rofi image-grid theme"
-ROFI_SRC="$REPO_ROOT/config/rofi/themes/active-image-grid.rasi"
+echo "==> Installing rofi image-carousel theme"
+ROFI_SRC="$REPO_ROOT/config/rofi/themes/active-image-carousel.rasi"
 mkdir -p "$HOME/.config/rofi/themes"
 if [ -f "$ROFI_SRC" ]; then
-    cp -p "$ROFI_SRC" "$HOME/.config/rofi/themes/active-image-grid.rasi"
-    info "rofi image-grid theme installed"
+    cp -p "$ROFI_SRC" "$HOME/.config/rofi/themes/active-image-carousel.rasi"
+    info "rofi image-carousel theme installed"
 else
-    warn "rofi image-grid theme not found in repo"
+    warn "rofi image-carousel theme not found in repo"
 fi
 
 # ── 6. Initial palette ───────────────────────

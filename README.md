@@ -53,9 +53,9 @@ easy to adjust.
 - **5 full theme packs** (Noro, Material, Retro, Modern, Glass) — each defines Hyprland
   decoration, a Waybar style, matching Rofi menus and its own wallpaper collection.
   Switch the whole system look from one picker (Super+Ctrl+Shift+Space).
-- **Fullscreen thumbnail pickers** — the wallpaper picker (Super+Ctrl+Space) and theme
-  switcher (Super+Ctrl+Shift+Space) open an instant, fullscreen Rofi grid of image
-  thumbnails (`active-image-grid.rasi`) instead of an overlay carousel.
+- **Horizontal thumbnail carousel** — the wallpaper picker (Super+Ctrl+Space) and theme
+  switcher (Super+Ctrl+Shift+Space) open an instant, centered Rofi carousel of image
+  thumbnails (`active-image-carousel.rasi`) that you scroll with the arrow keys.
 - **Omarchy-style quality-of-life**: scratchpad, workspace cycling, window groups,
   per-window transparency/gaps toggles, saved window sizes, monitor scaling on the fly,
   cursor zoom, universal Super+C/V clipboard that works in terminals too.
@@ -171,7 +171,7 @@ Re-running is safe: symlinks are refreshed, real files are backed up, nothing is
 dotfiles/
 ├── install.sh                  # one-shot setup (safe to re-run)
 ├── bin/
-│   └── arch-*                   # wallpaper/theme pickers (rofi grid) → ~/.local/bin
+│   └── arch-*                   # wallpaper/theme pickers (rofi carousel) → ~/.local/bin
 ├── scripts/
 │   └── build-wallpapers.sh     # regenerate the optimized wallpaper set
 ├── config/
@@ -189,7 +189,7 @@ dotfiles/
 │   │   ├── config.rasi          # drun/run/window launcher
 │   │   ├── theme.rasi           # dmenu-style picker (matugen colored)
 │   │   ├── power-menu.rasi etc. # dashboard menus
-│   │   └── themes/              # per-theme launcher/picker/scripts + active-image-grid.rasi
+│   │   └── themes/              # per-theme launcher/picker/scripts + active-image-carousel.rasi
 │   ├── kitty/kitty.conf         # fonts, padding, clipboard passthrough
 │   ├── matugen/
 │   │   ├── config.toml           # which apps get generated colors

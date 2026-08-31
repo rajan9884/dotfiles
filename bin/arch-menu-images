@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────
-#   arch-menu-images — image selector (rofi grid)
-#   Shows a grid of image thumbnails and prints the selected image path.
+#   arch-menu-images — image selector (rofi carousel)
+#   Shows a horizontal carousel of image thumbnails and prints the selected
+#   image path.
 #   Thumbnails come from rofi's XDG thumbnailers (glycin/vips pipeline); no
 #   quickshell involved.
 #   Usage: arch-menu-images [--selected <image>] [--print-name] [--show-labels]
@@ -110,14 +111,14 @@ fi
 #  Invoke rofi: plain text rows + thumbnail icons.
 # ──────────────────────────────────────────────
 
-grid_theme="${HOME}/.config/rofi/themes/active-image-grid.rasi"
-[[ -f $grid_theme ]] || grid_theme="${XDG_DATA_HOME:-$HOME/.local/share}/rofi/themes/image-grid.rasi"
+carousel_theme="${HOME}/.config/rofi/themes/active-image-carousel.rasi"
+[[ -f $carousel_theme ]] || carousel_theme="${XDG_DATA_HOME:-$HOME/.local/share}/rofi/themes/image-carousel.rasi"
 
 rofi_args=(
   -dmenu -i
   -selected-row "$selected_row"
   -show-icons
-  -theme "$grid_theme"
+  -theme "$carousel_theme"
 )
 
 # Build rofi input: one line per image, with its thumbnail attached via the
