@@ -164,10 +164,17 @@ done
 echo
 echo "==> Installing rofi image-carousel theme"
 ROFI_SRC="$REPO_ROOT/config/rofi/themes/active-image-carousel.rasi"
+ROFI_DST="$HOME/.config/rofi/themes/active-image-carousel.rasi"
 mkdir -p "$HOME/.config/rofi/themes"
 if [ -f "$ROFI_SRC" ]; then
-    cp -p "$ROFI_SRC" "$HOME/.config/rofi/themes/active-image-carousel.rasi"
-    info "rofi image-carousel theme installed"
+    # rofi is symlinked to the repo, so the source may already BE the target —
+    # cp would fail with "same file" and abort the whole install under set -e.
+    if [ "$ROFI_SRC" -ef "$ROFI_DST" ]; then
+        info "rofi image-carousel theme already in place (repo is symlinked)"
+    else
+        cp -p "$ROFI_SRC" "$ROFI_DST"
+        info "rofi image-carousel theme installed"
+    fi
 else
     warn "rofi image-carousel theme not found in repo"
 fi
@@ -190,4 +197,7 @@ fi
 
 echo
 echo "Done. Log out and select Hyprland at the greeter (or start it) to use the new setup."
-[ -d "$BACKUP_DIR" ] && echo "Backups of replaced files are in: $BACKUP_DIR"
+if [ -d "$BACKUP_DIR" ]; then
+    echo "Backups of replaced files are in: $BACKUP_DIR"
+fi
+exit 0

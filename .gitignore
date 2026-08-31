@@ -19,6 +19,9 @@ config/btop/themes/matugen.theme
 config/nvim/lua/matugen-colors.lua
 config/zed/themes/matugen.json
 config/helium-theme/manifest.json
+config/gtk-3.0/gtk.css
+config/gtk-4.0/gtk.css
+config/gtk-4.0/gtk-dark.css
 
 # Symlinks that point to the active theme (managed by theme-selector)
 config/hypr/theme.conf
