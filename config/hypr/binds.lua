@@ -8,7 +8,9 @@ local mod = vars.mod
 local scripts = vars.scripts
 
 -- Default programs
-hl.bind(mod .. " + Return", hl.dsp.exec_cmd(vars.terminal))
+-- New terminal inherits the focused window's working directory; falls back
+-- to vars.terminal (kitty) in $HOME when no focused cwd can be resolved.
+hl.bind(mod .. " + Return", hl.dsp.exec_cmd(scripts .. "/terminal-launch.sh"))
 hl.bind(mod .. " + Space", hl.dsp.exec_cmd(vars.menu))
 hl.bind(mod .. " + SHIFT + B", hl.dsp.exec_cmd(vars.browser))
 hl.bind(mod .. " + SHIFT + Return", hl.dsp.exec_cmd(vars.browser), { description = "Open browser" })
