@@ -42,9 +42,10 @@ the browser, notifications, everything — through a Material You color pipeline
 | Idle/Lock    | hypridle + hyprlock |
 | System monitor| btop / fastfetch |
 
-The repo is written for a laptop profile (Intel i5-13500H, Iris Xe, 2880x1800@90, 2x scale)
-but every monitor / input setting lives at the top of `config/hypr/hyprland.lua` and is
-easy to adjust.
+The repo is written for a laptop profile (Intel i5-13500H, Iris Xe, 2880x1800@90, 2x scale).
+`config/hypr/hyprland.lua` is modular — it just stitches together `.lua` modules
+(`env`, `input`, `look`, `binds`, etc.), each isolated by `require()`. Monitors,
+environment and defaults live in their own module and are easy to adjust.
 
 ## Features
 
@@ -176,7 +177,14 @@ dotfiles/
 │   └── build-wallpapers.sh     # regenerate the optimized wallpaper set
 ├── config/
 │   ├── hypr/
-│   │   ├── hyprland.lua        # monitors, keybinds, window rules, autostart
+│   │   ├── hyprland.lua        # entry: requires the modules below
+│   │   ├── vars.lua            # shared command strings (terminal, browser, mod, ...)
+│   │   ├── env.lua             # monitors + environment variables
+│   │   ├── input.lua           # keyboard / mouse / touchpad
+│   │   ├── autostart.lua       # startup applications
+│   │   ├── look.lua            # animations, layouts, misc / render / debug
+│   │   ├── binds.lua           # keybindings
+│   │   ├── window-rules.lua    # window rules
 │   │   ├── hypridle.conf       # idle: screensaver 150s, lock 300s
 │   │   ├── hyprlock.conf       # lock screen (clock + date + input)
 │   │   ├── scripts/            # 20 helper scripts (theming, windows, media)
@@ -352,8 +360,8 @@ in about a second.
 
 | Want to change | Edit |
 |----------------|------|
-| Monitor, scale, refresh | `config/hypr/hyprland.lua` — `hl.monitor(...)` top of file |
-| Default terminal/browser/file manager | `config/hypr/hyprland.lua` — "Default Programs" |
+| Monitor, scale, refresh | `config/hypr/env.lua` — `hl.monitor(...)` |
+| Terminal/browser/file manager | `config/hypr/vars.lua` — "shared command strings" |
 | Default theme at install | `ACTIVE_THEME=Material ./install.sh` |
 | Fonts | `config/kitty/kitty.conf`, `config/waybar/themes/*/style.css` |
 | Idle timings | `config/hypr/hypridle.conf` |
