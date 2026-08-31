@@ -92,10 +92,11 @@ element-text {
 element selected.normal,
 element selected {
     background-color: @accent;
+    text-color:       @bg;
     border-radius:    16px;
 }
 
-element selected.normal element-text,
-element selected element-text {
+element-text selected.normal,
+element-text selected {
     text-color:       @bg;
 }
