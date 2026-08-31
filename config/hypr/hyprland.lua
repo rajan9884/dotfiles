@@ -56,7 +56,6 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("swayosd-server")
 	hl.exec_cmd("wl-paste --watch cliphist store")
 	hl.exec_cmd("sleep 3 && /home/rajan/.local/bin/power-profiles autodetect")
-	hl.exec_cmd("sleep 4 && /usr/bin/qs /home/rajan/.config/arch-shell")
 	hl.exec_cmd(terminal)
 end)
 
