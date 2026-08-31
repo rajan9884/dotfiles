@@ -72,7 +72,7 @@ element selected.normal {
 }
 
 element-icon {
-    size:             22px;
+    size:             32px;
 }
 
 element-text {
