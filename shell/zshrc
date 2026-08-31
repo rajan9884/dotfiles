@@ -73,8 +73,11 @@ plugins=(git zsh-autosuggestions)
 source $ZSH/oh-my-zsh.sh
 
 # Override LS_COLORS AFTER oh-my-zsh (which sets its own)
-# Default `di=01;34` (bold blue) is invisible on dark themes — use bright cyan instead
-export LS_COLORS="di=01;36:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32"
+# Use explicit 256-color values: the active matugen theme maps the ANSI cyan
+# slot (color6) to a very dark #294a5e, so plain `01;36` (bold cyan) reads as
+# dim on the #0f1513 background. `38;5;45` (vivid cyan) & `38;5;75` (bright
+# blue) pop regardless of the ANSI palette.
+export LS_COLORS="di=38;5;45:ln=38;5;75:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32"
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # User configuration
