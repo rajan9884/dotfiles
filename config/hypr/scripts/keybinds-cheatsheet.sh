@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-LUA="$HOME/.config/hypr/hyprland.lua"
+HYP_DIR="$HOME/.config/hypr"
 THEME="$HOME/.config/rofi/active-picker.rasi"
 PROMPT="Keybindings"
 
@@ -157,7 +157,7 @@ render() {
         # label() fallback above already covered the most common ones.
         [[ -n "$desc" ]] || continue
         printf '%s\t%s\n' "$key" "$desc"
-    done < <(grep -h 'hl\.bind(' "$LUA")
+    done < <(grep -h 'hl\.bind(' "$HYP_DIR"/*.lua)
 
     printf '%s\t%s\n' "SUPER + 1-9 / 0"          "Switch to workspace"
     printf '%s\t%s\n' "SUPER + SHIFT + 1-9 / 0"  "Move window to workspace"
