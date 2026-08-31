@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+# ──────────────────────────────────────────────
+#   arch-menu-images — image selector (rofi grid)
+#   Shows a grid of image thumbnails and prints the selected image path.
+#   Thumbnails come from rofi's XDG thumbnailers (glycin/vips pipeline); no
+#   quickshell involved.
+#   Usage: arch-menu-images [--selected <image>] [--print-name] [--show-labels]
+#                           [--filterable] [--lazy-thumbnails]
+#                           <image-dir>...
+#   Prints the selected image path (or name with --print-name) to stdout.
+# ──────────────────────────────────────────────
+
+# Legacy quickshell-era flags that no longer have meaning; we accept them so
+# existing callers keep working, then ignore them.
+selected_image=""
+print_name=false
+
+image_dirs=()
+
+usage() {
+  echo "Usage: arch-menu-images [--selected <image>] [--print-name] <image-dir>..."
+}
+
+while (( $# > 0 )); do
+  case "$1" in
+    --selected)
+      [[ -n $2 ]] || { usage >&2; exit 1; }
+      selected_image="$2"
+      shift 2
+      ;;
+    --print-name)
+      print_name=true
+      shift
+      ;;
+    --show-labels|--filterable|--lazy-thumbnails)
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      image_dirs+=("$1")
+      shift
+      ;;
+  esac
+done
+
+assert() { command -v "$1" >/dev/null 2>&1 || { echo "arch-menu-images: '$1' not found" >&2; exit 1; }; }
+assert rofi
+
+if (( ${#image_dirs[@]} == 0 )); then
+  usage >&2
+  exit 1
+fi
+
+# ──────────────────────────────────────────────
+#  Rows: collect display-name + full path pairs.
+#  Display name doubles as the rofi output text, so it is chosen to be unique
+#  and to map cleanly back to the real path.
+#  - print-name mode: basename (theme names are unique)
+#  - otherwise:        <parent-dir>/<basename>  (distinguishes same-named files)
+# ──────────────────────────────────────────────
+
+declare -a displays=()
+declare -a paths=()
+
+while IFS= read -r -d '' file; do
+  [[ -f $file ]] || continue
+  base=${file##*/}
+
+  if [[ $print_name == true ]]; then
+    display=$base
+  else
+    parent=${file%/*}
+    parent=${parent##*/}
+    [[ -n $parent ]] || parent="."
+    display="$parent/$base"
+  fi
+
+  displays+=("$display")
+  paths+=("$file")
+done < <(for dir in "${image_dirs[@]}"; do
+  find "$dir" -maxdepth 1 \( -type f -o -type l \) \
+    \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \
+       -o -iname '*.gif' -o -iname '*.bmp' -o -iname '*.webp' \) \
+    -print0 2>/dev/null
+done | sort -z)
+
+(( ${#displays[@]} > 0 )) || exit 0
+
+# ──────────────────────────────────────────────
+#  Preselect the row matching --selected (by resolved path or basename).
+# ──────────────────────────────────────────────
+
+selected_row=0
+if [[ -n $selected_image ]]; then
+  sel_target=$(readlink -f "$selected_image" 2>/dev/null) || sel_target=$selected_image
+  sel_base=${sel_target##*/}
+  for i in "${!paths[@]}"; do
+    row_target=$(readlink -f "${paths[$i]}" 2>/dev/null) || row_target="${paths[$i]}"
+    if [[ $row_target == "$sel_target" || ${paths[$i]##*/} == "$sel_base" ]]; then
+      selected_row=$i
+      break
+    fi
+  done
+fi
+
+# ──────────────────────────────────────────────
+#  Invoke rofi: plain text rows + thumbnail icons.
+# ──────────────────────────────────────────────
+
+grid_theme="${HOME}/.config/rofi/themes/active-image-grid.rasi"
+[[ -f $grid_theme ]] || grid_theme="${XDG_DATA_HOME:-$HOME/.local/share}/rofi/themes/image-grid.rasi"
+
+rofi_args=(
+  -dmenu -i
+  -selected-row "$selected_row"
+  -show-icons
+  -theme "$grid_theme"
+)
+
+# Build rofi input: one line per image, with its thumbnail attached via the
+# XDG thumbnail mechanism (\0icon\x1fthumbnail://<path>).
+choice=$({
+  for i in "${!displays[@]}"; do
+    printf '%s\0icon\x1fthumbnail://%s\n' "${displays[$i]}" "${paths[$i]}"
+  done
+} | rofi "${rofi_args[@]}" 2>/dev/null)
+
+[[ -n $choice ]] || exit 0
+
+# ──────────────────────────────────────────────
+#  Resolve the chosen display back to a path / name.
+# ──────────────────────────────────────────────
+
+if [[ $print_name == true ]]; then
+  printf '%s\n' "${choice%.*}"
+  exit 0
+fi
+
+for i in "${!displays[@]}"; do
+  if [[ ${displays[$i]} == "$choice" ]]; then
+    printf '%s\n' "${paths[$i]}"
+    exit 0
+  fi
+done
+
+# Shouldn't reach here (choice was generated from displays), but don't print
+# a stale value.
+exit 1

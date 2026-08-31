@@ -1,0 +1,98 @@
+/* ──────────────────────────────────────────────
+ *   Rofi Image Grid – fullscreen thumbnail picker
+ *   Used by the wallpaper & theme pickers.
+ *   Colors follow the active matugen palette.
+ * ────────────────────────────────────────────── */
+
+@import "~/.config/rofi/colors.rasi"
+
+* {
+    bg:             @background;
+    bg-alt:         @background-alt;
+    fg:             @foreground;
+    accent:         @selected;
+
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+window {
+    fullscreen:      true;
+    background-color: transparent;
+    location:        center;
+    anchor:          center;
+    border:          0px;
+    padding:         0px;
+    children:        [ mainbox ];
+}
+
+mainbox {
+    background-color: transparent;
+    orientation:      vertical;
+    vertical-align:   0.5;
+    children:         [ inputbar, listview ];
+    spacing:          0;
+    padding:          24px;
+}
+
+inputbar {
+    background-color: transparent;
+    children:         [ entry ];
+    padding:          8px 16px;
+    margin:           0px 0px 16px 0px;
+    spacing:          10px;
+    border-radius:    12px;
+    border:           1px;
+    border-color:     @bg-alt;
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @fg;
+    placeholder:      "Search wallpapers…";
+    placeholder-color: @bg-alt;
+    horizontal-align: 0.5;
+}
+
+listview {
+    flow:             vertical;
+    columns:          5;
+    lines:            4;
+    spacing:          20px;
+    padding:          16px;
+    scrollbar:        false;
+    dynamic:          false;
+    fixed-height:     false;
+    background-color: transparent;
+}
+
+element {
+    orientation:      vertical;
+    background-color: @bg-alt;
+    border-radius:    16px;
+    padding:          12px;
+    spacing:          10px;
+}
+
+element-icon {
+    size:             220px;
+    horizontal-align: 0.5;
+    vertical-align:   0.5;
+    border-radius:    12px;
+}
+
+element-text {
+    text-color:       @fg;
+    horizontal-align: 0.5;
+    font:             "JetBrainsMono Nerd Font 10";
+}
+
+element selected.normal,
+element selected {
+    background-color: @accent;
+}
+
+element selected.normal element-text,
+element selected element-text {
+    text-color:       @bg;
+}

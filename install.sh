@@ -149,6 +149,29 @@ find "$REPO_ROOT/config/waybar/scripts" -type f -exec chmod +x {} \; 2>/dev/null
 find "$REPO_ROOT/config/rofi/scripts"  -type f -exec chmod +x {} \; 2>/dev/null || true
 info "scripts marked executable"
 
+# ── 5b. User helper scripts → ~/.local/bin ──
+echo
+echo "==> Installing user helper scripts into ~/.local/bin"
+mkdir -p "$HOME/.local/bin"
+for helper in "$REPO_ROOT/bin"/*; do
+    [ -f "$helper" ] || continue
+    cp -p "$helper" "$HOME/.local/bin/$(basename "$helper")"
+    chmod +x "$HOME/.local/bin/$(basename "$helper")"
+    info "helper: $(basename "$helper")"
+done
+
+# ── 5c. Rofi image-grid theme ────────────────
+echo
+echo "==> Installing rofi image-grid theme"
+ROFI_SRC="$REPO_ROOT/config/rofi/themes/active-image-grid.rasi"
+mkdir -p "$HOME/.config/rofi/themes"
+if [ -f "$ROFI_SRC" ]; then
+    cp -p "$ROFI_SRC" "$HOME/.config/rofi/themes/active-image-grid.rasi"
+    info "rofi image-grid theme installed"
+else
+    warn "rofi image-grid theme not found in repo"
+fi
+
 # ── 6. Initial palette ───────────────────────
 echo
 echo "==> Generating initial color palette"

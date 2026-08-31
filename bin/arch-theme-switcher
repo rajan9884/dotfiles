@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+# ──────────────────────────────────────────────
+#   arch-theme-switcher — quattro-style theme picker
+#   Shows every theme in ~/.config/hypr/themes as a horizontal thumbnail
+#   carousel (preview.png in the theme dir, else a wallpaper from the theme
+#   collection). Selecting a theme applies it via arch-theme-apply.
+# ──────────────────────────────────────────────
+
+set -e
+
+THEMES_PATH="$HOME/.config/hypr/themes"
+WALL_DIR="$HOME/.local/share/wallpapers"
+CACHE_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/arch/theme-selector"
+preview_dir="$CACHE_PATH/previews"
+signature_file="$CACHE_PATH/signature"
+fast_signature_file="$CACHE_PATH/fast-signature"
+
+mkdir -p "$preview_dir"
+
+lower() { tr '[:upper:]' '[:lower:]'; }
+
+find_preview() {
+  local theme_path="$1"
+  local preview preview_name
+
+  for preview_name in preview.png preview.jpg preview.jpeg preview.webp preview.gif preview.bmp; do
+    preview=$(find -L "$theme_path" -maxdepth 1 -type f -iname "$preview_name" -print -quit 2>/dev/null)
+    if [[ -n $preview ]]; then
+      printf '%s\n' "$preview"
+      return
+    fi
+  done
+
+  if [[ -d $theme_path/backgrounds ]]; then
+    find -L "$theme_path/backgrounds" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' -o -iname '*.bmp' -o -iname '*.webp' \) -print 2>/dev/null | sort | head -n 1
+    return
+  fi
+
+  # Fallback: first wallpaper in the matching ~/wallpapers/<theme> collection.
+  local wall_dir
+  wall_dir="$WALL_DIR/$(basename "$theme_path" | lower)"
+  if [[ -d $wall_dir ]]; then
+    find -L "$wall_dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) -print 2>/dev/null | sort | head -n 1
+  fi
+}
+
+add_preview() {
+  local theme_name="$1"
+  local preview="$2"
+  local extension
+
+  [[ -n $preview ]] || return
+  extension="${preview##*.}"
+  extension="${extension,,}"
+  [[ -e $preview_dir/$theme_name.$extension ]] && return
+  ln -s "$preview" "$preview_dir/$theme_name.$extension"
+}
+
+# Slow build only when something actually changed.
+fast_signature="v2"$'\n'
+if [[ -d $THEMES_PATH ]]; then
+  fast_signature+="$THEMES_PATH:$(stat -Lc '%Y' "$THEMES_PATH")"$'\n'
+  while IFS= read -r -d '' theme_path; do
+    fast_signature+="$theme_path:$(stat -Lc '%Y' "$theme_path")"$'\n'
+  done < <(find -L "$THEMES_PATH" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null | sort -z)
+fi
+
+if [[ ! -f $fast_signature_file ]] || ! cmp -s "$fast_signature_file" <(printf '%s' "$fast_signature"); then
+  rm -rf "$preview_dir"
+  mkdir -p "$preview_dir"
+
+  while IFS= read -r theme_path; do
+    [[ -d $theme_path ]] || continue
+    # Only themes with an applyable config.
+    [[ -f $theme_path/theme.conf || -f $theme_path/theme.lua ]] || continue
+    theme_name=${theme_path##*/}
+    preview=$(find_preview "$theme_path")
+    add_preview "$theme_name" "$preview"
+  done < <(find -L "$THEMES_PATH" -mindepth 1 -maxdepth 1 -type d -print 2>/dev/null | sort)
+
+  printf '%s' "$fast_signature" >"$fast_signature_file"
+fi
+
+current_theme=$(cat "$HOME/.config/hypr/.active-theme" 2>/dev/null | tr '[:upper:]' '[:lower:]')
+selected_preview=""
+for extension in png jpg jpeg webp gif bmp; do
+  if [[ -e $preview_dir/$current_theme.$extension ]]; then
+    selected_preview="$preview_dir/$current_theme.$extension"
+    break
+  fi
+done
+
+name=$("$HOME/.local/bin/arch-menu-images" \
+  --print-name --show-labels --filterable --lazy-thumbnails \
+  --selected "$selected_preview" "$preview_dir")
+
+[[ -n $name ]] || exit 0
+[[ -f "$THEMES_PATH/$name/theme.conf" || -f "$THEMES_PATH/$name/theme.lua" ]] || exit 0
+
+"$HOME/.local/bin/arch-theme-apply" "$name"

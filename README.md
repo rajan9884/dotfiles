@@ -53,6 +53,9 @@ easy to adjust.
 - **5 full theme packs** (Noro, Material, Retro, Modern, Glass) — each defines Hyprland
   decoration, a Waybar style, matching Rofi menus and its own wallpaper collection.
   Switch the whole system look from one picker (Super+Ctrl+Shift+Space).
+- **Fullscreen thumbnail pickers** — the wallpaper picker (Super+Ctrl+Space) and theme
+  switcher (Super+Ctrl+Shift+Space) open an instant, fullscreen Rofi grid of image
+  thumbnails (`active-image-grid.rasi`) instead of an overlay carousel.
 - **Omarchy-style quality-of-life**: scratchpad, workspace cycling, window groups,
   per-window transparency/gaps toggles, saved window sizes, monitor scaling on the fly,
   cursor zoom, universal Super+C/V clipboard that works in terminals too.
@@ -125,10 +128,12 @@ yay -S zsh-autosuggestions
 
 ### Optional extras the keybinds expect
 
-- `arch-theme-switcher`, `arch-wallpaper-picker`, `arch-screensaver`, `power-profiles`,
-  `menu-emoji`, `menu-calc`, `menu-clipboard`, `ocr-extract`, `night-light-toggle`,
-  `capture-satty` — personal helper scripts in `~/.local/bin`. Everything degrades
-  gracefully if they are missing (binds that call them just won't do anything).
+- `arch-theme-switcher`, `arch-wallpaper-picker`, `arch-menu-images`, `arch-screensaver`,
+  `power-profiles`, `menu-emoji`, `menu-calc`, `menu-clipboard`, `ocr-extract`,
+  `night-light-toggle`, `capture-satty` — personal helper scripts. The `arch-*` picker
+  helpers ship in this repo under `bin/` (deployed to `~/.local/bin` by `install.sh`);
+  the rest live in `~/.local/bin` and everything degrades gracefully if a script is
+  missing (binds that call them just won't do anything).
 - `pywalfox` — live-recolored Firefox/Brave via the pywalfox extension
 - `voxtype` — dictation (see keybinds)
 
@@ -165,6 +170,8 @@ Re-running is safe: symlinks are refreshed, real files are backed up, nothing is
 ```
 dotfiles/
 ├── install.sh                  # one-shot setup (safe to re-run)
+├── bin/
+│   └── arch-*                   # wallpaper/theme pickers (rofi grid) → ~/.local/bin
 ├── scripts/
 │   └── build-wallpapers.sh     # regenerate the optimized wallpaper set
 ├── config/
@@ -182,7 +189,7 @@ dotfiles/
 │   │   ├── config.rasi          # drun/run/window launcher
 │   │   ├── theme.rasi           # dmenu-style picker (matugen colored)
 │   │   ├── power-menu.rasi etc. # dashboard menus
-│   │   └── themes/              # per-theme launcher/picker/scripts styles
+│   │   └── themes/              # per-theme launcher/picker/scripts + active-image-grid.rasi
 │   ├── kitty/kitty.conf         # fonts, padding, clipboard passthrough
 │   ├── matugen/
 │   │   ├── config.toml           # which apps get generated colors
