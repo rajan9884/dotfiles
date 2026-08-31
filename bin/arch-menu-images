@@ -116,7 +116,6 @@ carousel_theme="${HOME}/.config/rofi/themes/active-image-carousel.rasi"
 
 rofi_args=(
   -dmenu -i
-  -cycle
   -selected-row "$selected_row"
   -show-icons
   -theme "$carousel_theme"

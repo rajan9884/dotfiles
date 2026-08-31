@@ -11,7 +11,7 @@ configuration {
     display-window:      " Windows";
     drun-display-format: "{name}";
     font:                "NotoSansMono Nerd Font 12";
-    cycle:               false;
+    cycle:               true;
     scroll-method:       0;
 }
 
