@@ -145,11 +145,8 @@ window#waybar {
 }
 /* ── System Tray / Background Apps ─────────── */
 #tray {
-    background: @surface;
     color: @on_surface;
-    padding: 4px 10px;
-    margin: 6px 0;
-    border-radius: 12px;
+    padding: 0 10px;
 }
 
 #tray > .passive {
