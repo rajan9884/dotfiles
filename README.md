@@ -1,3 +1,7 @@
+<img width="2880" height="1800" alt="preview3" src="https://github.com/user-attachments/assets/ea82c274-56d3-49ab-8373-4a60aae8f89d" />
+
+---
+
 # Arch + Hyprland Dotfiles
 
 A dynamic, wallpaper-driven Hyprland setup for Arch Linux. Change your wallpaper and the
@@ -66,6 +70,68 @@ environment and defaults live in their own module and are easy to adjust.
   grab, color picker, OCR extract, wf-recorder capture with a Waybar indicator.
 - **Dictation ready** — optional voxtype push-to-talk (F9) with Waybar status.
 - **Idle automation** — screensaver at 150s, lock at 300s, lock-on-lid-close.
+
+## Waybar Presets
+- noro
+
+  <img width="2880" height="106" alt="noro" src="https://github.com/user-attachments/assets/bb817d20-1630-49a7-9b38-54ba38fedafd" />
+
+- bottom-dock
+
+  <img width="2880" height="112" alt="bottom-dock" src="https://github.com/user-attachments/assets/3fea18eb-8af0-418e-a9e5-989e2831621f" />
+
+- cyber-left
+
+  <img width="108" height="1800" alt="cyber-left" src="https://github.com/user-attachments/assets/3d522af2-df9b-47a6-b6b7-8455cac55294" />
+
+- dynamic-island
+
+  <img width="2880" height="110" alt="dynamic-island" src="https://github.com/user-attachments/assets/f02fdf5d-da00-4039-9a2e-23037ea59bab" />
+
+- floating-bar
+
+  <img width="2880" height="102" alt="floating-bar" src="https://github.com/user-attachments/assets/c72a5be3-647e-452e-98fc-2d35abe6a4c9" />
+
+- glass-left
+
+  <img width="102" height="1800" alt="glass-left" src="https://github.com/user-attachments/assets/64984160-e824-4eed-9368-4755b58edafe" />
+
+- glass-right
+
+  <img width="142" height="1800" alt="glass-right" src="https://github.com/user-attachments/assets/656f6b5e-e2bb-48a6-be0e-3d209cc5bfaf" />
+
+- gnome-left
+
+  <img width="128" height="1800" alt="gnome-left" src="https://github.com/user-attachments/assets/1bbd50f4-ba47-46c0-a293-def8e9005296" />
+
+- island
+
+  <img width="2880" height="120" alt="island" src="https://github.com/user-attachments/assets/30fd44ea-6d69-470a-a828-723c38f71b65" />
+
+- mac
+
+  <img width="2880" height="88" alt="mac" src="https://github.com/user-attachments/assets/58679645-52c7-489f-a3b6-27938701337b" />
+
+- minimal-left
+
+  <img width="112" height="1800" alt="minimal-left" src="https://github.com/user-attachments/assets/a695d7a7-b6bf-41a5-a469-f9b31a1de38d" />
+
+- modern-left
+
+  <img width="100" height="1800" alt="modern-left" src="https://github.com/user-attachments/assets/17d74380-ad91-4b6c-8185-b8f54b26a585" />
+
+- noro
+
+  <img width="2880" height="106" alt="noro" src="https://github.com/user-attachments/assets/49d53a78-d1d2-4091-89f6-1054af181d89" />
+
+- pill
+
+  <img width="2880" height="110" alt="pill" src="https://github.com/user-attachments/assets/15c2fb5d-cfd2-48d5-92a0-980c82d3424a" />
+
+
+
+
+
 
 ## Screenshots
 
