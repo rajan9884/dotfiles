@@ -191,12 +191,26 @@ if command -v matugen >/dev/null 2>&1; then
     else
         warn "no wallpaper found for theme '$THEME_LOWER'"
     fi
-else
-    warn "matugen not installed; palette will be generated on first theme switch"
-fi
+    else
+        warn "matugen not installed; palette will be generated on first theme switch"
+    fi
 
-echo
-echo "Done. Log out and select Hyprland at the greeter (or start it) to use the new setup."
+    # ── 7. Default image viewer ──────────────
+    echo
+    echo "==> Setting default image viewer (eog)"
+    sudo pacman -S --noconfirm eog >/dev/null 2>&1 || warn "eog install skipped"
+    if [ -f "$HOME/.config/mimeapps.list" ]; then
+        sed -i 's#=eog\.desktop#=org.gnome.eog.desktop#g' "$HOME/.config/mimeapps.list"
+        for m in image/jpeg image/png image/gif image/webp image/bmp image/x-ms-bmp image/tiff; do
+            xdg-mime default org.gnome.eog.desktop "$m" 2>/dev/null || true
+        done
+        info "image MIME types set to org.gnome.eog.desktop"
+    else
+        warn "~/.config/mimeapps.list not found; image MIME defaults unchanged"
+    fi
+
+    echo
+    echo "Done. Log out and select Hyprland at the greeter (or start it) to use the new setup."
 if [ -d "$BACKUP_DIR" ]; then
     echo "Backups of replaced files are in: $BACKUP_DIR"
 fi
