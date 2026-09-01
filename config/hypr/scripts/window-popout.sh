@@ -3,5 +3,5 @@
 # Running again un-floats and un-pins it.
 set -euo pipefail
 
-hyprctl dispatch togglefloating active >/dev/null
-hyprctl dispatch pin active >/dev/null
+hyprctl dispatch "hl.dsp.window.float({ action = 'toggle' })" >/dev/null
+hyprctl dispatch "hl.dsp.window.pin()" >/dev/null
