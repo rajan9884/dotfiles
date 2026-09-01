@@ -9,9 +9,10 @@ entire system re-themes itself — Waybar, Rofi, Kitty, Hyprland, GTK, Neovim, Z
 the browser, notifications, everything — through a Material You color pipeline built on
 [matugen](https://github.com/InioX/matugen).
 
-<p align="center">
-  <img src="screenshots/main.png" alt="Main desktop (Noro theme)" width="800">
-</p>
+# Preview
+
+https://github.com/user-attachments/assets/18fc7426-f8b7-4349-ae4f-4c4e70d48b56
+
 
 ## Table of contents
 
@@ -128,9 +129,7 @@ environment and defaults live in their own module and are easy to adjust.
 
   <img width="2880" height="110" alt="pill" src="https://github.com/user-attachments/assets/15c2fb5d-cfd2-48d5-92a0-980c82d3424a" />
 
-
-
-
+---
 
 
 ## Screenshots
@@ -455,5 +454,5 @@ in about a second.
 - [LazyVim](https://www.lazyvim.org) — Neovim distribution
 - [Oh My Zsh](https://ohmyz.sh) + zsh-autosuggestions
 - [Papirus](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) icons,
-  [Bibata](https://github.com/ful1e5/Bibata_Cursor) cursors
-- Inspiration from [Omarchy](https://omarchy.org) quality-of-life patterns
+- [Bibata](https://github.com/ful1e5/Bibata_Cursor) cursors
+
