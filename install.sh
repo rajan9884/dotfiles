@@ -197,14 +197,14 @@ if command -v matugen >/dev/null 2>&1; then
 
     # ── 7. Default image viewer ──────────────
     echo
-    echo "==> Setting default image viewer (eog)"
-    sudo pacman -S --noconfirm eog >/dev/null 2>&1 || warn "eog install skipped"
+    echo "==> Setting default image viewer (imv)"
+    sudo pacman -S --noconfirm imv >/dev/null 2>&1 || warn "imv install skipped"
     if [ -f "$HOME/.config/mimeapps.list" ]; then
-        sed -i 's#=eog\.desktop#=org.gnome.eog.desktop#g' "$HOME/.config/mimeapps.list"
+        sed -i 's#=org\.gnome\.eog\.desktop#=imv.desktop#g; s#=eog\.desktop#=imv.desktop#g' "$HOME/.config/mimeapps.list"
         for m in image/jpeg image/png image/gif image/webp image/bmp image/x-ms-bmp image/tiff; do
-            xdg-mime default org.gnome.eog.desktop "$m" 2>/dev/null || true
+            xdg-mime default imv.desktop "$m" 2>/dev/null || true
         done
-        info "image MIME types set to org.gnome.eog.desktop"
+        info "image MIME types set to imv.desktop"
     else
         warn "~/.config/mimeapps.list not found; image MIME defaults unchanged"
     fi
