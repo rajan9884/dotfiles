@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Enable nautilus sushi Space-preview on Hyprland by faking GNOME session
+export XDG_CURRENT_DESKTOP=GNOME
+export XDG_SESSION_DESKTOP=GNOME
+export DESKTOP_SESSION=gnome
+exec /usr/bin/nautilus "$@"

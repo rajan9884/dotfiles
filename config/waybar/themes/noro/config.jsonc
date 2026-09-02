@@ -99,6 +99,7 @@
         "tooltip": false
     },
     "battery": {
+        "bat": "BAT1",
         "format": "{capacity}% {icon}",
         "format-charging": "{capacity}% 󱐋",
         "format-plugged": "{capacity}% 󱐋",

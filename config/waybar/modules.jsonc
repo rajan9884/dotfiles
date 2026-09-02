@@ -17,7 +17,7 @@
     },
 
     "battery": {
-        "bat": "BAT0",
+        "bat": "BAT1",
         "adapter": "ADP0",
         "interval": 60,
         "states": {
