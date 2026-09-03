@@ -45,8 +45,9 @@ ln -sf "$HOME/.config/rofi/themes/$HYPR/picker.rasi" "$HOME/.config/rofi/active-
 # ── 2. Save active theme ──
 echo "$THEME" > "$ACTIVE_THEME_FILE"
 
-# ── 3. Apply Wallpaper (Random from theme set) ──
-SELECTED_WALL=$(find "$WALL_DIR/$WALL" -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" -o -name "*.webp" \) 2>/dev/null | shuf -n 1)
+# ── 3. Apply Wallpaper (Random from full collection, not just theme) ──
+OPT_DIR="$HOME/Pictures/Wallpapers/optimized"
+SELECTED_WALL=$(find "$WALL_DIR" "$OPT_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) 2>/dev/null | shuf -n 1)
 [ -n "$SELECTED_WALL" ] && "$SWWW_SCRIPT" "$SELECTED_WALL"
 
 # ── 4. Reload ──

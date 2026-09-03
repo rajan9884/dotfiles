@@ -45,9 +45,7 @@ fi
 # SIGUSR1 tells nvim to reload colors
 killall -SIGUSR1 nvim 2>/dev/null
 
-# 6.5 Reload OSD (swayosd reads its stylesheet only at startup)
-killall swayosd-server 2>/dev/null
-swayosd-server &
+
 
 # 7. Update Firefox colors (Pywalfox)
 # This will update Firefox instantly if the addon is installed

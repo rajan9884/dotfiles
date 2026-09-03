@@ -190,35 +190,35 @@ hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Volume & brightness (media keys) — bindel/bindl → { repeating, locked }
--- Volume via swayosd-client so the OSD shows (same as brightness)
 hl.bind(
 	"XF86AudioRaiseVolume",
-	hl.dsp.exec_cmd("swayosd-client --output-volume raise"),
+	hl.dsp.exec_cmd(scripts .. "/osd-volume.sh up"),
 	{ repeating = true, locked = true }
 )
 hl.bind(
 	"XF86AudioLowerVolume",
-	hl.dsp.exec_cmd("swayosd-client --output-volume lower"),
+	hl.dsp.exec_cmd(scripts .. "/osd-volume.sh down"),
 	{ repeating = true, locked = true }
 )
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { locked = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd(scripts .. "/osd-volume.sh mute-toggle"), { locked = true })
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd(scripts .. "/osd-volume.sh mic-toggle"), { locked = true, description = "Mute microphone" })
 hl.bind(
 	"XF86MonBrightnessUp",
-	hl.dsp.exec_cmd("swayosd-client --brightness raise"),
+	hl.dsp.exec_cmd(scripts .. "/osd-brightness.sh up"),
 	{ repeating = true, locked = true }
 )
 hl.bind(
 	"XF86MonBrightnessDown",
-	hl.dsp.exec_cmd("swayosd-client --brightness lower"),
+	hl.dsp.exec_cmd(scripts .. "/osd-brightness.sh down"),
 	{ repeating = true, locked = true }
 )
-hl.bind("SHIFT + XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set 100%"), { locked = true, description = "Brightness maximum" })
-hl.bind("SHIFT + XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 1%"), { locked = true, description = "Brightness minimum" })
-hl.bind("ALT + XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set 1%+"), { locked = true, repeating = true, description = "Brightness up (precise)" })
-hl.bind("ALT + XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 1%-"), { locked = true, repeating = true, description = "Brightness down (precise)" })
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("swayosd-client --input-volume mute-toggle"), { locked = true, description = "Mute microphone" })
-hl.bind("ALT + XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%+"), { locked = true, repeating = true, description = "Volume up (precise)" })
-hl.bind("ALT + XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"), { locked = true, repeating = true, description = "Volume down (precise)" })
+hl.bind("SHIFT + XF86MonBrightnessUp", hl.dsp.exec_cmd(scripts .. "/osd-brightness.sh max"), { locked = true, description = "Brightness maximum" })
+hl.bind("SHIFT + XF86MonBrightnessDown", hl.dsp.exec_cmd(scripts .. "/osd-brightness.sh min"), { locked = true, description = "Brightness minimum" })
+hl.bind("ALT + XF86MonBrightnessUp", hl.dsp.exec_cmd(scripts .. "/osd-brightness.sh up"), { locked = true, repeating = true, description = "Brightness up (precise)" })
+hl.bind("ALT + XF86MonBrightnessDown", hl.dsp.exec_cmd(scripts .. "/osd-brightness.sh down"), { locked = true, repeating = true, description = "Brightness down (precise)" })
+
+hl.bind("ALT + XF86AudioRaiseVolume", hl.dsp.exec_cmd(scripts .. "/osd-volume.sh up"), { locked = true, repeating = true, description = "Volume up (precise)" })
+hl.bind("ALT + XF86AudioLowerVolume", hl.dsp.exec_cmd(scripts .. "/osd-volume.sh down"), { locked = true, repeating = true, description = "Volume down (precise)" })
 
 -- Media controls (playerctl)
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true, description = "Next track" })

@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 
-WALLPAPER_DIR="$HOME/.local/share/wallpapers"
+WALLPAPER_DIRS=()
+for d in "$HOME/.local/share/wallpapers" "$HOME/Pictures/Wallpapers/optimized"; do
+    [ -d "$d" ] && WALLPAPER_DIRS+=("$d")
+done
 
-# Check if directory exists
-if [ ! -d "$WALLPAPER_DIR" ]; then
-    notify-send "Error" "Wallpaper directory not found"
+((${#WALLPAPER_DIRS[@]})) || {
+    notify-send "Wallpaper Error" "No wallpaper directories found" -u critical
     exit 1
-fi
+}
 
-# List images, pass to rofi, and get selection
-SELECTED=$(find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) -exec basename {} \; | rofi -dmenu -i -p "Select Wallpaper" -theme ~/.config/rofi/theme.rasi)
+# List images from all directories, pass to rofi, and get selection
+SELECTED=$(find "${WALLPAPER_DIRS[@]}" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) -printf "%p\n" 2>/dev/null | sort | rofi -dmenu -i -p "Select Wallpaper" -theme ~/.config/rofi/theme.rasi)
 
 if [ -n "$SELECTED" ]; then
-    FULL_PATH="$WALLPAPER_DIR/$SELECTED"
-    # Call the existing swww-all.sh script
-    ~/.config/hypr/scripts/swww-all.sh "$FULL_PATH"
+    # Call the existing swww-all.sh script which runs matugen for colors
+    ~/.config/hypr/scripts/swww-all.sh "$SELECTED"
 fi
