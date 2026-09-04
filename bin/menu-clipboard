@@ -55,9 +55,16 @@ case "$MODE" in
         }
         ;;
     emoji|emoji_menu|menu-emoji)
-        THEME="$PICKER_THEME"
-        rofi -show emoji -theme "$THEME" \
-            -theme-str 'listview {columns: 8; lines: 4;}'
+        EMOJI_THEME="$HOME/.local/share/rofimoji/themes/emoji-grid.rasi"
+        # NOTE: keep selector-args to a single -theme. Passing -theme-str
+        # with multiple blocks (entry placeholder + textbox font) makes
+        # rofi leak the raw theme text into the search box, so those
+        # rules now live in emoji-grid.rasi itself.
+        rofimoji --selector rofi \
+            --clipboarder wl-copy \
+            --action type copy \
+            --hidden-descriptions \
+            --selector-args "-theme \"$EMOJI_THEME\""
         ;;
     calc|calc_menu|menu-calc)
         THEME="$LAUNCHER_THEME"
