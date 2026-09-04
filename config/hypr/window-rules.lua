@@ -34,3 +34,11 @@ hl.window_rule({
 	match = { class = "org.gnome.NautilusPreviewer" },
 	tag = "-default-opacity",
 })
+
+hl.window_rule({
+	name = "webapp-install-float",
+	match = { class = "(webapp-install|wifi-share)" },
+	float = true,
+	center = true,
+	size = { 650, 480 },
+})

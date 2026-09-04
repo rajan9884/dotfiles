@@ -129,6 +129,9 @@ if voxtype_ok then
 end
 
 hl.bind(mod .. " + ALT + W", hl.dsp.exec_cmd("~/.config/hypr/scripts/waybar-selector.sh"))
+hl.bind(mod .. " + ALT + SHIFT + W", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/webapp-install-prompt"), { description = "Install web app (paste link)" })
+hl.bind(mod .. " + ALT + SHIFT + X", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/webapp-remove-prompt"), { description = "Remove web app" })
+hl.bind(mod .. " + ALT + Q", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/wifi-share-prompt"), { description = "Share WiFi via QR" })
 
 hl.bind(mod .. " + SHIFT + Space", hl.dsp.exec_cmd("killall -SIGUSR1 waybar"), { locked = true })
 

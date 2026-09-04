@@ -85,6 +85,7 @@ build_menu() {
         # Bottom actions
         if [[ -n "$CURRENT_SSID" ]]; then
             echo "󰅙  Disconnect"
+            echo "󰴲  Share WiFi (QR)"
         fi
         echo "󱛅  Saved connections"
         echo "󰖪  Turn WiFi OFF"
@@ -118,6 +119,10 @@ handle_selection() {
         "󰅙  Disconnect")
             nmcli device disconnect "$DEV" 2>/dev/null
             notify "Disconnected" "WiFi has been disconnected"
+            return ;;
+
+        "󰴲  Share WiFi (QR)")
+            "$HOME/.local/bin/wifi-share-prompt" &
             return ;;
 
         "󰖪  Turn WiFi OFF")

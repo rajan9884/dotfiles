@@ -13,6 +13,9 @@ configuration {
     font:                "NotoSansMono Nerd Font 12";
     cycle:               true;
     scroll-method:       0;
+    hover-select:        true;
+    me-select-entry:     "";
+    me-accept-entry:     "MousePrimary";
 }
 
 //@theme "~/.config/rofi/theme.rasi"
