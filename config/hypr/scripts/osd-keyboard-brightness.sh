@@ -1,24 +1,21 @@
 #!/bin/bash
-# Keyboard backlight control via brightnessctl (kbd backlight) with an OSD.
+# ──────────────────────────────────────────────
+#   Keyboard-backlight OSD via swayosd-server.
+#   `cycle` wraps max → off (brightnessctl has no wrap for kbd).
+# ──────────────────────────────────────────────
 ACTION="$1"
+DEV="*kbd*"
 
 case "$ACTION" in
-    up) brightnessctl --device='*kbd*' set 1+ ;;
-    down) brightnessctl --device='*kbd*' set 1- ;;
-    cycle) brightnessctl --device='*kbd*' set +1% ;;
+    up) swayosd-client --brightness --device "$DEV" raise ;;
+    down) swayosd-client --brightness --device "$DEV" lower ;;
+    cycle)
+        LEVEL=$(brightnessctl --device="$DEV" get 2>/dev/null)
+        MAX=$(brightnessctl --device="$DEV" max 2>/dev/null)
+        if [[ -n $LEVEL && -n $MAX && "$MAX" -gt 0 ]] && ((LEVEL >= MAX)); then
+            swayosd-client --brightness --device "$DEV" 0
+        else
+            swayosd-client --brightness --device "$DEV" raise
+        fi
+        ;;
 esac
-
-LEVEL=$(brightnessctl --device='*kbd*' get 2>/dev/null)
-MAX=$(brightnessctl --device='*kbd*' max 2>/dev/null)
-
-if [[ -n $LEVEL && -n $MAX && "$MAX" -gt 0 ]]; then
-    PCT=$((LEVEL * 100 / MAX))
-else
-    PCT=""
-fi
-
-ICON="keyboard-brightness"
-TEXT=${PCT:+${PCT}%}
-[[ -z $TEXT ]] && TEXT="Keyboard backlight"
-
-dunstify -r 996 -u low -i "$ICON" "Keyboard backlight" "$TEXT" -t 1500

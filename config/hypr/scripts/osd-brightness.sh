@@ -1,25 +1,14 @@
 #!/bin/bash
+# ──────────────────────────────────────────────
+#   Brightness OSD via swayosd-server (compact native OSD).
+#   Scoped to backlight devices so keyboard LEDs are untouched.
+# ──────────────────────────────────────────────
 ACTION="$1"
+DEV="*backlight*"
 
 case "$ACTION" in
-    up) brightnessctl set 5%+ ;;
-    down) brightnessctl set 5%- ;;
-    max) brightnessctl set 100% ;;
-    min) brightnessctl set 1% ;;
+    up) swayosd-client --brightness --device "$DEV" raise ;;
+    down) swayosd-client --brightness --device "$DEV" lower ;;
+    max) swayosd-client --brightness --device "$DEV" 100 ;;
+    min) swayosd-client --brightness --device "$DEV" 1 ;;
 esac
-
-LEVEL=$(brightnessctl get)
-MAX=$(brightnessctl max)
-PCT=$((LEVEL * 100 / MAX))
-
-if [ "$PCT" -eq 0 ]; then
-    ICON="display-brightness-off"
-elif [ "$PCT" -lt 30 ]; then
-    ICON="display-brightness-low"
-elif [ "$PCT" -lt 70 ]; then
-    ICON="display-brightness-medium"
-else
-    ICON="display-brightness-high"
-fi
-
-dunstify -r 997 -u low -i "$ICON" "Brightness" "${PCT}%" -t 1500

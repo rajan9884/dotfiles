@@ -1,21 +1,28 @@
-/* Matugen Dynamic OSD Colors — swayosd
-   Mirrors the default SwayOSD layout, but uses the matugen palette and the
-   system corner radius (matches hyprland decoration.rounding = 16).
+/* Matugen Dynamic OSD Colors — swayosd (compact)
+   Small pill: tight padding, 20px icon, 11px label, 4px bar.
+   Matches hyprland decoration.rounding = 12.
    Applied via ~/.config/swayosd/style.css (auto-loaded by swayosd-server). */
 
 window {
-  border-radius: 16px;
-  border: none;
-  background: alpha({{colors.background.default.hex}}, 0.85);
+  border-radius: 12px;
+  border: 1px solid alpha({{colors.outline.default.hex}}, 0.4);
+  background: alpha({{colors.background.default.hex}}, 0.9);
 }
 
 window #container {
-  margin: 16px;
+  margin: 8px 12px;
 }
 
-window image,
+window image {
+  color: {{colors.primary.default.hex}};
+  -gtk-icon-transform: scale(0.55);
+  margin-right: 2px;
+}
+
 window label {
   color: {{colors.on_surface.default.hex}};
+  font-size: 11px;
+  font-weight: bold;
 }
 
 window progressbar:disabled,
@@ -25,7 +32,7 @@ window image:disabled {
 
 window progressbar,
 window segmentedprogress {
-  min-height: 6px;
+  min-height: 4px;
   border-radius: 999px;
   background: transparent;
   border: none;
@@ -48,7 +55,7 @@ window segment.active {
 }
 
 window segment {
-  margin-left: 8px;
+  margin-left: 6px;
 }
 
 window segment:first-child {
