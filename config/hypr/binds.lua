@@ -30,6 +30,13 @@ hl.bind(mod .. " + T", hl.dsp.window.float({ action = "toggle" }), { description
 hl.bind(mod .. " + P", hl.dsp.window.pseudo(), { description = "Pseudo window" }) -- pseudo
 hl.bind(mod .. " + S", hl.dsp.workspace.toggle_special("scratchpad"), { description = "Toggle scratchpad" })
 hl.bind(mod .. " + ALT + S", hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }), { description = "Move window to scratchpad" })
+-- Dedicated scratchpads: music + terminal (SUPER+S stays the general one)
+hl.bind(mod .. " + ALT + M", hl.dsp.workspace.toggle_special("music"), { description = "Toggle music scratchpad" })
+hl.bind(mod .. " + CTRL + ALT + M", hl.dsp.window.move({ workspace = "special:music", follow = false }), { description = "Move window to music scratchpad" })
+hl.bind(mod .. " + CTRL + Return", hl.dsp.workspace.toggle_special("terminal"), { description = "Toggle terminal scratchpad" })
+hl.bind(mod .. " + CTRL + SHIFT + Return", hl.dsp.window.move({ workspace = "special:terminal", follow = false }), { description = "Move window to terminal scratchpad" })
+-- Workspace overview (HyprExpo; no-op until bin/build-hyprexpo has run)
+hl.bind(mod .. " + grave", hl.dsp.exec_cmd("hyprctl dispatch hyprexpo:expo toggle"), { description = "Workspace overview" })
 hl.bind(mod .. " + J", hl.dsp.layout("togglesplit"), { description = "Toggle window split" }) -- togglesplit (layoutmsg)
 hl.bind(mod .. " + SHIFT + F", hl.dsp.exec_cmd(vars.file))
 hl.bind(mod .. " + SHIFT + ALT + F", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/nautilus-cwd"), { description = "File manager (cwd)" })

@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# ──────────────────────────────────────────────
+#   build-hyprexpo — compile the HyprExpo overview plugin
+#   from the maintained fork (upstream retired theirs).
+#   Needs a healthy toolchain: if cmake fails with a missing
+#   libjsoncpp.so, run `sudo pacman -Syu` first (usually held
+#   back by repo-waybar until waybar-git replaces it).
+# ──────────────────────────────────────────────
+set -euo pipefail
+
+SRC="${XDG_CACHE_HOME:-$HOME/.cache}/hyprexpo-src"
+DEST="$HOME/.local/lib/hypr"
+REPO="https://github.com/sandwichfarm/hyprexpo"
+
+info() { printf '  \033[1;32m==>\033[0m %s\n' "$*"; }
+
+if ! command -v cmake >/dev/null 2>&1 || ! cmake --version >/dev/null 2>&1; then
+    echo "cmake is broken (probably the jsoncpp partial-upgrade state)." >&2
+    echo "Fix with: sudo pacman -Syu   (then re-run this script)" >&2
+    exit 1
+fi
+
+if [ -d "$SRC/.git" ]; then
+    info "updating $SRC"
+    git -C "$SRC" pull --ff-only
+else
+    info "cloning $REPO"
+    rm -rf "$SRC"
+    git clone --depth 1 "$REPO" "$SRC"
+fi
+
+info "building"
+cmake -B "$SRC/build" -S "$SRC" -DCMAKE_BUILD_TYPE=Release
+cmake --build "$SRC/build" -j"$(nproc)"
+
+SO="$(find "$SRC/build" -maxdepth 2 -name 'hyprexpo.so' -o -maxdepth 2 -name '*.so' | head -n 1)"
+[ -n "${SO:-}" ] || { echo "build produced no .so" >&2; exit 1; }
+
+mkdir -p "$DEST"
+cp -p "$SO" "$DEST/hyprexpo.so"
+info "installed $DEST/hyprexpo.so — reloading Hyprland"
+hyprctl reload
+hyprctl plugin load "$DEST/hyprexpo.so" || true
+info "done — press SUPER+\` for the overview"

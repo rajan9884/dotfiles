@@ -14,6 +14,7 @@
 --     look          Animations, curves, layouts, misc / render / debug
 --     binds         Keybindings
 --     window-rules  Window rules
+--     plugins       HyprExpo overview + plugin settings
 -- ──────────────────────────────────────────────
 
 pcall(require, "vars")
@@ -25,3 +26,4 @@ pcall(require, "autostart")
 pcall(require, "look")
 pcall(require, "binds")
 pcall(require, "window-rules")
+pcall(require, "plugins")

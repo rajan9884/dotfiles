@@ -42,3 +42,29 @@ hl.window_rule({
 	center = true,
 	size = { 650, 480 },
 })
+
+-- ── Per-app workspaces ─────────────────────────
+-- Browsers → 1, installed webapps (PWA) → 2, files → 3, notes → 4.
+hl.window_rule({
+	name = "browser-to-ws1",
+	match = { class = "^(chromium|helium|helium-browser|brave-browser)$" },
+	workspace = 1,
+})
+
+hl.window_rule({
+	name = "webapp-to-ws2",
+	match = { class = "^chrome-.*__-.*$" },
+	workspace = 2,
+})
+
+hl.window_rule({
+	name = "files-to-ws3",
+	match = { class = "^(org.gnome.Nautilus|nautilus)$" },
+	workspace = 3,
+})
+
+hl.window_rule({
+	name = "notes-to-ws4",
+	match = { class = "^(obsidian|Obsidian)$" },
+	workspace = 4,
+})
