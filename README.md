@@ -134,17 +134,10 @@ environment and defaults live in their own module and are easy to adjust.
 
 ## Screenshots
 
-> Drop your captures here; they are referenced by the README.
->
 > | File | Shows |
 > |------|-------|
-> | `screenshots/main.png` | Default Noro desktop with Waybar |
-> | `screenshots/rofi.png` | Rofi app launcher |
-> | `screenshots/themes.png` | Theme picker / all 5 themes |
-> | `screenshots/terminal.png` | Kitty + fastfetch |
-> | `screenshots/nvim.png` | Neovim (LazyVim, matugen colors) |
-> | `screenshots/control-center.png` | macOS-style control center |
-> | `screenshots/lock.png` | hyprlock screen |
+> | ![LazyVim](screenshots/nvim.webp) | Neovim (LazyVim, matugen colors) |
+> | ![Screenlock](screenshots/lockscreen.webp) | hyprlock screen |
 
 ## Requirements
 
