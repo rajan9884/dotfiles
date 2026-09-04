@@ -72,7 +72,7 @@
     },
 
     "custom/clipboard": {
-        "format": "󰅇",
+        "format": "",
         "on-click": "~/.local/bin/menu-clipboard",
         "tooltip": "Clipboard history (SUPER+CTRL+V)"
     },

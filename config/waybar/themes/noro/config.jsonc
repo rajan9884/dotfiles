@@ -13,7 +13,6 @@
         "custom/launcher",
         "custom/record",
         "custom/voxtype",
-        "custom/updates",
         "clock",
         "custom/user"
     ],
@@ -29,6 +28,7 @@
         "custom/notifications",
         "custom/clipboard",
         "custom/vpn",
+        "custom/updates",
         "custom/power-profile",
         "battery",
         "network",
@@ -159,7 +159,7 @@
         "tooltip": true
     },
     "custom/clipboard": {
-        "format": "󰅇",
+        "format": "",
         "on-click": "~/.local/bin/menu-clipboard",
         "tooltip": false
     },

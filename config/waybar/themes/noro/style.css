@@ -52,8 +52,8 @@ window#waybar {
     border-radius: 12px 0 0 12px;
     padding-right: 10px;
 }
-/* --- Shortcut Tools [Record | Dictate | Updates] --- */
-#custom-record, #custom-voxtype, #custom-updates {
+/* --- Shortcut Tools [Record | Dictate] --- */
+#custom-record, #custom-voxtype {
     background: @surface;
     color: @on_surface;
     padding: 4px 12px;
@@ -69,8 +69,14 @@ window#waybar {
 #custom-voxtype {
     color: @primary;
 }
-#custom-updates {
-    border-radius: 0 12px 12px 0;
+/* --- Standalone pills (right side) --- */
+#custom-notifications, #custom-clipboard, #custom-vpn,
+#custom-updates, #custom-power-profile {
+    background: @surface;
+    color: @on_surface;
+    border-radius: 12px;
+    padding: 4px 12px;
+    margin: 6px 4px;
 }
 #custom-updates.updates-available {
     color: @tertiary;
@@ -88,17 +94,21 @@ window#waybar {
     padding-left: 10px;
 }
 #pulseaudio {
-    padding: 4px 6px;
+    border-radius: 0 12px 12px 0;
+    padding: 4px 10px 4px 6px;
 }
+/* mpris + group are standalone pills so the audio capsule keeps its rounding */
 #mpris {
+    border-radius: 12px;
     padding: 4px 10px;
-    background: @primary;
-    color: @on_primary;
+    margin: 6px 0 6px 8px;
+    background: @surface;
+    color: @on_surface;
 }
 #custom-group {
-    border-radius: 0 12px 12px 0;
+    border-radius: 12px;
     padding: 4px 12px;
-    margin: 6px 0;
+    margin: 6px 0 6px 8px;
     background: @primary;
     color: @on_primary;
 }
@@ -122,9 +132,8 @@ window#waybar {
     padding-left: 15px;
 
 }
-#network, #bluetooth, #custom-notifications, #custom-clipboard, #custom-vpn {
+#network, #bluetooth {
     padding-left: 8px;
-
 }
 #network {
     padding-right: 15px;
