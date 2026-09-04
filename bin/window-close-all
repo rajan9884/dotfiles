@@ -1,0 +1,3 @@
+#!/bin/bash
+hyprctl clients -j | jq -r '.[].pid' | xargs -r kill -9
+notify-send "Windows" "All windows closed"

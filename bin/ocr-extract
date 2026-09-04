@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# ──────────────────────────────────────────────
+#   OCR text extraction
+#   Selects a screen region with slurp, runs tesseract on the
+#   captured PNG, copies the recognized text to the clipboard,
+#   and shows a dunst notification with the result.
+# ──────────────────────────────────────────────
+
+set -euo pipefail
+
+TMP_PNG="$(mktemp -t ocr-XXXXXX.png)"
+trap 'rm -f "$TMP_PNG"' EXIT
+
+if ! grim -g "$(slurp)" "$TMP_PNG" 2>/dev/null; then
+    notify-send "OCR" "Screenshot cancelled" -u low
+    exit 1
+fi
+
+TEXT="$(tesseract "$TMP_PNG" - -l eng 2>/dev/null || true)"
+TEXT="$(printf '%s' "$TEXT" | sed -e 's/[[:space:]]\+$//' -e '/^$/d')"
+
+if [[ -z "$TEXT" ]]; then
+    notify-send "OCR" "No text detected" -u low
+    exit 0
+fi
+
+printf '%s' "$TEXT" | wl-copy
+
+PREVIEW="$(printf '%s' "$TEXT" | head -c 200)"
+[[ ${#TEXT} -gt 200 ]] && PREVIEW="${PREVIEW}…"
+
+notify-send "OCR — copied to clipboard" "$PREVIEW" -u low

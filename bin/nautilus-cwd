@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Open Files (nautilus) in the active terminal's current working directory.
+set -euo pipefail
+
+terminal_pid=$(hyprctl activewindow | awk '/pid:/ {print $2}')
+kitty_socket="$XDG_RUNTIME_DIR/omarchy-kitty-$terminal_pid"
+cwd=""
+
+if [[ -S $kitty_socket ]]; then
+  if command -v kitten >/dev/null 2>&1; then
+    cwd=$(kitten @ --to "unix:$kitty_socket" ls --match "state:focused" 2>/dev/null |
+      jq -r '.[].tabs[].windows[].cwd // empty')
+  fi
+fi
+
+if [[ -z $cwd ]]; then
+  shell_pid=$(pgrep -P "$terminal_pid" 2>/dev/null | tail -n1)
+  if [[ -n $shell_pid ]]; then
+    cwd=$(readlink -f "/proc/$shell_pid/cwd" 2>/dev/null)
+    shell=$(readlink -f "/proc/$shell_pid/exe" 2>/dev/null)
+    if ! grep -Fqsx "$shell" /etc/shells; then
+      cwd=""
+    fi
+  fi
+fi
+
+[[ -d $cwd ]] || cwd="$HOME"
+
+exec setsid "$HOME/.local/bin/nautilus-gnome" --new-window "$cwd"

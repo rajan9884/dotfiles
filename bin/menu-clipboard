@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# ──────────────────────────────────────────────
+#   Unified Rofi Menu Wrapper
+#   Usage: rofi-menu <mode>
+#   Modes: launcher | themes | wallpapers | power | emoji | calc | clipboard | keybinds
+# ──────────────────────────────────────────────
+
+set -e
+
+MODE="${1:-$(basename "$0" | sed 's/^menu-//')}"
+THEME_DIR="$HOME/.config/rofi"
+LAUNCHER_THEME="$THEME_DIR/active-launcher.rasi"
+SCRIPTS_THEME="$THEME_DIR/active-scripts.rasi"
+PICKER_THEME="$THEME_DIR/active-picker.rasi"
+
+case "$MODE" in
+    launcher|drun)
+        THEME="$LAUNCHER_THEME"
+        rofi -show drun -theme "$THEME"
+        ;;
+    window)
+        THEME="$LAUNCHER_THEME"
+        rofi -show window -theme "$THEME"
+        ;;
+    themes|theme-menu)
+        THEME="$SCRIPTS_THEME"
+        PROMPT="Themes"
+        OPTIONS="waybar\nhyprland\nrofi\nkitty"
+        echo -e "$OPTIONS" | rofi -dmenu -p "$PROMPT" -theme "$THEME" | {
+            read -r choice
+            case "$choice" in
+                waybar)   ~/.local/bin/waybar-selector ;;
+                hyprland) ~/.config/hypr/scripts/global-theme-selector.sh hyprland ;;
+                rofi)     ~/.config/hypr/scripts/global-theme-selector.sh rofi ;;
+                kitty)    ~/.config/hypr/scripts/global-theme-selector.sh kitty ;;
+            esac
+        }
+        ;;
+    wallpapers|background_menu|wallpaper-menu)
+        ~/.local/bin/arch-wallpaper-picker
+        ;;
+    power|power_menu|menu-power)
+        THEME="$SCRIPTS_THEME"
+        OPTIONS="Lock\nLogout\nReboot\nShutdown\nSuspend\nHibernate"
+        echo -e "$OPTIONS" | rofi -dmenu -p "Power" -theme "$THEME" | {
+            read -r choice
+            case "$choice" in
+                Lock)     hyprlock ;;
+                Logout)   hyprctl dispatch exit ;;
+                Reboot)   systemctl reboot ;;
+                Shutdown) systemctl poweroff ;;
+                Suspend)  systemctl suspend ;;
+                Hibernate) systemctl hibernate ;;
+            esac
+        }
+        ;;
+    emoji|emoji_menu|menu-emoji)
+        THEME="$PICKER_THEME"
+        rofi -show emoji -theme "$THEME" \
+            -theme-str 'listview {columns: 8; lines: 4;}'
+        ;;
+    calc|calc_menu|menu-calc)
+        THEME="$LAUNCHER_THEME"
+        rofi -show calc -modi calc -theme "$THEME"
+        ;;
+    clipboard|clipboard_menu|menu-clipboard)
+        THEME="$LAUNCHER_THEME"
+        cliphist list | rofi -dmenu -p "Clipboard" -theme "$THEME" | cliphist decode | wl-copy
+        ;;
+    keybinds|keybinds_menu|menu-keybinds)
+        # Live keybindings cheatsheet parsed from hyprland.lua
+        "$HOME/.config/hypr/scripts/keybinds-cheatsheet.sh"
+        ;;
+    *)
+        echo "Unknown mode: $MODE" >&2
+        exit 1
+        ;;
+esac

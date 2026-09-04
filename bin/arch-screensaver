@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# arch-screensaver: fullscreen ttfx screensaver, omarchy-style.
+# Renders Arch Linux ASCII art with a random effect per cycle. Letters are
+# sent to the focused surface with an explicit canvas so the logo stays
+# centered no matter when the compositor resized the terminal.
+
+screensaver_in_focus() {
+	hyprctl activewindow -j | jq -e '.class == "arch-screensaver"' >/dev/null 2>&1
+}
+
+debug() {
+	[[ -n $ARCH_SCREENSAVER_DEBUG ]] && printf '%s %s\n' "$(date '+%H:%M:%S.%3N')" "$*" >>/tmp/arch-screensaver-debug.log
+}
+
+exit_screensaver() {
+	debug "exit: $*"
+	hyprctl eval 'hl.config({ cursor = { invisible = false } })' &>/dev/null || hyprctl keyword cursor:invisible false &>/dev/null || true
+	pkill -x ttfx 2>/dev/null
+	exit 0
+}
+
+# Exit the screensaver on signals and input from keyboard and mouse
+trap exit_screensaver SIGINT SIGTERM SIGHUP SIGQUIT
+
+printf '\033]11;rgb:00/00/00\007' # Set background color to black
+
+debug "started pid=$$ tty=$(tty 2>&1) stdout_tty=$(test -t 0 && echo tty || echo nopipe)"
+debug "env: HOME=$HOME HYPRLAND=$HYPRLAND_INSTANCE_SIGNATURE"
+
+hyprctl eval 'hl.config({ cursor = { invisible = true } })' &>/dev/null || hyprctl keyword cursor:invisible true &>/dev/null
+
+tty=$(tty 2>/dev/null)
+
+# Terminals allocate the pty at the default 80x24 and only resize it once the
+# compositor has told the window how big it is. ttfx measures the terminal once,
+# at startup, so starting it before the resize lands sizes an 80x24 canvas and
+# paints it into the corner of a fullscreen window.
+wait_for_terminal_resize() {
+	local deadline=$((SECONDS + 2))
+	while ((SECONDS < deadline)) && [[ $(stty size 2>/dev/null) == "24 80" ]]; do
+		sleep 0.02
+	done
+}
+
+wait_for_terminal_resize
+
+debug "resize waited, size=$(stty size 2>&1)"
+
+ARTS_DIR="${ARCH_SCREENSAVER_ARTS:-$HOME/.local/share/arch-screensaver/arts}"
+
+# Resolve ttfx to its absolute path: waybar-launched scripts (power menu) get a
+# minimal PATH that omits ~/.local/bin, so a bare "ttfx" call would fail there.
+TTFX_BIN="${TTFX_BIN:-$HOME/.local/bin/ttfx}"
+if [[ ! -x $TTFX_BIN ]]; then
+	printf 'arch-screensaver: ttfx not found at %s\n' "$TTFX_BIN" >&2
+	exit 1
+fi
+
+# Effects that resolve quickly, so each cycle completes fast and the screensaver
+# changes looks often instead of lingering on slow builds. Any effect that
+# overruns EFFECT_MAX_SECONDS is cut off so the next one takes over.
+FAST_EFFECTS="decrypt binarypath rain slice slide wipe print sweep highlight randomsequence matrix crumble errorcorrect vhstape colorshift"
+EFFECT_MAX_SECONDS=4
+
+while true; do
+	art=$(find "$ARTS_DIR" -maxdepth 1 -name '*.txt' -print 2>/dev/null | shuf -n 1)
+	[[ -n $art ]] || break
+
+	debug "launching ttfx: $art"
+
+	effect_start=$(date +%s)
+
+	"$TTFX_BIN" -i "$art" \
+		--frame-rate 120 --canvas-width 0 --canvas-height 0 --reuse-canvas \
+		--anchor-canvas c --anchor-text c --random-effect \
+		--include-effects $FAST_EFFECTS --no-eol --no-restore-cursor &
+	ttfx_pid=$!
+
+	# Watch each effect: losing focus or a keypress dismisses the screensaver; a
+	# slow effect gets cut off so the next look takes over quickly.
+	while kill -0 "$ttfx_pid" 2>/dev/null; do
+		if ! screensaver_in_focus; then
+			exit_screensaver "focus lost"
+		fi
+		if read -n1 -t 1; then
+			exit_screensaver "keypress"
+		fi
+		if (( $(date +%s) - effect_start >= EFFECT_MAX_SECONDS )); then
+			kill "$ttfx_pid" 2>/dev/null
+		fi
+	done
+	wait "$ttfx_pid" 2>/dev/null
+done

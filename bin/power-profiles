@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+# Power profile manager - mirrors omarchy's power-profiles helpers.
+#
+#   power-profiles list                 profiles bottom-up (current first), "<profile><TAB><0|1>"
+#   power-profiles get                  current active profile
+#   power-profiles set <profile>        switch and remember for the current power source
+#   power-profiles autodetect           apply remembered/fallback profile for AC or battery
+#   power-profiles menu                 rofi switcher menu (power profile switcher)
+
+STATE_DIR="${POWER_PROFILES_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/power-profiles}"
+
+usage() {
+  echo "Usage: power-profiles [list|get|set <profile>|autodetect|menu]" >&2
+  exit 1
+}
+
+list_profiles() {
+  powerprofilesctl list 2>/dev/null |
+    awk '/^\s*[* ]\s*[a-zA-Z0-9-]+:$/ {
+      active = ($1 == "*") ? 1 : 0
+      gsub(/^[*[:space:]]+|:$/, "")
+      print $0 (active ? "\t1" : "\t0")
+    }' |
+    tac
+}
+
+current_profile() {
+  powerprofilesctl get 2>/dev/null
+}
+
+profile_available() {
+  local wanted=$1 p active
+  while read -r p active; do
+    [[ -z $p && -z $active ]] && continue
+    [[ $p == "$wanted" ]] && return 0
+  done < <(list_profiles)
+  return 1
+}
+
+on_battery() {
+  [[ $(busctl get-property org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower OnBattery 2>/dev/null) == "b true" ]]
+}
+
+apply_profile() {
+  powerprofilesctl set "$1" || return 1
+  if [[ -n ${SAVE_KEY:-} ]]; then
+    mkdir -p "$STATE_DIR"
+    printf '%s\n' "$1" >"$STATE_DIR/$SAVE_KEY"
+  fi
+}
+
+case "${1:-autodetect}" in
+  list|list-active)
+    list_profiles
+    ;;
+  get|current)
+    current_profile
+    ;;
+  set)
+    requested=${2:-}
+    [[ -n $requested ]] || usage
+    profile_available "$requested" || {
+      echo "Power profile is not available: $requested" >&2
+      exit 1
+    }
+    if on_battery; then SAVE_KEY=battery; else SAVE_KEY=ac; fi
+    apply_profile "$requested"
+    ;;
+  autodetect)
+    if on_battery; then key=battery; else key=ac; fi
+    stored=""
+    [[ -r $STATE_DIR/$key ]] && stored=$(<"$STATE_DIR/$key")
+    if [[ -n $stored ]] && profile_available "$stored"; then
+      profile=$stored
+    elif [[ $key == ac ]] && profile_available performance; then
+      profile=performance
+    else
+      profile=balanced
+    fi
+    apply_profile "$profile"
+    ;;
+  menu)
+    THEME="$HOME/.config/rofi/active-scripts.rasi"
+    [[ -f "$THEME" ]] || THEME="$HOME/.config/rofi/material-scripts.rasi"
+    current=$(current_profile)
+    entries=()
+    while read -r p active; do
+      [[ -z $p && -z $active ]] && continue
+      if [[ $active == 1 ]]; then
+        entries+=("$p (current)")
+      else
+        entries+=("$p")
+      fi
+    done < <(list_profiles)
+    choice=$(printf '%s\n' "${entries[@]}" | rofi -dmenu -p "Power Profile" -theme "$THEME")
+    [[ -z $choice ]] && exit 0
+    chosen=${choice%% *}
+    if [[ $chosen != "$current" ]]; then
+      if on_battery; then SAVE_KEY=battery; else SAVE_KEY=ac; fi
+      apply_profile "$chosen"
+    fi
+    ;;
+  *)
+    usage
+    ;;
+esac
