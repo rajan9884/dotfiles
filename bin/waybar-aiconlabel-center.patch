@@ -1,18 +1,46 @@
-diff --git a/src/AIconLabel.cpp b/src/AIconLabel.cpp
-index a54266ac..f21b196a 100644
---- a/src/AIconLabel.cpp
-+++ b/src/AIconLabel.cpp
-@@ -40,6 +40,13 @@ AIconLabel::AIconLabel(const Json::Value& config, const std::string& name, const
- 
-   int spacing = config_["icon-spacing"].isInt() ? config_["icon-spacing"].asInt() : 8;
-   box_.set_spacing(spacing);
+diff --git a/include/AIconLabel.hpp b/include/AIconLabel.hpp
+index 80aa431a..6b1758d8 100644
+--- a/include/AIconLabel.hpp
++++ b/include/AIconLabel.hpp
+@@ -15,6 +15,11 @@ class AIconLabel : public ALabel {
+   virtual ~AIconLabel() = default;
+   auto update() -> void override;
+   static std::tuple<std::string, std::string> extractIcon(const std::string& input);
 +  // Let the label absorb leftover width inside the icon+label box so the
-+  // `align` config (label xalign) positions the text. Without this the
-+  // label is minimum-size and packs at the start of the box, which shows
-+  // as left-aligned icons on vertical bars where the module stretches
-+  // to the full bar width. (Do NOT center the box itself: the module
-+  // background is painted on it, so shrinking it would shrink the pill.)
-+  label_.set_hexpand(true);
++  // `align` config (label xalign) positions the text. Used on vertical
++  // bars where modules stretch to the full bar width; without it the
++  // minimum-size label packs at the start of the box (left-aligned icons).
++  void expandLabel() { label_.set_hexpand(true); }
  
-   bool swap_icon_label = false;
-   if (config_["swap-icon-label"].isNull()) {
+  protected:
+   Gtk::Image image_;
+diff --git a/src/bar.cpp b/src/bar.cpp
+index d84aafed..bea19de7 100644
+--- a/src/bar.cpp
++++ b/src/bar.cpp
+@@ -6,6 +6,7 @@
+ #include <ostream>
+ #include <type_traits>
+ 
++#include "AIconLabel.hpp"
+ #include "client.hpp"
+ #include "factory.hpp"
+ #include "group.hpp"
+@@ -601,6 +602,17 @@ void waybar::Bar::getModules(const Factory& factory, const std::string& pos,
+           module = factory.makeModule(ref, pos);
+         }
+ 
++        // On vertical bars modules stretch to the full bar width while
++        // AIconLabel-based (custom/*) labels pack at the start of their
++        // inner box. Expanding the label lets the `align` config center
++        // the icon. Scoped to vertical bars: on horizontal bars modules
++        // hug their content and expanding changes space distribution.
++        if (box_.get_orientation() == Gtk::ORIENTATION_VERTICAL) {
++          if (auto* icon_label = dynamic_cast<AIconLabel*>(module)) {
++            icon_label->expandLabel();
++          }
++        }
++
+         std::shared_ptr<AModule> module_sp(module);
+         modules_all_.emplace_back(module_sp);
+         if (group != nullptr) {
