@@ -40,18 +40,73 @@ icon_name_from_ref() {
 install_user_icon() {
   local source="$1"
   local name="$2"
-  local ext="${source##*.}"
+  local dest="$ICON_DIR/$name.png"
 
-  [[ $ext == "$source" ]] && ext="png"
   mkdir -p "$ICON_DIR"
-  cp "$source" "$ICON_DIR/$name.$ext"
+  # Drop stale siblings first so a re-install with a different format wins.
+  rm -f "${ICON_DIR}/${name}.webp" "${ICON_DIR}/${name}.jpg" "${ICON_DIR}/${name}.jpeg" "${ICON_DIR}/${name}.ico" "${ICON_DIR}/${name}.svg"
+  if [[ $(file -b --mime-type "$source") == image/png ]]; then
+    cp "$source" "$dest"
+  elif command -v magick &>/dev/null && magick "$source" "png:$dest" 2>/dev/null; then
+    :
+  else
+    local ext="${source##*.}"
+    [[ $ext == "$source" ]] && ext="png"
+    dest="$ICON_DIR/$name.$ext"
+    cp "$source" "$dest"
+  fi
+  refresh_icon_cache
+  printf '%s\n' "$dest"
+}
+
+ensure_hicolor_theme() {
+  # gtk-update-icon-cache is a no-op without index.theme, leaving Icon=<name>
+  # unresolvable for rofi/GIO. Seed the user hicolor theme once from system.
+  local theme_dir="$HOME/.local/share/icons/hicolor"
+  if [[ ! -f $theme_dir/index.theme && -f /usr/share/icons/hicolor/index.theme ]]; then
+    mkdir -p "$theme_dir"
+    cp /usr/share/icons/hicolor/index.theme "$theme_dir/index.theme"
+  fi
+}
+
+refresh_icon_cache() {
+  ensure_hicolor_theme
   gtk-update-icon-cache "$HOME/.local/share/icons/hicolor" &>/dev/null || true
-  printf '%s\n' "$name"
+}
+
+normalize_downloaded_icon() {
+  # $1 = temp downloaded file, $2 = final .png dest. Icon theme lookups only
+  # reliably resolve PNG/XPM/SVG, and loaders sniff content, so a WebP/JPEG
+  # saved as .png shows as missing. Convert everything to a real PNG.
+  local tmp="$1" dest="$2"
+  local mime
+  mime=$(file -b --mime-type "$tmp")
+  if [[ $mime == image/png ]]; then
+    mv -f "$tmp" "$dest"
+    return 0
+  fi
+  if command -v magick &>/dev/null; then
+    if magick "$tmp" "png:$dest" 2>/dev/null; then
+      rm -f "$tmp"
+      return 0
+    fi
+  fi
+  rm -f "$tmp"
+  return 1
 }
 
 download_icon() {
-  curl -fsSL --max-time 10 -o "$2" "$1" 2>/dev/null &&
-    [[ -s $2 && $(file -b --mime-type "$2") == image/* ]]
+  local url="$1" dest="$2" tmp
+  tmp=$(mktemp "${dest%/*}/.icon-download.XXXXXX") || return 1
+  if ! curl -fsSL --max-time 10 -o "$tmp" "$url" 2>/dev/null; then
+    rm -f "$tmp"
+    return 1
+  fi
+  [[ -s $tmp ]] || { rm -f "$tmp"; return 1; }
+  [[ $(file -b --mime-type "$tmp") == image/* ]] || { rm -f "$tmp"; return 1; }
+  # Drop stale siblings saved under a wrong extension by older installs.
+  rm -f "${dest%.png}.webp" "${dest%.png}.jpg" "${dest%.png}.jpeg" "${dest%.png}.ico" "${dest%.png}.svg"
+  normalize_downloaded_icon "$tmp" "$dest" && chmod 644 "$dest"
 }
 
 # Chromium --app= treats javascript:, file:, and data: as a document to
@@ -84,25 +139,38 @@ require_http_url() {
 
 fetch_site_icon() {
   local site_url="$1" dest="$2"
-  local origin page icon_url
+  local origin page icon_url favicon_url
   origin=$(sed -E 's|^(https?://[^/]+).*|\1|' <<<"$site_url")
 
   # Prefer the site's own high-res icon (apple-touch-icon is typically 180px+),
-  # then the well-known path, then Google's favicon service as a last resort.
-  page=$(curl -fsSL --max-time 5 "$site_url" 2>/dev/null | head -c 100000 | tr '\n' ' ')
-  icon_url=$(grep -oiE "<link[^>]*rel=[\"'][^\"']*apple-touch-icon[^\"']*[\"'][^>]*>" <<<"$page" |
-    grep -oiE "href=[\"'][^\"']+" | head -1 | sed -E "s/^href=[\"']//")
+  # then any generic rel=icon link, then well-known paths, then third-party
+  # services as a last resort. Some sites (e.g. x.com) advertise an
+  # apple-touch-icon URL that returns HTML, which download_icon rejects via
+  # the mime check, so every step must fall through to the next.
+  # --compressed: without it some servers return gzip bytes (null bytes) which
+  # bash command substitution drops with "ignored null byte in input".
+  # tr -d '\0' + grep -a keep the parse working even on binary responses.
+  page=$(curl -fsSL --compressed --max-time 5 "$site_url" 2>/dev/null | tr -d '\0' | head -c 100000 | tr '\n' ' ')
+  icon_url=$(grep -aoiE "<link[^>]*rel=[\"'][^\"']*apple-touch-icon[^\"']*[\"'][^>]*>" <<<"$page" |
+    grep -aoiE "href=[\"'][^\"']+" | head -1 | sed -E "s/^href=[\"']//")
+  favicon_url=$(grep -aoiE "<link[^>]*rel=[\"'](shortcut )?icon[\"'][^>]*>" <<<"$page" |
+    grep -aoiE "href=[\"'][^\"']+" | head -1 | sed -E "s/^href=[\"']//")
 
-  case $icon_url in
-  http://* | https://*) ;;
-  //*) icon_url="https:$icon_url" ;;
-  /*) icon_url="$origin$icon_url" ;;
-  ?*) icon_url="$origin/$icon_url" ;;
-  esac
+  resolve_icon_url() {
+    case $1 in
+    http://* | https://*) printf '%s' "$1" ;;
+    //*) printf 'https:%s' "$1" ;;
+    /*) printf '%s%s' "$origin" "$1" ;;
+    ?*) printf '%s/%s' "$origin" "$1" ;;
+    esac
+  }
 
-  { [[ -n $icon_url ]] && download_icon "$icon_url" "$dest"; } ||
+  { [[ -n $icon_url ]] && download_icon "$(resolve_icon_url "$icon_url")" "$dest"; } ||
+    { [[ -n $favicon_url ]] && download_icon "$(resolve_icon_url "$favicon_url")" "$dest"; } ||
     download_icon "$origin/apple-touch-icon.png" "$dest" ||
-    download_icon "https://www.google.com/s2/favicons?domain=${site_url}&sz=256" "$dest"
+    download_icon "$origin/favicon.ico" "$dest" ||
+    download_icon "https://www.google.com/s2/favicons?domain=${site_url}&sz=256" "$dest" ||
+    download_icon "https://icons.duckduckgo.com/ip3/${site_url#*://}.ico" "$dest"
 }
 
 desktop_string_escape() {
@@ -147,8 +215,10 @@ if (( $# < 3 )); then
   # Try to fetch the site's icon automatically first.
   mkdir -p "$ICON_DIR"
   ICON_VALUE=$(safe_icon_name "$APP_NAME")
+  ICON_PATH=""
   if fetch_site_icon "$APP_URL" "$ICON_DIR/$ICON_VALUE.png"; then
-    gtk-update-icon-cache "$HOME/.local/share/icons/hicolor" &>/dev/null || true
+    refresh_icon_cache
+    ICON_PATH="$ICON_DIR/$ICON_VALUE.png"
     ICON_REF="$ICON_VALUE"
   else
     ICON_REF=$(gum input --prompt "Icon URL/name> " --placeholder "Could not fetch favicon automatically. Enter PNG icon URL or icon name")
@@ -175,6 +245,8 @@ fi
 
 require_plain_name "$APP_NAME"
 
+# Interactive success already downloaded the icon above; skip the chain.
+if [[ -z ${ICON_PATH:-} ]]; then
 if [[ -z $ICON_REF ]]; then
   ICON_VALUE=$(safe_icon_name "$APP_NAME")
   mkdir -p "$ICON_DIR"
@@ -182,7 +254,8 @@ if [[ -z $ICON_REF ]]; then
     echo "Error: Failed to download icon."
     exit 1
   fi
-  gtk-update-icon-cache "$HOME/.local/share/icons/hicolor" &>/dev/null || true
+  refresh_icon_cache
+  ICON_PATH="$ICON_DIR/$ICON_VALUE.png"
 elif [[ $ICON_REF =~ ^https?:// ]]; then
   ICON_VALUE=$(safe_icon_name "$APP_NAME")
   mkdir -p "$ICON_DIR"
@@ -190,13 +263,17 @@ elif [[ $ICON_REF =~ ^https?:// ]]; then
     echo "Error: Failed to download icon."
     exit 1
   fi
-  gtk-update-icon-cache "$HOME/.local/share/icons/hicolor" &>/dev/null || true
+  refresh_icon_cache
+  ICON_PATH="$ICON_DIR/$ICON_VALUE.png"
 elif [[ -f $ICON_REF ]]; then
-  ICON_VALUE=$(install_user_icon "$ICON_REF" "$(safe_icon_name "$APP_NAME")")
+  ICON_VALUE=$(safe_icon_name "$APP_NAME")
+  ICON_PATH=$(install_user_icon "$ICON_REF" "$ICON_VALUE")
 else
   # Bundled Omarchy icons are package-owned under /usr/share/icons/hicolor.
   # Accept either "HEY" or the historical "HEY.png" argument form.
   ICON_VALUE=$(icon_name_from_ref "$ICON_REF")
+  ICON_PATH=""
+fi
 fi
 
 # Default Exec quotes the URL as one Exec-spec argument; the whole line then gets
@@ -219,7 +296,14 @@ mkdir -p "$DESKTOP_DIR"
 
 name_field=$(desktop_string_escape "$APP_NAME")
 exec_field=$(desktop_string_escape "$EXEC_COMMAND")
-icon_field=$(desktop_string_escape "$ICON_VALUE")
+# Absolute path: rofi uses Papirus-Dark, which ships its own generic `x` and
+# `whatsapp` icons that shadow our hicolor theme-name icons. A file path
+# bypasses theme lookup entirely so the downloaded brand icon always wins.
+if [[ -n ${ICON_PATH:-} ]]; then
+  icon_field=$(desktop_string_escape "$ICON_PATH")
+else
+  icon_field=$(desktop_string_escape "$ICON_VALUE")
+fi
 
 cat >"$DESKTOP_FILE" <<EOF
 [Desktop Entry]
@@ -239,6 +323,8 @@ if [[ -n $MIME_TYPES ]]; then
 fi
 
 chmod +x "$DESKTOP_FILE"
+update-desktop-database "$DESKTOP_DIR" &>/dev/null || true
+refresh_icon_cache
 
 if [[ $INTERACTIVE_MODE == "true" ]]; then
   echo -e "You can now find $APP_NAME using the app launcher (SUPER + SPACE)\n"

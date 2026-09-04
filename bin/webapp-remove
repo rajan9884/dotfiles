@@ -59,7 +59,14 @@ fi
 icon_name=$(printf '%s\n' "$APP_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^[:alnum:]]\+/-/g; s/^-//; s/-$//')
 desktop_file=$(path_for_web_app "$APP_NAME")
 rm -f "${desktop_file:-$DESKTOP_DIR/$APP_NAME.desktop}"
-rm -f "$ICON_DIR/$icon_name.png" "$ICON_DIR/$APP_NAME.png" "$OLD_ICON_DIR/$APP_NAME.png"
+# Older installs saved WebP/JPEG bytes as .png or under other extensions.
+rm -f "$ICON_DIR/$icon_name.png" "$ICON_DIR/$icon_name.webp" "$ICON_DIR/$icon_name.jpg" "$ICON_DIR/$icon_name.jpeg" "$ICON_DIR/$icon_name.ico" "$ICON_DIR/$icon_name.svg" \
+  "$ICON_DIR/$APP_NAME.png" "$ICON_DIR/$APP_NAME.webp" "$OLD_ICON_DIR/$APP_NAME.png"
+if [[ ! -f $HOME/.local/share/icons/hicolor/index.theme && -f /usr/share/icons/hicolor/index.theme ]]; then
+  mkdir -p "$HOME/.local/share/icons/hicolor"
+  cp /usr/share/icons/hicolor/index.theme "$HOME/.local/share/icons/hicolor/index.theme"
+fi
+gtk-update-icon-cache "$HOME/.local/share/icons/hicolor" &>/dev/null || true
 
 if [[ ${WEBAPP_REMOVE_NOTIFY:-true} != "false" ]]; then
   if command -v notify-send &>/dev/null; then
