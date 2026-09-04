@@ -1,0 +1,17 @@
+#!/bin/bash
+# Launch a URL as a minimal web app window (Omarchy-style --app SSB).
+# Always uses raw /usr/bin/chromium to bypass theme wrapper extensions,
+# forcing Wayland via chromium-flags.conf. Usage: webapp-launch <url> [extra flags...]
+set -e
+
+if (($# == 0)); then
+  echo "Usage: webapp-launch <url> [extra-chromium-flags...]" >&2
+  exit 1
+fi
+
+# Prefer uwsm-app when available (matches Omarchy session handling), else plain setsid.
+if command -v uwsm-app &>/dev/null; then
+  exec setsid uwsm-app -- /usr/bin/chromium --app="$1" "${@:2}"
+else
+  exec setsid /usr/bin/chromium --app="$1" "${@:2}"
+fi

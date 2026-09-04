@@ -1,0 +1,12 @@
+#!/bin/bash
+# Floating-terminal wrapper for wifi-share (keeps window open on instant exit,
+# e.g. enterprise-WiFi refusal or no connection).
+# Usage: wifi-share-prompt [interface] [--password] [--copy]
+
+if command -v wifi-share &>/dev/null; then
+  CMD="wifi-share $*"
+else
+  CMD="$HOME/.local/bin/wifi-share $*"
+fi
+
+exec kitty --class wifi-share -e bash -c "$CMD; echo; echo 'Press Enter to close...'; read -r"

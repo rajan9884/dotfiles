@@ -1,0 +1,163 @@
+#!/bin/bash
+# Share the active Wi-Fi network via QR code + password.
+# Logic ported from Omarchy's omarchy-network-qr / omarchy-network-password,
+# adapted: renders with kitty icat (or chafa fallback) instead of Omarchy's QML card.
+#
+# Usage: wifi-share [interface] [--password] [--copy]
+#   no flags  -> show QR + details, copy password to clipboard
+#   --password -> print only the PSK (for piping)
+#   --copy    -> copy password to clipboard without showing QR
+set -euo pipefail
+
+interface=""
+only_password=false
+only_copy=false
+for arg in "$@"; do
+  case "$arg" in
+    --password) only_password=true ;;
+    --copy) only_copy=true ;;
+    *) interface=$arg ;;
+  esac
+done
+
+if [[ -z $interface ]]; then
+  route_device=$(ip route get 1.1.1.1 2>/dev/null | awk '{ for (i = 1; i <= NF; i++) if ($i == "dev") { print $(i + 1); exit } }')
+  if [[ -n ${route_device:-} && -d /sys/class/net/$route_device/wireless ]]; then
+    interface=$route_device
+  else
+    interface=$(LC_ALL=C nmcli -t -f DEVICE,TYPE,STATE device status 2>/dev/null |
+      awk -F: '$2 == "wifi" && $3 ~ /^connected/ { print $1; exit }')
+  fi
+fi
+[[ -n ${interface:-} ]] || { echo "No active Wi-Fi connection" >&2; exit 1; }
+
+uuid=$(nmcli --get-values GENERAL.CON-UUID device show "$interface" | head -n 1)
+[[ -n ${uuid:-} && $uuid != "--" ]] || { echo "No active Wi-Fi connection" >&2; exit 1; }
+
+mapfile -t fields < <(nmcli --show-secrets --escape no --get-values \
+  802-11-wireless.ssid,802-11-wireless-security.key-mgmt,802-11-wireless-security.psk,802-11-wireless.hidden,802-11-wireless-security.wep-key0 \
+  connection show uuid "$uuid")
+
+ssid=${fields[0]:-}
+key_management=${fields[1]:-}
+password=${fields[2]:-}
+hidden=${fields[3]:-no}
+wep_key=${fields[4]:-}
+
+[[ -n ${ssid:-} ]] || { echo "Could not read the Wi-Fi name" >&2; exit 1; }
+
+# Enterprise (EAP) networks have no PSK. Instead of refusing like Omarchy
+# does, share via the documented WPA-EAP QR extension so the guest's phone
+# joins with *your* login:
+#   WIFI:T:WPA-EAP;S:<ssid>;E:<PEAP|TTLS|...>;PH2:<MSCHAPV2|...>;I:<identity>;P:<password>;;
+# SECURITY NOTE: the QR visibly contains your enterprise password — anyone
+# who photographs the screen gets your login. It is therefore never copied
+# to the clipboard (cliphist persists history); only shown/scanned.
+is_eap=false
+if [[ $key_management == *eap* || $key_management == *ieee8021x* ]]; then
+  is_eap=true
+  mapfile -t eap_fields < <(nmcli --show-secrets --escape no --get-values \
+    802-1x.eap,802-1x.phase2-auth,802-1x.identity,802-1x.password,802-1x.anonymous-identity \
+    connection show uuid "$uuid")
+  eap_method=$(printf '%s' "${eap_fields[0]:-}" | cut -d' ' -f1 | tr '[:lower:]' '[:upper:]')
+  phase2=$(printf '%s' "${eap_fields[1]:-}" | cut -d' ' -f1 | tr '[:lower:]' '[:upper:]')
+  identity=${eap_fields[2]:-}
+  eap_password=${eap_fields[3]:-}
+  anonymous=${eap_fields[4]:-}
+  [[ -n ${eap_method:-} ]] || { echo "Could not read the EAP method" >&2; exit 1; }
+  security=WPA-EAP
+elif [[ -n $key_management && $key_management != "none" ]]; then
+  [[ -n ${password:-} ]] || { echo "Could not read the Wi-Fi password" >&2; exit 1; }
+  security=WPA
+elif [[ -n ${wep_key:-} ]]; then
+  password=$wep_key
+  security=WEP
+else
+  security=nopass
+fi
+
+if $only_password; then
+  if $is_eap; then
+    [[ -n ${eap_password:-} ]] || { echo "No EAP password stored for this connection" >&2; exit 1; }
+    echo "Note: this is your enterprise login password for '$ssid'." >&2
+    printf '%s\n' "$eap_password"
+    exit 0
+  fi
+  [[ $security != "nopass" ]] || { echo "This network has no password" >&2; exit 1; }
+  printf '%s\n' "$password"
+  exit 0
+fi
+
+copy_password() {
+  # Never auto-copy enterprise credentials: cliphist keeps clipboard history
+  # on disk, so the password would persist. The QR is the sharing path.
+  $is_eap && return 0
+  [[ $security == "nopass" ]] && return 0
+  if command -v wl-copy &>/dev/null; then
+    printf '%s' "$password" | wl-copy
+  fi
+  if command -v notify-send &>/dev/null; then
+    notify-send -a "WiFi Share" -i network-wireless "Password copied" "$ssid"
+  fi
+}
+
+if $only_copy; then
+  if $is_eap; then
+    echo "Not copying: enterprise passwords are never put on the clipboard (it is persisted by clipboard history). Use the QR code instead." >&2
+    exit 1
+  fi
+  [[ $security != "nopass" ]] || { echo "This network has no password" >&2; exit 1; }
+  copy_password
+  echo "Password for '$ssid' copied to clipboard."
+  exit 0
+fi
+
+escape_wifi_qr() {
+  local value=$1
+  value=${value//\\/\\\\}
+  value=${value//;/\\;}
+  value=${value//,/\\,}
+  value=${value//:/\\:}
+  printf '%s' "$value"
+}
+
+if $is_eap; then
+  payload="WIFI:T:WPA-EAP;S:$(escape_wifi_qr "$ssid");E:$eap_method;"
+  [[ -n ${anonymous:-} ]] && payload+="A:$(escape_wifi_qr "$anonymous");"
+  [[ -n ${phase2:-} ]] && payload+="PH2:$phase2;"
+  [[ -n ${identity:-} ]] && payload+="I:$(escape_wifi_qr "$identity");"
+  [[ -n ${eap_password:-} ]] && payload+="P:$(escape_wifi_qr "$eap_password");"
+else
+  payload="WIFI:T:$security;S:$(escape_wifi_qr "$ssid");P:$(escape_wifi_qr "$password");"
+fi
+[[ $hidden == "yes" ]] && payload+="H:true;"
+payload+=";"
+
+png=$(mktemp --suffix=.png)
+trap 'rm -f "$png"' EXIT
+printf '%s' "$payload" | qrencode --margin 2 --size 10 --output "$png"
+
+echo "SSID:     $ssid"
+echo "Security: $security"
+if $is_eap; then
+  echo "EAP:      $eap_method${phase2:+ / $phase2}"
+  [[ -n ${identity:-} ]] && echo "Identity: $identity"
+  if [[ -n ${eap_password:-} ]]; then
+    echo "Password: $eap_password"
+    echo "WARNING:  this QR contains YOUR enterprise login — anyone scanning it joins as you."
+  else
+    echo "(no password stored — guest enters their own credentials after scanning)"
+  fi
+else
+  [[ $security != "nopass" ]] && echo "Password: $password (copied to clipboard)"
+fi
+echo
+if [[ -n ${KITTY_WINDOW_ID:-} ]] && command -v kitty &>/dev/null; then
+  kitty +kitten icat --align center "$png"
+elif command -v chafa &>/dev/null; then
+  chafa --symbols block "$png"
+else
+  echo "QR saved to: $png (trap disabled — file kept)"
+  trap - EXIT
+fi
+copy_password

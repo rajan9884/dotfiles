@@ -4,18 +4,20 @@
 -- ──────────────────────────────────────────────
 
 -- ── Animations ───────────────────────────────
+-- Single master switch: flip this one value to turn ALL animations on/off.
+local ANIM_ENABLED = true
+
 hl.config({
 	animations = {
-		enabled = false,
+		enabled = ANIM_ENABLED,
 	},
 })
--- Bezier (was inside animations { bezier = ... })
+-- Bezier + per-leaf styles only take effect when ANIM_ENABLED is true.
 hl.curve("easeOutExpo", { type = "bezier", points = { { 0.16, 1 }, { 0.3, 1 } } })
--- Animations per leaf (were: animation = windows, 1, 3, easeOutExpo, popin 80% etc.)
-hl.animation({ leaf = "windows", enabled = true, speed = 3, bezier = "easeOutExpo", style = "popin 80%" })
-hl.animation({ leaf = "windowsOut", enabled = true, speed = 3, bezier = "easeOutExpo", style = "popin 80%" })
-hl.animation({ leaf = "fade", enabled = true, speed = 3, bezier = "easeOutExpo" })
-hl.animation({ leaf = "workspaces", enabled = true, speed = 3, bezier = "easeOutExpo", style = "slide" })
+hl.animation({ leaf = "windows", enabled = ANIM_ENABLED, speed = 3, bezier = "easeOutExpo", style = "popin 80%" })
+hl.animation({ leaf = "windowsOut", enabled = ANIM_ENABLED, speed = 3, bezier = "easeOutExpo", style = "popin 80%" })
+hl.animation({ leaf = "fade", enabled = ANIM_ENABLED, speed = 3, bezier = "easeOutExpo" })
+hl.animation({ leaf = "workspaces", enabled = ANIM_ENABLED, speed = 3, bezier = "easeOutExpo", style = "slide" })
 
 -- ── Layouts ──────────────────────────────────
 hl.config({

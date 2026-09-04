@@ -1,0 +1,12 @@
+#!/bin/bash
+# Floating-terminal wrapper for webapp-remove (keeps window open so the
+# result is visible instead of blinking away on instant exit).
+# Usage: webapp-remove-prompt [name] (passes through to webapp-remove)
+
+if command -v webapp-remove &>/dev/null; then
+  CMD="webapp-remove $*"
+else
+  CMD="$HOME/.local/bin/webapp-remove $*"
+fi
+
+exec kitty --class webapp-install -e bash -c "$CMD; echo; echo 'Press Enter to close...'; read -r"

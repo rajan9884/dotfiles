@@ -1,0 +1,12 @@
+#!/bin/bash
+# Floating-terminal wrapper for webapp-install (terminal-prompt flow).
+# Usage: webapp-install-prompt [name url icon...] (passes through to webapp-install)
+set -e
+
+if command -v webapp-install &>/dev/null; then
+  CMD="webapp-install $*"
+else
+  CMD="$HOME/.local/bin/webapp-install $*"
+fi
+
+exec kitty --class webapp-install -e bash -c "$CMD; echo; echo 'Press Enter to close...'; read -r"
