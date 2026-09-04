@@ -179,6 +179,19 @@ else
     warn "rofi image-carousel theme not found in repo"
 fi
 
+# ── 5d. Rofimoji themes → ~/.local/share/rofimoji ──
+echo
+echo "==> Installing rofimoji themes"
+ROFIMOJI_SRC="$REPO_ROOT/rofimoji/themes"
+ROFIMOJI_DST="$HOME/.local/share/rofimoji/themes"
+if [ -d "$ROFIMOJI_SRC" ]; then
+    mkdir -p "$ROFIMOJI_DST"
+    cp -p "$ROFIMOJI_SRC"/*.rasi "$ROFIMOJI_DST/" 2>/dev/null || true
+    info "rofimoji themes installed ($(ls "$ROFIMOJI_DST"/*.rasi 2>/dev/null | wc -l) files)"
+else
+    warn "rofimoji themes not found in repo"
+fi
+
 # ── 6. Initial palette ───────────────────────
 echo
 echo "==> Generating initial color palette"

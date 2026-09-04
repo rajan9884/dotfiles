@@ -1,0 +1,49 @@
+@import "config"
+
+entry {
+  /* Rofi misparses multi-block -theme-str values and leaks them into the
+   * search box, so the placeholder must live here in the file instead. */
+  placeholder: "Search emojis…";
+}
+
+textbox {
+  vertical-align:   0.5;
+  horizontal-align: 0.5;
+  /* NOTE: "NotoSansMono Nerd Font" is not installed; use the installed
+   * JetBrainsMono Nerd Font like the other picker themes do. */
+  font: "JetBrainsMono Nerd Font Italic 10";
+}
+
+listview {
+  columns:       9;
+  lines:         7;
+  cycle:         true;
+  dynamic:       true;
+  layout:        vertical;
+  flow:          horizontal;
+  reverse:       false;
+  fixed-height:  true;
+  fixed-columns: true;
+}
+
+element {
+  orientation: vertical;
+  /* Drop the (empty) icon slot: in vertical orientation rofi still reserves
+   * element-icon's 32px in every cell, stretching rows into tall rectangles.
+   * The launcher theme sets roomy list padding for single-column menus;
+   * tighten it so grid cells stay roughly square. */
+  children:      [element-text];
+  padding:       12px 2px;
+  spacing:       0px;
+  border-radius: 10px;
+}
+
+element-text {
+  vertical-align:   0.5;
+  horizontal-align: 0.5;
+  /* Do NOT force "Noto Color Emoji" here: it is a CBDT bitmap font that
+   * rofi/pango cannot rasterize, so every cell renders blank/dots.
+   * Leaving the font unset lets fontconfig fall back to a renderable
+   * color-emoji font automatically. */
+}
+
