@@ -1,0 +1,18 @@
+diff --git a/src/AIconLabel.cpp b/src/AIconLabel.cpp
+index a54266ac..f21b196a 100644
+--- a/src/AIconLabel.cpp
++++ b/src/AIconLabel.cpp
+@@ -40,6 +40,13 @@ AIconLabel::AIconLabel(const Json::Value& config, const std::string& name, const
+ 
+   int spacing = config_["icon-spacing"].isInt() ? config_["icon-spacing"].asInt() : 8;
+   box_.set_spacing(spacing);
++  // Let the label absorb leftover width inside the icon+label box so the
++  // `align` config (label xalign) positions the text. Without this the
++  // label is minimum-size and packs at the start of the box, which shows
++  // as left-aligned icons on vertical bars where the module stretches
++  // to the full bar width. (Do NOT center the box itself: the module
++  // background is painted on it, so shrinking it would shrink the pill.)
++  label_.set_hexpand(true);
+ 
+   bool swap_icon_label = false;
+   if (config_["swap-icon-label"].isNull()) {
