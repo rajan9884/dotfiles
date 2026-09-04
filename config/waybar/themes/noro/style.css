@@ -69,14 +69,13 @@ window#waybar {
 #custom-voxtype {
     color: @primary;
 }
-/* --- Standalone pills (right side) --- */
+/* --- Utility icons (backgroundless, float between the three capsules) --- */
 #custom-notifications, #custom-clipboard, #custom-vpn,
 #custom-updates, #custom-power-profile {
-    background: @surface;
+    background: transparent;
     color: @on_surface;
-    border-radius: 12px;
-    padding: 4px 12px;
-    margin: 6px 4px;
+    padding: 4px 8px;
+    margin: 6px 0;
 }
 #custom-updates.updates-available {
     color: @tertiary;
@@ -97,20 +96,18 @@ window#waybar {
     border-radius: 0 12px 12px 0;
     padding: 4px 10px 4px 6px;
 }
-/* mpris + group are standalone pills so the audio capsule keeps its rounding */
+/* mpris + group stay backgroundless so only three capsules remain */
 #mpris {
-    border-radius: 12px;
     padding: 4px 10px;
     margin: 6px 0 6px 8px;
-    background: @surface;
+    background: transparent;
     color: @on_surface;
 }
 #custom-group {
-    border-radius: 12px;
     padding: 4px 12px;
     margin: 6px 0 6px 8px;
-    background: @primary;
-    color: @on_primary;
+    background: transparent;
+    color: @primary;
 }
 #custom-group.empty {
     background: transparent;

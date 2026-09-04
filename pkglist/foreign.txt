@@ -17,4 +17,5 @@ ttf-material-design-icons-extended
 ttf-rubik-vf
 ttf-symbola
 voxtype-bin
+waybar-git
 yay-bin

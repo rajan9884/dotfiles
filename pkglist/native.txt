@@ -133,7 +133,6 @@ udiskie
 ufw
 unzip
 uwsm
-waybar
 wayland
 webp-pixbuf-loader
 wf-recorder
