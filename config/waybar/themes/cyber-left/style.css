@@ -45,6 +45,12 @@ window#waybar {
 #custom-record.recording { color: @error; }
 #custom-voxtype { color: @secondary; }
 
+#custom-launcher {
+    color: @primary;
+    padding: 12px 0;
+}
+
 #custom-power {
     color: @error;
+    padding: 12px 0;
 }
