@@ -1,6 +1,7 @@
 adw-gtk-theme
 alsa-firmware
 alsa-utils
+atuin
 awww
 base
 base-devel
@@ -16,6 +17,7 @@ chromium
 cliphist
 cronie
 ddcutil
+direnv
 discord
 docker
 docker-compose

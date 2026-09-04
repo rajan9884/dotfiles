@@ -8,6 +8,21 @@
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias ff='fzf'
+
+# ── Speed tools (zoxide/fzf/yazi/atuin/direnv) ──
+eval "$(zoxide init bash --cmd z)"
+source /usr/share/fzf/key-bindings.bash 2>/dev/null || true
+source /usr/share/fzf/completion.bash 2>/dev/null || true
+export FZF_DEFAULT_OPTS="--height 40% --reverse --border"
+y() {
+    local tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+    command yazi "$@" --cwd-file="$tmp"
+    local cwd="$(cat -- "$tmp" 2>/dev/null)"
+    rm -f -- "$tmp"
+    [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && cd -- "$cwd"
+}
+eval "$(atuin init bash --disable-up-arrow)"
+eval "$(direnv hook bash)"
 PS1='[\u@\h \W]\$ '
 
 # opencode

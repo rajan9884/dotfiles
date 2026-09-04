@@ -65,7 +65,26 @@ case "$MODE" in
         ;;
     clipboard|clipboard_menu|menu-clipboard)
         THEME="$LAUNCHER_THEME"
-        cliphist list | rofi -dmenu -p "Clipboard" -theme "$THEME" | cliphist decode | wl-copy
+        sel="$(cliphist list | rofi -dmenu -p "Clipboard" -theme "$THEME")" || exit 0
+        [ -z "$sel" ] && exit 0
+        # Decode to a temp file so images survive (no NUL truncation in vars),
+        # then copy with the right MIME type: images as image/*, else text.
+        tmp="$(mktemp -t clip-pick.XXXXXX)"
+        trap 'rm -f -- "$tmp"' EXIT
+        id="${sel%%$'\t'*}"
+        if ! cliphist decode "$id" > "$tmp" 2>/dev/null; then
+            printf '%s' "$sel" | cliphist decode > "$tmp"
+        fi
+        mime="$(file -b --mime-type -- "$tmp")"
+        case "$mime" in
+            image/*) wl-copy --type "$mime" < "$tmp" ;;
+            *) wl-copy < "$tmp" ;;
+        esac
+        ;;
+    clipboard-wipe)
+        THEME="$SCRIPTS_THEME"
+        confirm="$(printf 'No\nYes, wipe history' | rofi -dmenu -p "Wipe clipboard history?" -theme "$THEME")"
+        [ "$confirm" = "Yes, wipe history" ] && cliphist wipe
         ;;
     keybinds|keybinds_menu|menu-keybinds)
         # Live keybindings cheatsheet parsed from hyprland.lua

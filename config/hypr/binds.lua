@@ -277,6 +277,7 @@ hl.bind("SUPER + CTRL + Print", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/ocr-ex
 
 -- Clipboard history (cliphist)
 hl.bind("SUPER + CTRL + V", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-clipboard"))
+hl.bind("SUPER + CTRL + SHIFT + V", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-clipboard clipboard-wipe"), { description = "Wipe clipboard history" })
 
 -- ── Universal Clipboard (omarchy-style, terminal-aware) ─────────────
 -- Send the chord with explicit mods straight to the focused surface, so the

@@ -130,5 +130,25 @@ export PATH=$HOME/.local/bin:$PATH
 # Pi
 export PATH="/home/rajan/.local/share/pi-node/node-v22.23.2-linux-x64/bin:$PATH"
 
+# ── Speed tools (zoxide/fzf/yazi/atuin/direnv) ──
+# zoxide: `z <fuzzy>` jump, `zi` interactive
+eval "$(zoxide init zsh --cmd z)"
+# fzf: CTRL-T files, CTRL-R history (atuin takes CTRL-R, fzf keeps CTRL-T + ALT-C)
+source /usr/share/fzf/key-bindings.zsh 2>/dev/null || true
+source /usr/share/fzf/completion.zsh 2>/dev/null || true
+export FZF_DEFAULT_OPTS="--height 40% --reverse --border"
+# yazi: `y` cds into the directory you exit in
+y() {
+    local tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+    command yazi "$@" --cwd-file="$tmp"
+    local cwd="$(cat -- "$tmp" 2>/dev/null)"
+    rm -f -- "$tmp"
+    [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && cd -- "$cwd"
+}
+# atuin: synced shell history (takes CTRL-R)
+eval "$(atuin init zsh --disable-up-arrow)"
+# direnv: per-project env on cd
+eval "$(direnv hook zsh)"
+
 # Added by Antigravity CLI installer
 export PATH="/home/rajan/.local/bin:$PATH"
