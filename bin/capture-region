@@ -7,7 +7,7 @@ DIR="$HOME/Pictures/Screenshots"
 mkdir -p "$DIR"
 FILE="$DIR/$(date +%Y-%m-%d_%H-%M-%S).png"
 
-AREA=$(slurp 2>/dev/null) || exit 0
+AREA=$(slurp -d 2>/dev/null) || exit 0
 grim -g "$AREA" "$FILE" 2>/dev/null || exit 0
 wl-copy < "$FILE" 2>/dev/null
 

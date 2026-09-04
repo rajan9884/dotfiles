@@ -11,7 +11,7 @@ set -euo pipefail
 TMP_PNG="$(mktemp -t ocr-XXXXXX.png)"
 trap 'rm -f "$TMP_PNG"' EXIT
 
-if ! grim -g "$(slurp)" "$TMP_PNG" 2>/dev/null; then
+if ! grim -g "$(slurp -d)" "$TMP_PNG" 2>/dev/null; then
     notify-send "OCR" "Screenshot cancelled" -u low
     exit 1
 fi
