@@ -44,27 +44,11 @@ hl.window_rule({
 })
 
 -- ── Per-app workspaces ─────────────────────────
--- Browsers → 1, installed webapps (PWA) → 2, files → 3, notes → 4.
-hl.window_rule({
-	name = "browser-to-ws1",
-	match = { class = "^(chromium|helium|helium-browser|brave-browser)$" },
-	workspace = 1,
-})
-
-hl.window_rule({
-	name = "webapp-to-ws2",
-	match = { class = "^chrome-.*__-.*$" },
-	workspace = 2,
-})
-
-hl.window_rule({
-	name = "files-to-ws3",
-	match = { class = "^(org.gnome.Nautilus|nautilus)$" },
-	workspace = 3,
-})
-
-hl.window_rule({
-	name = "notes-to-ws4",
-	match = { class = "^(obsidian|Obsidian)$" },
-	workspace = 4,
-})
+-- Removed: forcing browsers → 1, webapps → 2, files → 3, notes → 4
+-- yanked every new window away from the active workspace, so windows
+-- never tiled where you opened them and workspaces 5+ stayed empty.
+-- Apps now open on the current workspace (standard tiling).
+-- To restore, re-add e.g.:
+-- hl.window_rule({ name = "browser-to-ws1",
+-- 	match = { class = "^(chromium|helium|helium-browser|brave-browser)$" },
+-- 	workspace = 1, })
