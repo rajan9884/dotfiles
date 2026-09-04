@@ -69,9 +69,10 @@ label() {
         *'random-wall.sh'*)                        desc="Random wallpaper" ;;
         *'waybar-selector.sh'*)                    desc="Waybar theme selector" ;;
         *'killall -SIGUSR1 waybar'*)               desc="Toggle top bar" ;;
-        *'dunstctl close -a'*)                     desc="Dismiss notification" ;;
-        *'dunstctl close-all'*)                    desc="Dismiss all notifications" ;;
-        *'dunstctl close'*)                        desc="Dismiss notification" ;;
+        *'swaync-client --close-latest'*)        desc="Dismiss notification" ;;
+        *'swaync-client --close-all'*)            desc="Dismiss all notifications" ;;
+        *'swaync-client --toggle-dnd'*)           desc="Toggle notification silencing" ;;
+        *'swaync-client --toggle-panel'*)         desc="Notification center" ;;
         *'notification-history.sh'*)               desc="Notification history" ;;
         *'--output-volume raise'*)                 desc="Volume up" ;;
         *'--output-volume lower'*)                 desc="Volume down" ;;

@@ -65,7 +65,6 @@ APPS=(
 # the dir exists so the templates have somewhere to write.
 # (swaync ships a versioned config.json; its style.css is matugen-generated.)
 GENERATED_APPS=(
-    dunst
     fastfetch
     ghostty
     helium-theme

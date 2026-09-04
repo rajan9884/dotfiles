@@ -42,8 +42,6 @@ DND_STATE="Off"
 if pgrep -x swaync >/dev/null 2>&1; then
     DND_STATE="$(swaync-client -D 2>/dev/null || echo Off)"
     [ "$DND_STATE" = "true" ] && DND_STATE="On" || DND_STATE="Off"
-elif command -v dunstctl >/dev/null 2>&1; then
-    dunstctl is-paused 2>/dev/null | grep -q true && DND_STATE="On" || DND_STATE="Off"
 fi
 
 # --- Prepare Menu Items ---
@@ -77,8 +75,6 @@ case "$CHOICE" in
     *"Focus"*)
         if pgrep -x swaync >/dev/null 2>&1; then
             swaync-client -d
-        elif command -v dunstctl >/dev/null 2>&1; then
-            dunstctl set-paused toggle
         fi ;;
     *"Screensaver"*)
         kitty --class arch-screensaver --start-as fullscreen --override window_padding_width=0 --override background_opacity=1.0 --override dynamic_background_opacity=no -e "$HOME/.local/bin/arch-screensaver" --now ;;

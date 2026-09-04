@@ -151,7 +151,7 @@ environment and defaults live in their own module and are easy to adjust.
 Core (pacman):
 
 ```
-hyprland hypridle hyprlock waybar rofi kitty dunst swayosd
+hyprland hypridle hyprlock waybar rofi kitty swayosd
 awww matugen (matugen-bin on AUR) fastfetch btop
 grim slurp wl-clipboard cliphist hyprpicker wf-recorder satty
 brightnessctl pamixer playerctl networkmanager
@@ -385,9 +385,9 @@ wallpaper -> awww (set) -> matugen (palette) -> 21 templates -> every app
 1. **`swww-all.sh <image>`** is the entrypoint (used by every wallpaper script).
 2. It sets the wallpaper with a "grow" transition from the cursor position.
 3. It runs `matugen image <image> -c ~/.config/matugen/config.toml` which renders the
-   21 templates in `config/matugen/templates/` into live config files:
+   20 templates in `config/matugen/templates/` into live config files:
    `~/.config/waybar/colors.css`, `~/.config/hypr/colors.lua`, `~/.config/kitty/colors.conf`,
-   GTK css, `~/.config/dunst/dunstrc`, `~/.config/fastfetch/config.jsonc`,
+   GTK css, `~/.config/fastfetch/config.jsonc`,
    `~/.config/nvim/lua/matugen-colors.lua`, `~/.config/zed/themes/matugen.json`,
    `~/.config/ghostty/config.ghostty`, swayosd css, btop theme, VS Code colors, a
    Brave/Firefox browser theme, and more.

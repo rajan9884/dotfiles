@@ -3,7 +3,7 @@
 #   OCR text extraction
 #   Selects a screen region with slurp, runs tesseract on the
 #   captured PNG, copies the recognized text to the clipboard,
-#   and shows a dunst notification with the result.
+#   and shows a desktop notification with the result.
 # ──────────────────────────────────────────────
 
 set -euo pipefail

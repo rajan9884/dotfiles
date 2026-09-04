@@ -12,7 +12,6 @@ config/waybar/colors.css
 config/kitty/colors.conf
 config/rofi/colors.rasi
 config/ghostty/config.ghostty
-config/dunst/dunstrc
 config/fastfetch/config.jsonc
 config/swayosd/style.css
 config/btop/themes/matugen.theme

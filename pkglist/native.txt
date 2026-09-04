@@ -21,7 +21,6 @@ direnv
 discord
 docker
 docker-compose
-dunst
 efibootmgr
 eza
 fastfetch

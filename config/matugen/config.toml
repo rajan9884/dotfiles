@@ -78,10 +78,6 @@ output_path = "~/.config/zed/themes/matugen.json"
 input_path = "~/.config/matugen/templates/ghostty.conf"
 output_path = "~/.config/ghostty/config.ghostty"
 
-[templates.dunst]
-input_path = "~/.config/matugen/templates/dunstrc"
-output_path = "~/.config/dunst/dunstrc"
-
 [templates.btop]
 input_path = "~/.config/matugen/templates/btop.theme"
 output_path = "~/.config/btop/themes/matugen.theme"
