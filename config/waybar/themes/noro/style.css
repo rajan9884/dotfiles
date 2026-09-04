@@ -52,8 +52,8 @@ window#waybar {
     border-radius: 12px 0 0 12px;
     padding-right: 10px;
 }
-/* --- Shortcut Tools [Record | Dictate] --- */
-#custom-record, #custom-voxtype {
+/* --- Shortcut Tools [Record | Dictate | Updates] --- */
+#custom-record, #custom-voxtype, #custom-updates {
     background: @surface;
     color: @on_surface;
     padding: 4px 12px;
@@ -69,6 +69,15 @@ window#waybar {
 #custom-voxtype {
     color: @primary;
 }
+#custom-updates {
+    border-radius: 0 12px 12px 0;
+}
+#custom-updates.updates-available {
+    color: @tertiary;
+}
+#custom-updates.updates-none {
+    color: @on_surface_variant;
+}
 /* --- Center Group [Workspaces | Bright | Vol] --- */
 #workspaces {
     border-radius: 12px 0 0 12px;
@@ -79,7 +88,24 @@ window#waybar {
     padding-left: 10px;
 }
 #pulseaudio {
+    padding: 4px 6px;
+}
+#mpris {
+    padding: 4px 10px;
+    background: @primary;
+    color: @on_primary;
+}
+#custom-group {
     border-radius: 0 12px 12px 0;
+    padding: 4px 12px;
+    margin: 6px 0;
+    background: @primary;
+    color: @on_primary;
+}
+#custom-group.empty {
+    background: transparent;
+    padding: 4px 2px;
+    margin: 6px 0;
 }
 #backlight, #pulseaudio {
 
@@ -96,9 +122,9 @@ window#waybar {
     padding-left: 15px;
 
 }
-#network, #bluetooth {
+#network, #bluetooth, #custom-notifications, #custom-clipboard, #custom-vpn {
     padding-left: 8px;
-    
+
 }
 #network {
     padding-right: 15px;
@@ -138,6 +164,12 @@ window#waybar {
 
 #network:hover {
     color: @primary;
+}
+#custom-notifications.has-notifications {
+    color: @tertiary;
+}
+#custom-vpn.vpn-on {
+    color: @tertiary;
 }
 #custom-launcher:hover {
     background: @surface_variant;

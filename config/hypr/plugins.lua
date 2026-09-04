@@ -11,12 +11,28 @@ local HOME = os.getenv("HOME")
 local EXPO_SO = HOME .. "/.local/lib/hypr/hyprexpo.so"
 
 -- Load the plugin when present; silently skip on a fresh clone.
+local expo_loaded = false
 do
 	local f = io.open(EXPO_SO, "r")
 	if f then
 		f:close()
-		pcall(hl.plugin.load, EXPO_SO)
+		expo_loaded = pcall(hl.plugin.load, EXPO_SO)
 	end
+end
+
+-- Only set plugin keys when the plugin is actually loaded —
+-- Hyprland errors on unknown `plugin:*` keys otherwise.
+if not expo_loaded then
+	for _, p in ipairs(hl.get_loaded_plugins()) do
+		if p.name == "hyprexpo" then
+			expo_loaded = true
+			break
+		end
+	end
+end
+
+if not expo_loaded then
+	return
 end
 
 -- HyprExpo appearance (matugen-friendly teal on dark).

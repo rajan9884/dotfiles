@@ -54,5 +54,63 @@
         "return-type": "json",
         "interval": 2,
         "on-click": "voxtype record stop"
+    },
+
+    "custom/updates": {
+        "exec": "~/.config/waybar/scripts/updates.sh",
+        "return-type": "json",
+        "interval": 1800,
+        "on-click": "kitty -e bash -c 'yay -Syu; echo; read -p \"Press Enter to close...\"'",
+        "tooltip": true
+    },
+
+    "custom/group": {
+        "exec": "~/.config/waybar/scripts/group-indicator.sh",
+        "return-type": "json",
+        "interval": 2,
+        "tooltip": true
+    },
+
+    "custom/clipboard": {
+        "format": "󰅇",
+        "on-click": "~/.local/bin/menu-clipboard",
+        "tooltip": "Clipboard history (SUPER+CTRL+V)"
+    },
+
+    "custom/vpn": {
+        "exec": "~/.config/waybar/scripts/vpn-status.sh",
+        "return-type": "json",
+        "interval": 10,
+        "on-click": "nm-connection-editor",
+        "tooltip": true
+    },
+
+    "custom/notifications": {
+        "exec": "~/.config/waybar/scripts/notifications.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "swaync-client -t -sw",
+        "tooltip": true
+    },
+
+    "mpris": {
+        "format": "{player_icon} {dynamic}",
+        "format-paused": "{status_icon} {dynamic}",
+        "player-icons": {
+            "default": "󰐊",
+            "spotify": "󰓇",
+            "firefox": "󰈹",
+            "chromium": "󰖟",
+            "mpv": "󰐊"
+        },
+        "status-icons": {
+            "playing": "󰏤",
+            "paused": "󰐊",
+            "stopped": "󰓛"
+        },
+        "max-length": 30,
+        "on-click": "playerctl play-pause",
+        "on-click-right": "playerctl next",
+        "tooltip": true
     }
 }
