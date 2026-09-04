@@ -39,6 +39,7 @@
     "custom/power": {
         "format": "󰐥",
         "on-click": "~/.config/waybar/scripts/power-menu.sh",
+        "align": 0.5,
         "tooltip": false
     },
 
@@ -46,14 +47,16 @@
         "exec": "~/.config/waybar/scripts/recorder.sh",
         "return-type": "json",
         "interval": 2,
-        "on-click": "~/.config/waybar/scripts/recorder.sh toggle"
+        "on-click": "~/.config/waybar/scripts/recorder.sh toggle",
+        "align": 0.5
     },
 
     "custom/voxtype": {
         "exec": "~/.config/waybar/scripts/voxtype.sh",
         "return-type": "json",
         "interval": 2,
-        "on-click": "voxtype record stop"
+        "on-click": "voxtype record stop",
+        "align": 0.5
     },
 
     "custom/updates": {
