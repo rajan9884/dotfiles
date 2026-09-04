@@ -1,2 +1,14 @@
-#!/bin/bash
-grim -g "$(slurp)" - | satty --filename - --output-filename /tmp/satty-$(date +%s).png
+#!/usr/bin/env bash
+# Region screenshot — silent capture: copies to clipboard AND saves a PNG file.
+# Used by `SUPER + SHIFT + S` (grim + slurp required). No annotation window.
+set -euo pipefail
+
+DIR="$HOME/Pictures/Screenshots"
+mkdir -p "$DIR"
+FILE="$DIR/$(date +%Y-%m-%d_%H-%M-%S).png"
+
+AREA=$(slurp 2>/dev/null) || exit 0
+grim -g "$AREA" "$FILE" 2>/dev/null || exit 0
+wl-copy < "$FILE" 2>/dev/null
+
+notify-send -t 4000 "Screenshot saved" "$FILE"

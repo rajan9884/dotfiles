@@ -259,7 +259,7 @@ hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd(scripts .. "/lid-close.sh"), { l
 
 -- Screenshot (requires grim + slurp/wl-copy) — silent, clipboard + PNG file
 hl.bind("Print", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/capture-region"), { description = "Screenshot" })
-hl.bind(mod .. " + SHIFT + S", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/capture-satty"), { description = "Screenshot & annotate" })
+hl.bind(mod .. " + SHIFT + S", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/capture-satty"), { description = "Screenshot (region)" })
 hl.bind(mod .. " + Print", hl.dsp.exec_cmd("pkill hyprpicker || hyprpicker -a"), { description = "Color picker" })
 hl.bind(mod .. " + SHIFT + Print", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/capture-screen"), { description = "Capture entire screen" })
 hl.bind("ALT + Print", hl.dsp.exec_cmd(scripts .. "/screen-record.sh"), { description = "Screenrecording" })
