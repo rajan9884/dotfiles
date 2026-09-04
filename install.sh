@@ -211,6 +211,52 @@ if command -v matugen >/dev/null 2>&1; then
         warn "matugen not installed; palette will be generated on first theme switch"
     fi
 
+    # ── 6b. Package list restore (fresh machines) ──
+    echo
+    echo "==> Restoring packages from pkglist (if present)"
+    if [ -f "$REPO_ROOT/pkglist/native.txt" ]; then
+        MISSING="$(comm -23 <(sort "$REPO_ROOT/pkglist/native.txt") <(pacman -Qqe | sort) | tr '\n' ' ')"
+        if [ -n "$MISSING" ]; then
+            info "installing $(printf '%s' "$MISSING" | wc -w) missing repo packages"
+            # shellcheck disable=SC2086
+            sudo pacman -S --noconfirm --needed $MISSING || warn "some packages failed, rerun manually"
+        else
+            info "all pkglist repo packages already installed"
+        fi
+    else
+        warn "pkglist/native.txt not found, skipping restore"
+    fi
+    if [ -f "$REPO_ROOT/pkglist/foreign.txt" ] && command -v yay >/dev/null 2>&1; then
+        MISSING_AUR="$(comm -23 <(sort "$REPO_ROOT/pkglist/foreign.txt") <(pacman -Qqm | sort) | tr '\n' ' ')"
+        if [ -n "$MISSING_AUR" ]; then
+            info "installing $(printf '%s' "$MISSING_AUR" | wc -w) missing AUR packages"
+            # shellcheck disable=SC2086
+            yay -S --noconfirm --needed $MISSING_AUR || warn "some AUR packages failed, rerun manually"
+        else
+            info "all pkglist AUR packages already installed"
+        fi
+    fi
+    mkdir -p "$REPO_ROOT/pkglist"
+    pacman -Qqen > "$REPO_ROOT/pkglist/native.txt"
+    pacman -Qqem > "$REPO_ROOT/pkglist/foreign.txt"
+    info "package lists refreshed (commit them to keep the backup current)"
+
+    # ── 6c. System resilience services ──
+    echo
+    echo "==> Enabling resilience services (ufw, cronie, powertop)"
+    sudo ufw default deny incoming >/dev/null 2>&1 || true
+    sudo ufw default allow outgoing >/dev/null 2>&1 || true
+    sudo ufw --force enable >/dev/null 2>&1 && info "ufw active" || warn "ufw enable skipped"
+    sudo systemctl enable --now cronie >/dev/null 2>&1 && info "cronie active" || warn "cronie skipped"
+    if [ -f "$REPO_ROOT/scripts/systemd/powertop.service" ]; then
+        sudo cp -p "$REPO_ROOT/scripts/systemd/powertop.service" /etc/systemd/system/powertop.service
+        sudo systemctl daemon-reload
+        sudo systemctl enable --now powertop >/dev/null 2>&1 && info "powertop autotune active" || warn "powertop skipped"
+    fi
+    if ! pacman -Q timeshift >/dev/null 2>&1; then
+        sudo pacman -S --noconfirm timeshift || warn "timeshift install skipped (ext4 snapshots need it)"
+    fi
+
     # ── 7. Default image viewer ──────────────
     echo
     echo "==> Setting default image viewer (imv)"
