@@ -17,6 +17,7 @@ hl.bind(mod .. " + SHIFT + Return", hl.dsp.exec_cmd(vars.browser), { description
 hl.bind(mod .. " + SHIFT + ALT + B", hl.dsp.exec_cmd(vars.browser_private), { description = "Open private browser" })
 hl.bind(mod .. " + SHIFT + N", hl.dsp.exec_cmd(vars.editor), { description = "Open editor" })
 hl.bind(mod .. " + ALT + Return", hl.dsp.exec_cmd(vars.terminal_tmux), { description = "Open tmux" })
+hl.bind(mod .. " + ALT + K", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-tmux-keybindings"), { description = "Tmux keybindings" })
 hl.bind(mod .. " + SHIFT + ALT + M", hl.dsp.exec_cmd("cliamp"), { description = "Music player (cliamp)" })
 hl.bind(mod .. " + SHIFT + D", hl.dsp.exec_cmd("lazydocker"), { description = "Docker (lazydocker)" })
 hl.bind(mod .. " + SHIFT + O", hl.dsp.exec_cmd("obsidian"), { description = "Open Obsidian" })
@@ -25,12 +26,13 @@ hl.bind(mod .. " + CTRL + T", hl.dsp.exec_cmd("kitty -e btop"), { description = 
 hl.bind(mod .. " + W", hl.dsp.window.close()) -- was killactive (graceful close)
 hl.bind("SUPER + CTRL + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen" })) -- was fullscreen, 0
-hl.bind(mod .. " + T", hl.dsp.window.float({ action = "toggle" })) -- togglefloating
-hl.bind(mod .. " + P", hl.dsp.window.pseudo()) -- pseudo
-hl.bind(mod .. " + S", hl.dsp.workspace.toggle_special("scratchpad"))
-hl.bind(mod .. " + ALT + S", hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }))
-hl.bind(mod .. " + J", hl.dsp.layout("togglesplit")) -- togglesplit (layoutmsg)
+hl.bind(mod .. " + T", hl.dsp.window.float({ action = "toggle" }), { description = "Toggle window floating/tiling" }) -- togglefloating
+hl.bind(mod .. " + P", hl.dsp.window.pseudo(), { description = "Pseudo window" }) -- pseudo
+hl.bind(mod .. " + S", hl.dsp.workspace.toggle_special("scratchpad"), { description = "Toggle scratchpad" })
+hl.bind(mod .. " + ALT + S", hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }), { description = "Move window to scratchpad" })
+hl.bind(mod .. " + J", hl.dsp.layout("togglesplit"), { description = "Toggle window split" }) -- togglesplit (layoutmsg)
 hl.bind(mod .. " + SHIFT + F", hl.dsp.exec_cmd(vars.file))
+hl.bind(mod .. " + SHIFT + ALT + F", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/nautilus-cwd"), { description = "File manager (cwd)" })
 hl.bind(mod .. " + CTRL + Space", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/arch-wallpaper-picker"))
 hl.bind(mod .. " + R", hl.dsp.exec_cmd(scripts .. "/random-wall.sh"))
 
@@ -69,6 +71,10 @@ hl.bind(mod .. " + TAB", hl.dsp.focus({ workspace = "e+1" }), { description = "N
 hl.bind(mod .. " + SHIFT + TAB", hl.dsp.focus({ workspace = "e-1" }), { description = "Previous workspace" })
 hl.bind(mod .. " + CTRL + TAB", hl.dsp.focus({ workspace = "previous" }), { description = "Former workspace" })
 
+-- Monitor navigation
+hl.bind("CTRL + ALT + TAB", hl.dsp.focus({ monitor = "+1" }), { description = "Focus on next monitor" })
+hl.bind("CTRL + SHIFT + ALT + TAB", hl.dsp.focus({ monitor = "-1" }), { description = "Focus on previous monitor" })
+
 -- Layout / window helpers
 hl.bind(mod .. " + L", hl.dsp.exec_cmd(scripts .. "/workspace-layout-toggle.sh"), { description = "Toggle workspace layout" })
 hl.bind(mod .. " + O", hl.dsp.exec_cmd(scripts .. "/window-popout.sh"), { description = "Pop window out (float & pin)" })
@@ -87,7 +93,7 @@ hl.bind(mod .. " + CTRL + B", hl.dsp.exec_cmd("~/.config/waybar/scripts/bluetoot
 hl.bind(mod .. " + ALT + C", hl.dsp.exec_cmd(vars.HOME .. "/.config/waybar/scripts/control-center.sh"), { description = "Control center" })
 hl.bind(mod .. " + CTRL + N", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/night-light-toggle"), { description = "Toggle nightlight" })
 hl.bind(mod .. " + CTRL + I", hl.dsp.exec_cmd(scripts .. "/idle-toggle.sh"), { description = "Toggle idle lock" })
-hl.bind(mod .. " + CTRL + E", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-emoji"), { description = "Emoji & symbol picker" })
+hl.bind(mod .. " + CTRL + E", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-emoji"), { description = "Emojis" })
 hl.bind(mod .. " + CTRL + Q", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-calc"), { description = "Calculator" })
 hl.bind("XF86Calculator", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-calc"), { locked = true, description = "Calculator" })
 
@@ -145,6 +151,12 @@ hl.bind(mod .. " + SHIFT + left", hl.dsp.window.swap({ direction = "left" }))
 hl.bind(mod .. " + SHIFT + right", hl.dsp.window.swap({ direction = "right" }))
 hl.bind(mod .. " + SHIFT + up", hl.dsp.window.swap({ direction = "up" }))
 hl.bind(mod .. " + SHIFT + down", hl.dsp.window.swap({ direction = "down" }))
+
+-- Move active workspace to a monitor
+hl.bind(mod .. " + SHIFT + ALT + left", hl.dsp.workspace.move({ monitor = "l" }), { description = "Move workspace to left monitor" })
+hl.bind(mod .. " + SHIFT + ALT + right", hl.dsp.workspace.move({ monitor = "r" }), { description = "Move workspace to right monitor" })
+hl.bind(mod .. " + SHIFT + ALT + up", hl.dsp.workspace.move({ monitor = "u" }), { description = "Move workspace to up monitor" })
+hl.bind(mod .. " + SHIFT + ALT + down", hl.dsp.workspace.move({ monitor = "d" }), { description = "Move workspace to down monitor" })
 
 -- ── Universal Copy / Paste / Cut / Select-All ──
 
@@ -228,6 +240,15 @@ hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = tr
 hl.bind("ALT + XF86AudioPlay", hl.dsp.exec_cmd("playerctl next"), { locked = true, description = "Next track" })
 hl.bind("ALT + SHIFT + XF86AudioPlay", hl.dsp.exec_cmd("playerctl previous"), { locked = true, description = "Previous track" })
 
+-- Keyboard backlight (brightnessctl kbd)
+hl.bind("XF86KbdBrightnessUp", hl.dsp.exec_cmd(scripts .. "/osd-keyboard-brightness.sh up"), { locked = true, repeating = true, description = "Keyboard brightness up" })
+hl.bind("XF86KbdBrightnessDown", hl.dsp.exec_cmd(scripts .. "/osd-keyboard-brightness.sh down"), { locked = true, repeating = true, description = "Keyboard brightness down" })
+hl.bind("XF86KbdLightOnOff", hl.dsp.exec_cmd(scripts .. "/osd-keyboard-brightness.sh cycle"), { locked = true, description = "Keyboard backlight cycle" })
+
+-- Eject media / power
+hl.bind("XF86Eject", hl.dsp.exec_cmd("eject"), { locked = true, description = "Eject media" })
+hl.bind("XF86PowerOff", hl.dsp.exec_cmd("~/.config/waybar/scripts/power-menu.sh"), { locked = true, description = "Power menu" })
+
 -- Touchpad toggles
 hl.bind("XF86TouchpadToggle", hl.dsp.exec_cmd(scripts .. "/touchpad-toggle.sh toggle"), { locked = true, description = "Toggle touchpad" })
 hl.bind("XF86TouchpadOn", hl.dsp.exec_cmd(scripts .. "/touchpad-toggle.sh on"), { locked = true, description = "Enable touchpad" })
@@ -236,12 +257,12 @@ hl.bind("XF86TouchpadOff", hl.dsp.exec_cmd(scripts .. "/touchpad-toggle.sh off")
 -- Lid switch (lock on close)
 hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd(scripts .. "/lid-close.sh"), { locked = true, description = "Lock on lid close" })
 
--- Screenshot (requires grim + slurp) — silent, copies to clipboard
-hl.bind("Print", hl.dsp.exec_cmd('grim -g "$(slurp)" - 2>/dev/null | wl-copy'))
-hl.bind(mod .. " + SHIFT + S", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/capture-satty"), { description = "Screenshot & annotate (satty)" })
+-- Screenshot (requires grim + slurp/wl-copy) — silent, clipboard + PNG file
+hl.bind("Print", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/capture-region"), { description = "Screenshot" })
+hl.bind(mod .. " + SHIFT + S", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/capture-satty"), { description = "Screenshot & annotate" })
 hl.bind(mod .. " + Print", hl.dsp.exec_cmd("pkill hyprpicker || hyprpicker -a"), { description = "Color picker" })
-hl.bind(mod .. " + SHIFT + Print", hl.dsp.exec_cmd("grim - 2>/dev/null | wl-copy"), { description = "Full screenshot" })
-hl.bind("ALT + Print", hl.dsp.exec_cmd(scripts .. "/screen-record.sh"), { description = "Screen recording" })
+hl.bind(mod .. " + SHIFT + Print", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/capture-screen"), { description = "Capture entire screen" })
+hl.bind("ALT + Print", hl.dsp.exec_cmd(scripts .. "/screen-record.sh"), { description = "Screenrecording" })
 hl.bind("SUPER + CTRL + Print", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/ocr-extract"))
 
 -- Clipboard history (cliphist)

@@ -35,3 +35,6 @@ config/rofi/active-picker.rasi
 # Editor / IDE local state
 config/nvim/lazy-lock.json
 config/nvim/lazyvim.json
+
+# Active-theme marker (written by theme-selector)
+config/hypr/.active-theme

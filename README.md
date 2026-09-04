@@ -195,11 +195,12 @@ yay -S zsh-autosuggestions
 ### Optional extras the keybinds expect
 
 - `arch-theme-switcher`, `arch-wallpaper-picker`, `arch-menu-images`, `arch-screensaver`,
-  `power-profiles`, `menu-emoji`, `menu-calc`, `menu-clipboard`, `ocr-extract`,
-  `night-light-toggle`, `capture-satty` — personal helper scripts. The `arch-*` picker
-  helpers ship in this repo under `bin/` (deployed to `~/.local/bin` by `install.sh`);
-  the rest live in `~/.local/bin` and everything degrades gracefully if a script is
-  missing (binds that call them just won't do anything).
+  `capture-region`, `capture-screen`, `power-profiles`, `menu-emoji`, `menu-calc`,
+  `menu-clipboard`, `ocr-extract`, `night-light-toggle`, `capture-satty` — personal
+  helper scripts. The `arch-*` pickers and the `capture-*` screenshot helpers ship in
+  this repo under `bin/` (deployed to `~/.local/bin` by `install.sh`); the rest live in
+  `~/.local/bin` and everything degrades gracefully if a script is missing (binds that
+  call them just won't do anything).
 - `pywalfox` — live-recolored Firefox/Brave via the pywalfox extension
 - `voxtype` — dictation (see keybinds)
 

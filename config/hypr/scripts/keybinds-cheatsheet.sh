@@ -18,9 +18,9 @@ label() {
         *'window.close()'*)                        desc="Close window" ;;
         *'exec_cmd("hyprlock")'*)                  desc="Lock screen" ;;
         *'window.fullscreen()'*)                   desc="Toggle fullscreen" ;;
-        *'window.float('*)                         desc="Toggle floating" ;;
+        *'window.float('*)                         desc="Toggle window floating/tiling" ;;
         *'window.pseudo()'*)                       desc="Pseudo-tiling" ;;
-        *'layout("togglesplit")'*)                 desc="Toggle split" ;;
+        *'layout("togglesplit")'*)                 desc="Toggle window split" ;;
         *'send_shortcut'*)
             sc="$(printf '%s' "$action" | sed -n 's/.*key = "\([A-Z]\)".*/\1/p')"
             case "$sc" in
@@ -51,6 +51,14 @@ label() {
         *'out_of_group'*)                          desc="Move out of group" ;;
         *'exec_cmd(terminal)'*)                    desc="Open terminal" ;;
         *'exec_cmd(menu)'*)                        desc="App launcher" ;;
+        *'terminal-launch.sh'*)                    desc="Open terminal" ;;
+        *'arch-wallpaper-picker'*)                 desc="Wallpaper picker" ;;
+        *'arch-theme-switcher'*)                   desc="Theme switcher" ;;
+        *'capture-screen'*)                        desc="Capture entire screen" ;;
+        *'capture-region'*)                        desc="Screenshot" ;;
+        *'capture-satty'*)                         desc="Screenshot & annotate" ;;
+        *'ocr-extract'*)                           desc="OCR text extraction (region → clipboard)" ;;
+        *'menu-clipboard'*)                        desc="Clipboard history" ;;
         *'exec_cmd(browser)'*)                     desc="Open browser" ;;
         *'exec_cmd(file)'*)                        desc="Open file manager" ;;
         *'wifi-menu.sh'*)                          desc="Network menu" ;;
@@ -74,7 +82,7 @@ label() {
         *'grim -'*)                                desc="Full screenshot" ;;
         *'ocr-extract'*)                           desc="OCR text extraction (region → clipboard)" ;;
         *'menu-clipboard'*)                        desc="Clipboard history" ;;
-        *'menu-emoji'*)                            desc="Emoji & symbol picker" ;;
+        *'menu-emoji'*)                            desc="Emojis" ;;
         *'keybinds-cheatsheet'*)                   desc="Keybindings cheatsheet" ;;
         *)                                         desc="" ;;
     esac
@@ -103,7 +111,7 @@ pretty_key() {
         -e 's/\bperiod\b/./g' \
         -e 's/\bminus\b/-/g' \
         -e 's/\bequal\b/=/g' \
-        -e 's/\bSLASH\b/\/+/g' \
+        -e 's/\bSLASH\b/\//g' \
         -e 's/\bBACKSPACE\b/Backspace/g' \
         -e 's/\bHome\b/Home/g' \
         -e 's/\bcode:20\b/-/g' \
@@ -166,4 +174,66 @@ render() {
     printf '%s\t%s\n' "History viewer"           "First entry clears all history"
 }
 
-render | rofi -dmenu -i -display-columns "1,2" -p "$PROMPT" -theme "$THEME"
+# Order the most useful/commonly-hit bindings first (mirrors Omarchy's
+# prioritize_entries), so the menu opens on the essentials instead of an
+# arbitrary file-order dump. Lower priority number = shown first.
+prioritize_entries() {
+    awk -F '\t' '
+    {
+        key  = $1
+        desc = $2
+        prio = 50
+        if (desc == "") prio = 200
+        if (desc ~ /Open terminal/)            prio = 0
+        if (desc ~ /App launcher/)             prio = 1
+        if (desc ~ /^Open browser$/)           prio = 2
+        if (desc ~ /^Open file manager$/)      prio = 3
+        if (desc ~ /Close window/)             prio = 4
+        if (desc ~ /^Lock screen$/)            prio = 5
+        if (desc ~ /Toggle fullscreen/)        prio = 6
+        if (desc ~ /Toggle.*floating/)         prio = 7
+        if (desc ~ /Toggle window group/)      prio = 8
+        if (desc ~ /Toggle.*split/)            prio = 9
+        if (desc ~ /Switch to workspace/)      prio = 10
+        if (desc ~ /Move window to workspace/) prio = 11
+        if (desc ~ /Move window silently/)     prio = 12
+        if (desc ~ /Next workspace/)           prio = 13
+        if (desc ~ /Previous workspace/)       prio = 14
+        if (desc ~ /Former workspace/)         prio = 15
+        if (desc ~ /Focus /)                   prio = 20
+        if (desc ~ /Swap window/)              prio = 21
+        if (desc ~ /Universal (copy|paste|cut|select)/) prio = 22
+        if (desc ~ /Copy|Paste|Cut|Select all/) prio = 22
+        if (desc ~ /Clipboard/)                prio = 23
+        if (desc ~ /Screenshot/)               prio = 30
+        if (desc ~ /Screen recording/)         prio = 31
+        if (desc ~ /Color picker/)             prio = 32
+        if (desc ~ /Emoji/)                    prio = 33
+        if (desc ~ /Power \/ logout/)          prio = 34
+        if (desc ~ /Bluetooth/)                prio = 35
+        if (desc ~ /Network/)                  prio = 36
+        if (desc ~ /Volume|Mute|Brightness|Precise/) prio = 40
+        if (desc ~ /Next track|Play|Pause/)    prio = 41
+        if (desc ~ /Calculator/)               prio = 42
+        if (desc ~ /Toggle nightlight/)        prio = 43
+        if (desc ~ /Toggle idle/)              prio = 44
+        if (desc ~ /Toggle window (transparency|gaps)/) prio = 45
+        if (desc ~ /Monitor scaling/)          prio = 46
+        if (desc ~ /Notification/)             prio = 47
+        if (desc ~ /Save window size|Restore/) prio = 48
+        if (desc ~ /Close all windows/)        prio = 49
+        printf "%d\t%s\t%s\n", prio, key, desc
+    }' |
+    sort -t $'\t' -k1,1n -k2,2 |
+    cut -f2-
+}
+
+# Emit each entry as a single display line in Omarchy style — the key combo
+# left-padded to a fixed column, then " → ", then a short description. rofi
+# then shows one roomy row per binding instead of two cramped side-by-side
+# columns (which is why the arrow separator was missing before).
+format_entries() {
+    awk -F '\t' '{ printf "%-35s → %s\n", $1, $2 }'
+}
+
+render | prioritize_entries | format_entries | rofi -dmenu -i -p "$PROMPT" -theme "$THEME"
