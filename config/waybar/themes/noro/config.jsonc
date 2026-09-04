@@ -20,7 +20,6 @@
         "hyprland/workspaces",
         "backlight",
         "pulseaudio",
-        "mpris",
         "custom/group"
     ],
     "modules-right": [
@@ -159,24 +158,6 @@
         "return-type": "json",
         "interval": 2,
         "on-click": "swaync-client -t -sw",
-        "tooltip": true
-    },
-    "mpris": {
-        "format": "{player_icon} {dynamic}",
-        "format-paused": "{status_icon} {dynamic}",
-        "player-icons": {
-            "default": "󰐊",
-            "chromium": "󰖟",
-            "mpv": "󰐊"
-        },
-        "status-icons": {
-            "playing": "󰏤",
-            "paused": "󰐊",
-            "stopped": "󰓛"
-        },
-        "max-length": 30,
-        "on-click": "playerctl play-pause",
-        "on-click-right": "playerctl next",
         "tooltip": true
     },
     "custom/power": {
