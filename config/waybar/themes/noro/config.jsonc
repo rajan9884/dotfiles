@@ -27,8 +27,6 @@
         "tray",
         "custom/notifications",
         "custom/clipboard",
-        "custom/vpn",
-        "custom/updates",
         "custom/power-profile",
         "battery",
         "network",
@@ -145,13 +143,6 @@
         "on-click": "~/.local/bin/power-profiles menu",
         "tooltip": false
     },
-    "custom/updates": {
-        "exec": "~/.config/waybar/scripts/updates.sh",
-        "return-type": "json",
-        "interval": 1800,
-        "on-click": "kitty -e bash -c 'yay -Syu; echo; read -p \"Press Enter to close...\"'",
-        "tooltip": true
-    },
     "custom/group": {
         "exec": "~/.config/waybar/scripts/group-indicator.sh",
         "return-type": "json",
@@ -162,13 +153,6 @@
         "format": "",
         "on-click": "~/.local/bin/menu-clipboard",
         "tooltip": false
-    },
-    "custom/vpn": {
-        "exec": "~/.config/waybar/scripts/vpn-status.sh",
-        "return-type": "json",
-        "interval": 10,
-        "on-click": "~/.config/waybar/scripts/wifi-menu.sh",
-        "tooltip": true
     },
     "custom/notifications": {
         "exec": "~/.config/waybar/scripts/notifications.sh",

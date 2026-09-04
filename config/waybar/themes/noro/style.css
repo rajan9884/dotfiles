@@ -70,8 +70,8 @@ window#waybar {
     color: @primary;
 }
 /* --- Utility icons (backgroundless, float between the three capsules) --- */
-#custom-notifications, #custom-clipboard, #custom-vpn,
-#custom-updates, #custom-power-profile {
+#custom-notifications, #custom-clipboard,
+#custom-power-profile {
     background: transparent;
     color: @on_surface;
     padding: 4px 8px;
