@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────
 #   Notification History
-#   Lists dunst's notification history in rofi,
-#   themed with the active scripts theme (matugen).
-#   The first entry clears the whole history.
+#   Opens the SwayNC notification center; falls
+#   back to dunst history in rofi if swaync is
+#   not running (legacy path).
 # ──────────────────────────────────────────────
 
 set -euo pipefail
+
+if pgrep -x swaync >/dev/null 2>&1; then
+    swaync-client -t -sw
+    exit 0
+fi
 
 THEME="$HOME/.config/rofi/active-picker.rasi"
 PROMPT="Notifications"

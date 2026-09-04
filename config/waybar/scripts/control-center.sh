@@ -38,6 +38,14 @@ get_bright_bar() {
     echo "$bar $percent%"
 }
 
+DND_STATE="Off"
+if pgrep -x swaync >/dev/null 2>&1; then
+    DND_STATE="$(swaync-client -D 2>/dev/null || echo Off)"
+    [ "$DND_STATE" = "true" ] && DND_STATE="On" || DND_STATE="Off"
+elif command -v dunstctl >/dev/null 2>&1; then
+    dunstctl is-paused 2>/dev/null | grep -q true && DND_STATE="On" || DND_STATE="Off"
+fi
+
 # --- Prepare Menu Items ---
 WIFI_SSID=$(get_wifi)
 BT_STATE=$(get_bt)
@@ -49,7 +57,7 @@ MENU="󰖩  Wi-Fi\n$WIFI_SSID\n"
 MENU+="󰂯  Bluetooth\n$BT_STATE\n"
 MENU+="󰃠  Brightness\n$BRIGHT_BAR\n"
 MENU+="󰕾  Sound\n$VOL_BAR\n"
-MENU+="󰔉  Focus\nOff\n"
+MENU+="󰔉  Focus\n$DND_STATE\n"
 MENU+="󰹑  Mirroring\nNone\n"
 MENU+="󰝚  Music\nNot Playing\n"
 MENU+="󰹑  Screensaver\nRun\n"
@@ -66,6 +74,12 @@ case "$CHOICE" in
         brightnessctl set +10% ;;
     *"Sound"*)
         kitty --class wiremix -e wiremix ;;
+    *"Focus"*)
+        if pgrep -x swaync >/dev/null 2>&1; then
+            swaync-client -d
+        elif command -v dunstctl >/dev/null 2>&1; then
+            dunstctl set-paused toggle
+        fi ;;
     *"Screensaver"*)
         kitty --class arch-screensaver --start-as fullscreen --override window_padding_width=0 --override background_opacity=1.0 --override dynamic_background_opacity=no -e "$HOME/.local/bin/arch-screensaver" --now ;;
     *"Power"*)

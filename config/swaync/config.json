@@ -1,0 +1,73 @@
+{
+    "$schema": "https://raw.githubusercontent.com/ErikReider/SwayNotificationCenter/main/docs/config-schema.json",
+    "positionX": "right",
+    "positionY": "top",
+    "control-center-width": 380,
+    "control-center-height": 860,
+    "control-center-margin-top": 12,
+    "control-center-margin-bottom": 12,
+    "control-center-margin-right": 12,
+    "control-center-margin-left": 0,
+    "notification-window-width": 380,
+    "notification-window-margin-top": 0,
+    "notification-icon-size": 48,
+    "notification-body-image-height": 120,
+    "notification-body-image-width": 200,
+    "timeout": 6,
+    "timeout-low": 4,
+    "timeout-critical": 0,
+    "keyboard-shortcuts": true,
+    "image-visibility": "when-available",
+    "transition-time": 200,
+    "hide-on-clear": true,
+    "hide-on-action": true,
+    "script-fail-notify": true,
+    "layer": "overlay",
+    "control-center-layer": "top",
+    "cssPriority": "user",
+    "widgets": [
+        "title",
+        "dnd",
+        "notifications",
+        "mpris",
+        "volume",
+        "buttons-grid"
+    ],
+    "widget-config": {
+        "title": {
+            "text": "Notifications",
+            "clear-all-button": true,
+            "button-text": "Clear"
+        },
+        "dnd": {
+            "text": "Do Not Disturb"
+        },
+        "mpris": {
+            "image-size": 96,
+            "image-radius": 12
+        },
+        "volume": {
+            "label": "󰕾"
+        },
+        "buttons-grid": {
+            "actions": [
+                {
+                    "label": "󰖩 WiFi",
+                    "command": "~/.config/waybar/scripts/wifi-menu.sh"
+                },
+                {
+                    "label": "󰂯 BT",
+                    "command": "~/.config/waybar/scripts/bluetooth-menu.sh"
+                },
+                {
+                    "label": "󰒲 Lock",
+                    "command": "hyprlock"
+                },
+                {
+                    "label": "⏻ Power",
+                    "command": "~/.config/waybar/scripts/power-menu.sh"
+                }
+            ]
+        }
+    }
+}

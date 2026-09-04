@@ -171,11 +171,11 @@ hl.bind(
 	})
 )
 
--- Notifications ------------------------------------------------------------
-hl.bind("SUPER + comma", hl.dsp.exec_cmd("dunstctl close"), { locked = true })
-hl.bind("SUPER + SHIFT + comma", hl.dsp.exec_cmd("dunstctl close-all"), { locked = true })
-hl.bind("SUPER + CTRL + comma", hl.dsp.exec_cmd("dunstctl set-paused toggle"), { locked = true, description = "Toggle notification silencing" })
-hl.bind("SUPER + ALT + comma", hl.dsp.exec_cmd("dunstctl history-pop"), { locked = true, description = "Replay last notification" })
+-- Notifications (SwayNC) ---------------------------------------------------
+hl.bind("SUPER + comma", hl.dsp.exec_cmd("swaync-client --close-latest"), { locked = true })
+hl.bind("SUPER + SHIFT + comma", hl.dsp.exec_cmd("swaync-client --close-all"), { locked = true })
+hl.bind("SUPER + CTRL + comma", hl.dsp.exec_cmd("swaync-client --toggle-dnd"), { locked = true, description = "Toggle notification silencing" })
+hl.bind("SUPER + ALT + comma", hl.dsp.exec_cmd("swaync-client --toggle-panel"), { locked = true, description = "Notification center" })
 hl.bind(
 	"SUPER + SHIFT + ALT + comma",
 	hl.dsp.exec_cmd(vars.HOME .. "/.config/hypr/scripts/notification-history.sh"),
