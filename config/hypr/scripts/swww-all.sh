@@ -95,5 +95,12 @@ if pgrep -x chromium >/dev/null 2>&1 || pgrep -x helium >/dev/null 2>&1 || pgrep
     notify-send "Browser Theme Updated" "Restart Chromium/Helium/Brave to apply new colors" -i "$WALLPAPER"
 fi
 
-# 8. Notify
+# 8. Reload swaync and swayosd to pick up new Matugen colors
+# swaync --replace swaps the running instance with new CSS
+swaync --replace --style ~/.config/swaync/style.css & disown 2>/dev/null
+
+# swayosd-server is managed by systemd user service; restart it to reload CSS
+systemctl --user restart swayosd-server.service 2>/dev/null || true
+
+# 9. Notify
 notify-send "Theme Updated" "Colors extracted from $(basename "$WALLPAPER")" -i "$WALLPAPER"
