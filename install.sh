@@ -25,6 +25,52 @@ THEME_LOWER="$(printf '%s' "$ACTIVE_THEME" | tr '[:upper:]' '[:lower:]')"
 info()  { printf '  \033[1;32m==>\033[0m %s\n' "$*"; }
 warn()  { printf '  \033[1;33m ->\033[0m %s\n' "$*"; }
 
+# ── 0. Privilege pre-flight ────────────────────
+# A dangling SUDO_ASKPASS (e.g. left over from another dotfiles setup) makes
+# every sudo call fail in non-interactive runs, so drop it if unusable.
+if [ -n "${SUDO_ASKPASS:-}" ] && [ ! -x "$SUDO_ASKPASS" ]; then
+    warn "SUDO_ASKPASS=$SUDO_ASKPASS is not executable, unsetting it"
+    unset SUDO_ASKPASS
+fi
+# Cache sudo credentials once (prompts in a terminal); if that fails, skip
+# all privileged steps gracefully instead of erroring on each one.
+# NOTE: the non-interactive check (-n) comes first so piped/CI runs fail
+# fast instead of blocking forever on a password prompt.
+SUDO_OK=0
+if sudo -n -v 2>/dev/null; then
+    SUDO_OK=1                                   # cached credentials / NOPASSWD
+elif [ -t 0 ]; then
+    if sudo -v; then                            # interactive: ask once up front
+        SUDO_OK=1
+    else
+        warn "sudo authentication failed — privileged steps will be skipped"
+    fi
+else
+    warn "sudo needs a password and stdin is not a terminal — privileged steps will be skipped"
+fi
+
+# Install packages one at a time so a single failure (conflict, removed
+# package, build error) never aborts the rest. Failed names are collected
+# in FAILED_PKGS and reported at the end with an exact retry command.
+FAILED_PKGS=""
+install_pkgs() {
+    local installer="$1"; shift
+    local pkg
+    for pkg in "$@"; do
+        [ -n "$pkg" ] || continue
+        # shellcheck disable=SC2086
+        if $installer --noconfirm --needed "$pkg"; then
+            info "installed $pkg"
+        else
+            FAILED_PKGS="$FAILED_PKGS $pkg"
+            warn "FAILED: $pkg (continuing with the rest)"
+        fi
+    done
+}
+# Print the pkglist file as clean sorted LINES (no blanks/comments) —
+# keep it line-based: comm(1) needs one package per line.
+pkglist_lines() { grep -v -e '^[[:space:]]*$' -e '^[[:space:]]*#' "$1" | sort -u; }
+
 # ── 1. App configs → ~/.config ────────────────
 link_config() {
     local name="$1"
@@ -157,6 +203,9 @@ echo "==> Installing user helper scripts into ~/.local/bin"
 mkdir -p "$HOME/.local/bin"
 for helper in "$REPO_ROOT/bin"/*; do
     [ -f "$helper" ] || continue
+    case "$helper" in
+        *.patch) warn "skip $(basename "$helper") (patch, not a helper script)"; continue ;;
+    esac
     cp -p "$helper" "$HOME/.local/bin/$(basename "$helper")"
     chmod +x "$HOME/.local/bin/$(basename "$helper")"
     info "helper: $(basename "$helper")"
@@ -211,29 +260,49 @@ if command -v matugen >/dev/null 2>&1; then
     fi
 
     # ── 6b. Package list restore (fresh machines) ──
+    # Installed per-package: one conflict/broken build must not abort the rest.
     echo
     echo "==> Restoring packages from pkglist (if present)"
     if [ -f "$REPO_ROOT/pkglist/native.txt" ]; then
-        MISSING="$(comm -23 <(sort "$REPO_ROOT/pkglist/native.txt") <(pacman -Qqe | sort) | tr '\n' ' ')"
+        # shellcheck disable=SC2086
+        MISSING="$(comm -23 <(pkglist_lines "$REPO_ROOT/pkglist/native.txt") <(pacman -Qqe | sort) | tr '\n' ' ')"
         if [ -n "$MISSING" ]; then
+            if [ "$SUDO_OK" -eq 1 ]; then
             info "installing $(printf '%s' "$MISSING" | wc -w) missing repo packages"
             # shellcheck disable=SC2086
-            sudo pacman -S --noconfirm --needed $MISSING || warn "some packages failed, rerun manually"
+            install_pkgs "sudo pacman -S" $MISSING
+            else
+                warn "no sudo — skipping repo package install:$MISSING"
+            fi
         else
             info "all pkglist repo packages already installed"
         fi
     else
         warn "pkglist/native.txt not found, skipping restore"
     fi
-    if [ -f "$REPO_ROOT/pkglist/foreign.txt" ] && command -v yay >/dev/null 2>&1; then
-        MISSING_AUR="$(comm -23 <(sort "$REPO_ROOT/pkglist/foreign.txt") <(pacman -Qqm | sort) | tr '\n' ' ')"
-        if [ -n "$MISSING_AUR" ]; then
-            info "installing $(printf '%s' "$MISSING_AUR" | wc -w) missing AUR packages"
+    if [ -f "$REPO_ROOT/pkglist/foreign.txt" ]; then
+        if command -v yay >/dev/null 2>&1; then
             # shellcheck disable=SC2086
-            yay -S --noconfirm --needed $MISSING_AUR || warn "some AUR packages failed, rerun manually"
+            MISSING_AUR="$(comm -23 <(pkglist_lines "$REPO_ROOT/pkglist/foreign.txt") <(pacman -Qqm | sort) | tr '\n' ' ')"
+            if [ -n "$MISSING_AUR" ]; then
+                if [ "$SUDO_OK" -eq 1 ]; then
+                info "installing $(printf '%s' "$MISSING_AUR" | wc -w) missing AUR packages"
+                # shellcheck disable=SC2086
+                install_pkgs "yay -S" $MISSING_AUR
+                else
+                    warn "no sudo — skipping AUR package install:$MISSING_AUR"
+                fi
+            else
+                info "all pkglist AUR packages already installed"
+            fi
         else
-            info "all pkglist AUR packages already installed"
+            warn "yay not installed, skipping AUR restore"
         fi
+    fi
+    if [ -n "$FAILED_PKGS" ]; then
+        warn "these packages need manual attention (conflict/build error):$FAILED_PKGS"
+        # shellcheck disable=SC2086
+        warn "retry with: yay -S --needed $FAILED_PKGS"
     fi
     mkdir -p "$REPO_ROOT/pkglist"
     pacman -Qqen > "$REPO_ROOT/pkglist/native.txt"
@@ -243,6 +312,7 @@ if command -v matugen >/dev/null 2>&1; then
     # ── 6c. System resilience services ──
     echo
     echo "==> Enabling resilience services (ufw, cronie, powertop)"
+    if [ "$SUDO_OK" -eq 1 ]; then
     sudo ufw default deny incoming >/dev/null 2>&1 || true
     sudo ufw default allow outgoing >/dev/null 2>&1 || true
     sudo ufw --force enable >/dev/null 2>&1 && info "ufw active" || warn "ufw enable skipped"
@@ -253,13 +323,20 @@ if command -v matugen >/dev/null 2>&1; then
         sudo systemctl enable --now powertop >/dev/null 2>&1 && info "powertop autotune active" || warn "powertop skipped"
     fi
     if ! pacman -Q timeshift >/dev/null 2>&1; then
-        sudo pacman -S --noconfirm timeshift || warn "timeshift install skipped (ext4 snapshots need it)"
+        sudo pacman -S --noconfirm --needed timeshift || warn "timeshift install skipped (ext4 snapshots need it)"
+    fi
+    else
+        warn "no sudo — skipping ufw/cronie/powertop/timeshift (re-run with sudo access to enable)"
     fi
 
     # ── 7. Default image viewer ──────────────
     echo
     echo "==> Setting default image viewer (imv)"
-    sudo pacman -S --noconfirm imv >/dev/null 2>&1 || warn "imv install skipped"
+    if [ "$SUDO_OK" -eq 1 ]; then
+    sudo pacman -S --noconfirm --needed imv >/dev/null 2>&1 || warn "imv install skipped"
+    else
+        warn "no sudo — skipping imv install"
+    fi
     if [ -f "$HOME/.config/mimeapps.list" ]; then
         sed -i 's#=org\.gnome\.eog\.desktop#=imv.desktop#g; s#=eog\.desktop#=imv.desktop#g' "$HOME/.config/mimeapps.list"
         for m in image/jpeg image/png image/gif image/webp image/bmp image/x-ms-bmp image/tiff; do

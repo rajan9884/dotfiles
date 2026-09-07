@@ -132,6 +132,7 @@ udiskie
 ufw
 unzip
 uwsm
+vulkan-intel
 wayland
 webp-pixbuf-loader
 wf-recorder

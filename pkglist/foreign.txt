@@ -3,9 +3,10 @@ brave-origin-bin
 chatgpt-desktop
 claude-desktop
 cliamp-bin
+cloudflare-warp-bin
 helium-browser-bin
 jdk
-localsend-bin
+localsend
 matugen-bin
 mongodb-bin
 mongodb-compass-bin
