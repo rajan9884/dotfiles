@@ -7,6 +7,21 @@
 THEME="$HOME/.config/rofi/active-scripts.rasi"
 DIVIDER="────────────────────────────"
 
+# Omarchy-style: keyboard-driven, instant filtering, no icon/mouse steal.
+# -show-icons: skip Papirus lookup per row (major hang source)
+# -hover-select: keep keyboard focus (like walker's force_keyboard_focus)
+# -matching fuzzy + fzf sort: fast keyword narrowing like omarchy.menu
+# NOTE: no -kb-row-* flags: rofi 2.0.0-dirty hangs parsing most kb
+# overrides (verified headless). Defaults already include Ctrl+p/n + arrows.
+ROFI_PERF="-show-icons -hover-select -matching fuzzy -sorting-method fzf -sort -tokenize -threads 0 -me-accept-entry MousePrimary -no-fixed-num-lines"
+
+# Cached scan is ~0.01s; a fresh scan blocks ~5s and hangs the menu.
+# Always read cache instantly, kick a background rescan for next open.
+WIFI_LIST_ARGS="--rescan no"
+kick_rescan() {
+    (timeout 15 nmcli device wifi rescan >/dev/null 2>&1 &) 2>/dev/null
+}
+
 # Handle positioning
 POSITION="$1"
 ROFI_ARGS=""
@@ -19,9 +34,11 @@ notify() {
 }
 
 # ── Get current connection info ──────────────
+# All nmcli calls use `timeout` so a stalled NetworkManager can never hang
+# the menu, and never trigger a synchronous wifi scan (see WIFI_LIST_ARGS).
 get_status() {
     local dev_state
-    dev_state=$(nmcli -t -f DEVICE,TYPE,STATE device status 2>/dev/null | grep ":wifi:" | head -1)
+    dev_state=$(timeout 3 nmcli -t -f DEVICE,TYPE,STATE device status 2>/dev/null | grep ":wifi:" | head -1)
     DEV=$(echo "$dev_state" | cut -d: -f1)
 
     if [[ -z "$DEV" ]]; then
@@ -30,17 +47,15 @@ get_status() {
     fi
 
     local conn_info
-    conn_info=$(nmcli -t -f NAME,DEVICE,STATE connection show --active 2>/dev/null | grep ":${DEV}:" | head -1)
+    conn_info=$(timeout 3 nmcli -t -f NAME,DEVICE,STATE connection show --active 2>/dev/null | grep ":${DEV}:" | head -1)
 
     if [[ -n "$conn_info" ]]; then
         WIFI_STATE="enabled"
         CURRENT_SSID=$(echo "$conn_info" | cut -d: -f1)
         local ip_info
-        ip_info=$(nmcli -t -f IP4.ADDRESS device show "$DEV" 2>/dev/null | head -1)
+        ip_info=$(timeout 3 nmcli -t -f IP4.ADDRESS device show "$DEV" 2>/dev/null | head -1)
         CURRENT_IP=$(echo "$ip_info" | cut -d: -f2 | cut -d/ -f1)
-        local signal_info
-        signal_info=$(nmcli -t -f SIGNAL device wifi list 2>/dev/null | head -1)
-        SIGNAL="${signal_info}%"
+        SIGNAL=""
     else
         WIFI_STATE="enabled"
         CURRENT_SSID=""
@@ -50,16 +65,30 @@ get_status() {
 }
 
 # ── List available networks (SSID, security) ─
+# Single cached `nmcli` call + awk (no per-line bash/sed/sort subshells).
+# Parses from the right (IN-USE is last field) so SSIDs containing ':' work.
 list_networks() {
-    nmcli -t -f SSID,SECURITY,IN-USE device wifi list 2>/dev/null \
-        | while IFS=: read -r ssid security inuse; do
-            [[ -z "$ssid" ]] && continue
-            [[ "$inuse" == "*" ]] && continue
-            local icon="󰤟 "
-            local lock=""
-            [[ "$security" != "" ]] && lock=" 󰌾"
-            printf "%s %s%s\n" "$icon" "$ssid" "$lock"
-        done | sort -u
+    timeout 4 nmcli -t -f SSID,SECURITY,IN-USE device wifi list $WIFI_LIST_ARGS 2>/dev/null \
+        | awk -F: '
+            {
+                inuse = $NF
+                if (inuse == "*") next
+                # drop last field (IN-USE), rejoin rest as SSID:SECURITY
+                sub(/:[^:]*$/, "")
+                # SECURITY is after last remaining colon; SSID may contain colons
+                n = split($0, parts, ":")
+                sec = parts[n]
+                ssid = substr($0, 1, length($0) - length(sec) - 1)
+                # unescape nmcli \: -> :
+                gsub(/\\:/, ":", ssid)
+                if (ssid == "" || ssid == "--") next
+                lock = (sec == "" ? "" : " 󰌾")
+                key = ssid lock
+                if (!(key in seen)) {
+                    seen[key] = 1
+                    printf "󰤟  %s%s\n", ssid, lock
+                }
+            }'
 }
 
 # ── Build the menu ───────────────────────────
@@ -97,8 +126,15 @@ build_menu() {
 }
 
 # ── Extract SSID from a menu line ────────────
+# Pure bash (no sed fork per selection) + strips lock suffix.
 ssid_from_line() {
-    echo "$1" | sed -E 's/^󰤟  |^󰤢  |^󰤥  |^󰤨  //' | sed -E 's/ 󰌾$//'
+    local line="$1"
+    line="${line#󰤟  }"
+    line="${line#󰤢  }"
+    line="${line#󰤥  }"
+    line="${line#󰤨  }"
+    line="${line% 󰌾}"
+    printf '%s' "$line"
 }
 
 # ── Handle selection ─────────────────────────
@@ -111,13 +147,14 @@ handle_selection() {
 
         "󰑐  Rescan networks")
             notify "Scanning…" "Looking for WiFi networks"
-            nmcli device wifi rescan 2>/dev/null
-            sleep 2
+            timeout 15 nmcli device wifi rescan >/dev/null 2>&1 &
+            # Brief pause for APs to appear, then reopen from fresh cache
+            sleep 4
             main
             return ;;
 
         "󰅙  Disconnect")
-            nmcli device disconnect "$DEV" 2>/dev/null
+            timeout 5 nmcli device disconnect "$DEV" 2>/dev/null
             notify "Disconnected" "WiFi has been disconnected"
             return ;;
 
@@ -126,14 +163,15 @@ handle_selection() {
             return ;;
 
         "󰖪  Turn WiFi OFF")
-            nmcli radio wifi off 2>/dev/null
+            timeout 5 nmcli radio wifi off 2>/dev/null
             notify "WiFi OFF" "Wireless radio disabled"
             return ;;
 
         "󰖩  Turn WiFi ON")
-            nmcli radio wifi on 2>/dev/null
+            timeout 5 nmcli radio wifi on 2>/dev/null
             notify "WiFi ON" "Wireless radio enabled — scanning…"
-            sleep 3
+            timeout 15 nmcli device wifi rescan >/dev/null 2>&1 &
+            sleep 4
             main
             return ;;
 
@@ -159,12 +197,13 @@ handle_selection() {
             fi
 
             # Check if we have a saved connection for this SSID
+            # Fixed-string match: SSID may contain regex chars (., *, [ ])
             local saved_conn
-            saved_conn=$(nmcli -t -f NAME,TYPE connection show 2>/dev/null | grep "^${ssid}:802-11-wireless" | cut -d: -f1)
+            saved_conn=$(timeout 3 nmcli -t -f NAME,TYPE connection show 2>/dev/null | grep -F "${ssid}:802-11-wireless" | cut -d: -f1)
 
             if [[ -n "$saved_conn" ]]; then
                 notify "Connecting…" "Connecting to $ssid"
-                if nmcli connection up "$ssid" 2>/dev/null; then
+                if timeout 20 nmcli connection up "$ssid" 2>/dev/null; then
                     notify "Connected ✓" "Successfully connected to $ssid"
                 else
                     notify "Failed ✗" "Could not connect to $ssid"
@@ -173,7 +212,7 @@ handle_selection() {
                 # Need password — prompt via rofi
                 notify "Connecting…" "Connecting to $ssid"
                 local pass
-                pass=$(rofi -dmenu $ROFI_ARGS -p "󰌾  Password" \
+                pass=$(rofi -dmenu $ROFI_ARGS $ROFI_PERF -p "󰌾  Password" \
                     -theme "$THEME" \
                     -mesg "Enter password for <b>$ssid</b>" \
                     -password)
@@ -182,7 +221,7 @@ handle_selection() {
                     return
                 fi
 
-                if nmcli device wifi connect "$ssid" password "$pass" 2>/dev/null; then
+                if timeout 25 nmcli device wifi connect "$ssid" password "$pass" 2>/dev/null; then
                     notify "Connected ✓" "Successfully connected to $ssid"
                 else
                     notify "Failed ✗" "Wrong password or connection failed"
@@ -200,11 +239,11 @@ show_saved() {
 
     while IFS= read -r conn; do
         [[ -n "$conn" ]] && saved_menu+="󰤨  $conn\n"
-    done < <(nmcli -t -f NAME,TYPE connection show 2>/dev/null \
+    done < <(timeout 3 nmcli -t -f NAME,TYPE connection show 2>/dev/null \
         | grep ":802-11-wireless" | cut -d: -f1)
 
     local choice
-    choice=$(echo -e "$saved_menu" | rofi -dmenu $ROFI_ARGS -p "󱛅  Saved" -theme "$THEME" -i)
+    choice=$(echo -e "$saved_menu" | rofi -dmenu $ROFI_ARGS $ROFI_PERF -p "󱛅  Saved" -theme "$THEME" -i)
 
     [[ -z "$choice" ]] && return
 
@@ -219,18 +258,18 @@ show_saved() {
             local ssid="${choice#󰤨  }"
             local action
             action=$(echo -e "󰤨  Connect\n󰅙  Forget" \
-                | rofi -dmenu $ROFI_ARGS -p "  $ssid" -theme "$THEME")
+                | rofi -dmenu $ROFI_ARGS $ROFI_PERF -p "  $ssid" -theme "$THEME")
 
             case "$action" in
                 "󰤨  Connect")
                     notify "Connecting…" "Connecting to $ssid"
-                    if nmcli connection up "$ssid" 2>/dev/null; then
+                    if timeout 20 nmcli connection up "$ssid" 2>/dev/null; then
                         notify "Connected ✓" "Successfully connected to $ssid"
                     else
                         notify "Failed ✗" "Could not connect to $ssid"
                     fi ;;
                 "󰅙  Forget")
-                    nmcli connection delete "$ssid" 2>/dev/null
+                    timeout 5 nmcli connection delete "$ssid" 2>/dev/null
                     notify "Forgotten" "$ssid has been removed"
                     show_saved ;;
             esac
@@ -240,12 +279,13 @@ show_saved() {
 
 # ── Main ─────────────────────────────────────
 main() {
+    kick_rescan
     local menu
     menu=$(build_menu)
     [[ -z "$menu" ]] && menu="󰤭  No networks found\n$DIVIDER\n󰑐  Rescan networks"
 
     local choice
-    choice=$(echo -e "$menu" | rofi -dmenu $ROFI_ARGS -p "󰖩  WiFi" -theme "$THEME" -i)
+    choice=$(echo -e "$menu" | rofi -dmenu $ROFI_ARGS $ROFI_PERF -p "󰖩  WiFi" -theme "$THEME" -i)
 
     [[ -z "$choice" ]] && exit 0
 
