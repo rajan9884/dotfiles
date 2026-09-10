@@ -152,3 +152,5 @@ eval "$(direnv hook zsh)"
 
 # Added by Antigravity CLI installer
 export PATH="/home/rajan/.local/bin:$PATH"
+
+. "$HOME/.local/share/../bin/env"

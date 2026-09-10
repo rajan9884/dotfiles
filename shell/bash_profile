@@ -10,3 +10,5 @@ export HYPRLAND_CONFIG="$HOME/.config/hypr/hyprland.lua"
 
 # Added by Antigravity CLI installer
 export PATH="/home/rajan/.local/bin:$PATH"
+
+. "$HOME/.local/share/../bin/env"

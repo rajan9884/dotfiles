@@ -35,3 +35,5 @@ export PATH="/home/rajan/.local/share/pi-node/node-v22.23.2-linux-x64/bin:$PATH"
 export PATH="/home/rajan/.local/bin:$PATH"
 
 eval "$(starship init bash)"
+
+. "$HOME/.local/share/../bin/env"

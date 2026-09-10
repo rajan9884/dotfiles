@@ -29,7 +29,6 @@ ffmpegthumbnailer
 fish
 fzf
 gammastep
-ghostty
 git
 github-cli
 gnome-keyring
@@ -101,7 +100,6 @@ reflector
 ripgrep
 rofi
 rofi-calc
-rofi-emoji
 rofimoji
 rsync
 satty
