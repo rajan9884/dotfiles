@@ -142,10 +142,20 @@ hl.bind(mod .. " + ALT + Q", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/wifi-shar
 
 hl.bind(mod .. " + SHIFT + Space", hl.dsp.exec_cmd("killall -SIGUSR1 waybar"), { locked = true })
 
-hl.bind(mod .. " + code:20", hl.dsp.window.resize({ x = -100, y = 0, relative = true }), { repeating = true })
-hl.bind(mod .. " + code:21", hl.dsp.window.resize({ x = 100, y = 0, relative = true }), { repeating = true })
-hl.bind(mod .. " + SHIFT + code:20", hl.dsp.window.resize({ x = 0, y = -100, relative = true }), { repeating = true })
-hl.bind(mod .. " + SHIFT + code:21", hl.dsp.window.resize({ x = 0, y = 100, relative = true }), { repeating = true })
+hl.bind(mod .. " + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive -100 0"), { repeating = true })
+hl.bind(mod .. " + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 100 0"), { repeating = true })
+hl.bind(mod .. " + SHIFT + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 -100"), { repeating = true })
+hl.bind(mod .. " + SHIFT + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 100"), { repeating = true })
+
+-- Resize steps: fine (±25) and coarse (±300), Omarchy parity
+hl.bind(mod .. " + ALT + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive -25 0"), { repeating = true })
+hl.bind(mod .. " + ALT + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 25 0"), { repeating = true })
+hl.bind(mod .. " + SHIFT + ALT + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 -25"), { repeating = true })
+hl.bind(mod .. " + SHIFT + ALT + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 25"), { repeating = true })
+hl.bind(mod .. " + CTRL + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive -300 0"), { repeating = true })
+hl.bind(mod .. " + CTRL + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 300 0"), { repeating = true })
+hl.bind(mod .. " + CTRL + SHIFT + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 -300"), { repeating = true })
+hl.bind(mod .. " + CTRL + SHIFT + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 300"), { repeating = true })
 
 -- Move focus (Vim-style)
 hl.bind(mod .. " + H", hl.dsp.focus({ direction = "left" }))
@@ -276,7 +286,7 @@ hl.bind("ALT + Print", hl.dsp.exec_cmd(scripts .. "/screen-record.sh"), { descri
 hl.bind("SUPER + CTRL + Print", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/ocr-extract"))
 
 -- Clipboard history (cliphist)
-hl.bind("SUPER + CTRL + V", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-clipboard"))
+hl.bind("SUPER + CTRL + V", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-clipboard"), { description = "Clipboard history (Enter paste, Ctrl+Enter copy, Shift+Delete remove)" })
 hl.bind("SUPER + CTRL + SHIFT + V", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-clipboard clipboard-wipe"), { description = "Wipe clipboard history" })
 
 -- ── Universal Clipboard (omarchy-style, terminal-aware) ─────────────
@@ -338,3 +348,27 @@ end
 hl.bind("SUPER + C", universal_clipboard_shortcut("CTRL", "C", "CTRL", "Insert"), { description = "Universal copy" })
 hl.bind("SUPER + V", universal_clipboard_shortcut("CTRL", "V", "SHIFT", "Insert"), { description = "Universal paste" })
 hl.bind("SUPER + X", send_shortcut_once("CTRL", "X"), { description = "Universal cut" })
+
+-- ── Omarchy parity (no Quickshell) ──
+
+-- Share / transcode (kitty+gum prompts)
+hl.bind(mod .. " + CTRL + S", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-share-prompt"), { description = "Share clipboard/file" })
+hl.bind(mod .. " + CTRL + period", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-transcode-prompt"), { description = "Transcode picture/video" })
+
+-- Herdr keybindings cheatsheet (rofi)
+hl.bind(mod .. " + CTRL + K", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-herdr-keybindings"), { description = "Herdr keybindings" })
+
+local square_aspect = false
+hl.bind(mod .. " + CTRL + BACKSPACE", function()
+	square_aspect = not square_aspect
+	if square_aspect then
+		hl.config({ layout = { single_window_aspect_ratio = { 1, 1 } } })
+	else
+		hl.config({ layout = { single_window_aspect_ratio = { 0, 0 } } })
+	end
+end, { description = "Toggle single-window square aspect" })
+
+-- Screensaver now (kitty + ttfx, omarchy logo art included) / theme menu
+hl.bind(mod .. " + ALT + L", hl.dsp.exec_cmd("kitty --class arch-screensaver --start-as fullscreen --override window_padding_width=0 --override background_opacity=1.0 -e " .. vars.HOME .. "/.local/bin/arch-screensaver --now"), { description = "Screensaver now" })
+-- NOTE: SUPER+CTRL+SHIFT+Space is already owned by arch-theme-switcher above
+-- (same combo, mods are order-insensitive) — do NOT add a theme-menu bind here.

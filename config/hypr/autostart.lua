@@ -4,7 +4,6 @@
 local vars = require("vars")
 
 hl.on("hyprland.start", function()
-	hl.exec_cmd("sleep 1 && hyprlock")
 	hl.exec_cmd("awww-daemon")
 	hl.exec_cmd("hypridle")
 	hl.exec_cmd("waybar")

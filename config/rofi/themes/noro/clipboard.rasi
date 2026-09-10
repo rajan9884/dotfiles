@@ -1,0 +1,125 @@
+/* ── Clipboard manager (Omarchy-style split preview) ──
+ * Mirrors omarchy.clipboard: 875px card, left list + right preview,
+ * 50px rows with 34px thumbnails, "Search clipboard…" header.
+ * Used in rofi script-mode: entry icons feed icon-current-entry,
+ * so images preview large on the right half as selection moves.
+ */
+@import "~/.config/rofi/colors.rasi"
+
+* {
+    bg:       @background;
+    bg-alt:   @background-alt;
+    fg:       @foreground;
+    accent:   @selected;
+    urgent:   @urgent;
+
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+window {
+    width:            875px;
+    background-color: @bg;
+    border:           2px solid;
+    border-color:     @accent;
+    border-radius:    12px;
+    padding:          0;
+    location:         center;
+    anchor:           center;
+}
+
+mainbox {
+    background-color: @bg;
+    border-radius:    12px;
+    children:         [ inputbar, listview-split ];
+    spacing:          0;
+    padding:          0;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border-radius:    12px 12px 0 0;
+    padding:          14px 20px;
+    spacing:          10px;
+    children:         [ entry ];
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @fg;
+    placeholder:      "Search clipboard…";
+    placeholder-color: @fg;
+    vertical-align:   0.5;
+    font:             "JetBrainsMono Nerd Font 12";
+}
+
+/* Left list + right preview, split 50/50 like Omarchy's Row. */
+listview-split {
+    orientation:      horizontal;
+    spacing:          0px;
+    children:         [ listview, icon-current-entry ];
+    background-color: @bg;
+    border-radius:    0 0 12px 12px;
+    padding:          8px;
+}
+
+listview {
+    background-color: transparent;
+    columns:          1;
+    lines:            10;
+    width:            350px;
+    spacing:          2px;
+    padding:          0 8px 0 0;
+    scrollbar:        false;
+    fixed-height:     true;
+    dynamic:          true;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @fg;
+    orientation:      horizontal;
+    children:         [ element-icon, element-text ];
+    padding:          8px 12px;
+    spacing:          10px;
+    border-radius:    12px;
+}
+
+element selected.normal {
+    background-color: @accent;
+    text-color:       @bg;
+}
+
+element-icon {
+    size:             34px;
+}
+
+element-text {
+    text-color:       @fg;
+    vertical-align:   0.5;
+    font:             "JetBrainsMono Nerd Font 11";
+}
+
+element-text selected.normal,
+element-text selected {
+    text-color:       @bg;
+}
+
+/* Right-half live preview of the selected entry: images render
+ * large, text rows show their full contents rasterized to PNG by
+ * clipboard.sh (icon-current-entry can only display images).
+ * Top-aligned so tall text previews read from the first line
+ * instead of centering (which buried the start of long entries).
+ * Divider echoes Omarchy's 1px vertical rule between list and
+ * preview. Explicit px size: percentage sizes don't scale the
+ * preview image in this widget. */
+icon-current-entry {
+    expand:           true;
+    size:             470px;
+    background-color: transparent;
+    border:           0px 0px 0px 1px;
+    border-color:     @bg-alt;
+    border-radius:    0px;
+    vertical-align:   0;
+    horizontal-align: 0.5;
+}

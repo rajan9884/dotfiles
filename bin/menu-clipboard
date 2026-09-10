@@ -71,27 +71,23 @@ case "$MODE" in
         rofi -show calc -modi calc -theme "$THEME"
         ;;
     clipboard|clipboard_menu|menu-clipboard)
-        THEME="$LAUNCHER_THEME"
-        sel="$(cliphist list | rofi -dmenu -p "Clipboard" -theme "$THEME")" || exit 0
-        [ -z "$sel" ] && exit 0
-        # Decode to a temp file so images survive (no NUL truncation in vars),
-        # then copy with the right MIME type: images as image/*, else text.
-        tmp="$(mktemp -t clip-pick.XXXXXX)"
-        trap 'rm -f -- "$tmp"' EXIT
-        id="${sel%%$'\t'*}"
-        if ! cliphist decode "$id" > "$tmp" 2>/dev/null; then
-            printf '%s' "$sel" | cliphist decode > "$tmp"
-        fi
-        mime="$(file -b --mime-type -- "$tmp")"
-        case "$mime" in
-            image/*) wl-copy --type "$mime" < "$tmp" ;;
-            *) wl-copy < "$tmp" ;;
-        esac
+        # Omarchy-style clipboard: rofi script-mode backend
+        # (config/rofi/clipboard.sh) + split-preview theme.
+        # Enter pastes, Ctrl+Enter copies, Shift+Delete removes.
+        THEME="$THEME_DIR/themes/noro/clipboard.rasi"
+        rofi -show clipboard \
+            -modi "clipboard:$HOME/.config/rofi/clipboard.sh" \
+            -theme "$THEME" -show-icons
         ;;
     clipboard-wipe)
         THEME="$SCRIPTS_THEME"
         confirm="$(printf 'No\nYes, wipe history' | rofi -dmenu -p "Wipe clipboard history?" -theme "$THEME")"
-        [ "$confirm" = "Yes, wipe history" ] && cliphist wipe
+        if [ "$confirm" = "Yes, wipe history" ]; then
+            cliphist wipe
+            # cliphist can reuse numeric ids after a wipe, so drop
+            # the per-id decoded image cache used for previews.
+            rm -rf -- "${XDG_CACHE_HOME:-$HOME/.cache}/rofi/clipboard-images"
+        fi
         ;;
     keybinds|keybinds_menu|menu-keybinds)
         # Live keybindings cheatsheet parsed from hyprland.lua

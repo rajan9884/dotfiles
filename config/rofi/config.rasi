@@ -11,11 +11,26 @@ configuration {
     display-window:      " Windows";
     drun-display-format: "{name}";
     font:                "NotoSansMono Nerd Font 12";
+    // Omarchy-style keyboard-driven behavior:
+    // cycle = walker's selection_wrap; hover-select off = force_keyboard_focus
     cycle:               true;
     scroll-method:       0;
-    hover-select:        true;
-    me-select-entry:     "";
+    hover-select:        false;
+    // This rofi 2.0.0-dirty build loops forever if two bindings share a
+    // key/button (verified), and rejects "" as a syntax error at startup.
+    // Right-click highlights, left-click accepts, hover never steals focus.
+    me-select-entry:     "MouseSecondary";
     me-accept-entry:     "MousePrimary";
+    // Fast keyword narrowing like omarchy.menu: fuzzy + fzf ranking,
+    // tokenized multi-word queries, parallel filter threads.
+    // NOTE: no custom kb-* bindings here — rofi 2.0.0-dirty hangs while
+    // parsing most kb overrides (verified: even kb-row-up "Down" loops).
+    // Defaults already cover arrows + Enter + Emacs keys (Ctrl+p/n, Ctrl+a/e).
+    matching:            "fuzzy";
+    sorting-method:      "fzf";
+    sort:                true;
+    tokenize:            true;
+    threads:             0;
 }
 
 //@theme "~/.config/rofi/theme.rasi"

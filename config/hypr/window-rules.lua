@@ -37,7 +37,7 @@ hl.window_rule({
 
 hl.window_rule({
 	name = "webapp-install-float",
-	match = { class = "(webapp-install|wifi-share)" },
+	match = { class = "(webapp-install|webapp-remove|wifi-share|menu-share|menu-transcode)" },
 	float = true,
 	center = true,
 	size = { 650, 480 },

@@ -3,15 +3,14 @@
 #   arch-menu-images — image selector (rofi carousel)
 #   Shows a horizontal carousel of image thumbnails and prints the selected
 #   image path.
-#   Thumbnails come from rofi's XDG thumbnailers (glycin/vips pipeline); no
-#   quickshell involved.
+#   Thumbnails come from rofi's XDG thumbnailers (glycin/vips pipeline).
 #   Usage: arch-menu-images [--selected <image>] [--print-name] [--show-labels]
 #                           [--filterable] [--lazy-thumbnails]
 #                           <image-dir>...
 #   Prints the selected image path (or name with --print-name) to stdout.
 # ──────────────────────────────────────────────
 
-# Legacy quickshell-era flags that no longer have meaning; we accept them so
+# Legacy flags that no longer have meaning; we accept them so
 # existing callers keep working, then ignore them.
 selected_image=""
 print_name=false

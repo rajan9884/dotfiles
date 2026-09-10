@@ -15,6 +15,12 @@ fi
 # Using awww-daemon
 awww img "$WALLPAPER" --transition-type grow --transition-pos "$(hyprctl cursorpos)" --transition-duration 1.5
 
+# 1.5 Record current wallpaper + stage lock-screen background.
+# hyprlock reads a static path, so pre-convert once per switch
+# (backgrounded — never on the lock hot path).
+printf '%s' "$WALLPAPER" > ~/.cache/current-wallpaper
+(magick "$WALLPAPER" ~/.cache/hyprlock-bg.jpg 2>/dev/null) & disown 2>/dev/null
+
 # 2. Extract colors with Matugen
 # This updates colors for Waybar, Rofi, Kitty, Hyprland, etc.
 matugen image "$WALLPAPER" -c ~/.config/matugen/config.toml --source-color-index 0

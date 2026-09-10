@@ -12,6 +12,18 @@ HYP_DIR="$HOME/.config/hypr"
 THEME="$HOME/.config/rofi/active-picker.rasi"
 PROMPT="Keybindings"
 
+# Omarchy-style: keyboard-driven, instant filtering (see wifi-menu.sh).
+# NOTE: no -kb-row-* flags: rofi 2.0.0-dirty hangs parsing most kb
+# overrides (verified headless). Defaults already include Ctrl+p/n + arrows.
+ROFI_PERF="-show-icons -hover-select -matching fuzzy -sorting-method fzf -sort -tokenize -threads 0 -me-accept-entry MousePrimary -no-fixed-num-lines -i"
+
+# Omarchy caches parsed keybindings keyed by config hash so reopening is
+# instant (no re-parse, no fork storm). Same idea here.
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/rofi"
+cache_key() {
+    (cat "$HYP_DIR"/*.lua 2>/dev/null; printf 'v2\n') | sha256sum | cut -d' ' -f1
+}
+
 label() {
     action="$1"
     case "$action" in
@@ -102,49 +114,49 @@ bind_desc() {
 }
 
 pretty_key() {
-    printf '%s' "$1" | sed -E \
-        -e 's/mod \.\. " \+/SUPER +/g' \
-        -e 's/"//g' \
-        -e 's/\bReturn\b/Enter/g' \
-        -e 's/\bESCAPE\b/Esc/g' \
-        -e 's/\bTAB\b/Tab/g' \
-        -e 's/\bcomma\b/,/g' \
-        -e 's/\bperiod\b/./g' \
-        -e 's/\bminus\b/-/g' \
-        -e 's/\bequal\b/=/g' \
-        -e 's/\bSLASH\b/\//g' \
-        -e 's/\bBACKSPACE\b/Backspace/g' \
-        -e 's/\bHome\b/Home/g' \
-        -e 's/\bcode:20\b/-/g' \
-        -e 's/\bcode:21\b/=/g' \
-        -e 's/\bmouse_down\b/Wheel Down/g' \
-        -e 's/\bmouse_up\b/Wheel Up/g' \
-        -e 's/\bmouse:272\b/Mouse left/g' \
-        -e 's/\bmouse:273\b/Mouse right/g' \
-        -e 's/\bXF86AudioRaiseVolume\b/Vol+/g' \
-        -e 's/\bXF86AudioLowerVolume\b/Vol-/g' \
-        -e 's/\bXF86AudioMute\b/Mute/g' \
-        -e 's/\bXF86AudioMicMute\b/Mic Mute/g' \
-        -e 's/\bXF86AudioNext\b/Next/g' \
-        -e 's/\bXF86AudioPrev\b/Prev/g' \
-        -e 's/\bXF86AudioPlay\b/Play/g' \
-        -e 's/\bXF86AudioPause\b/Pause/g' \
-        -e 's/\bXF86MonBrightnessUp\b/Bright+/g' \
-        -e 's/\bXF86MonBrightnessDown\b/Bright-/g' \
-        -e 's/\bXF86TouchpadToggle\b/Touchpad/g' \
-        -e 's/\bXF86TouchpadOn\b/Touchpad On/g' \
-        -e 's/\bXF86TouchpadOff\b/Touchpad Off/g' \
-        -e 's/\bXF86Calculator\b/Calc/g' \
-        -e 's/\bswitch:on:Lid Switch\b/Lid closed/g' \
-        -e 's/\bPrint\b/PrtSc/g' \
-        -e 's/(^|[^[:alpha:]])left([^[:alpha:]]|$)/\1Left\2/g' \
-        -e 's/(^|[^[:alpha:]])right([^[:alpha:]]|$)/\1Right\2/g' \
-        -e 's/(^|[^[:alpha:]])up([^[:alpha:]]|$)/\1Up\2/g' \
-        -e 's/(^|[^[:alpha:]])down([^[:alpha:]]|$)/\1Down\2/g' \
-        -e 's/\bsuper/Super/g' \
-        -e 's/\bshift/Shift/g' \
-        -e 's/ +/ /g' \
-        -e 's/^ *//' -e 's/ *$//'
+    # Bash-only (zero forks): the old version spawned a 40-expression
+    # `sed` per binding (~155 forks ≈ most of the 0.4s). Same output.
+    local s="$1"
+    s="${s//mod .. \" +/SUPER +}"
+    s="${s//\"/}"
+    s="${s//Return/Enter}"
+    s="${s//ESCAPE/Esc}"
+    s="${s//TAB/Tab}"
+    s="${s//comma/,}"
+    s="${s//period/.}"
+    s="${s//minus/-}"
+    s="${s//equal/=}"
+    s="${s//SLASH//}"
+    s="${s//BACKSPACE/Backspace}"
+    s="${s//code:20/-}"
+    s="${s//code:21/=}"
+    s="${s//mouse_down/Wheel Down}"
+    s="${s//mouse_up/Wheel Up}"
+    s="${s//mouse:272/Mouse left}"
+    s="${s//mouse:273/Mouse right}"
+    s="${s//XF86AudioRaiseVolume/Vol+}"
+    s="${s//XF86AudioLowerVolume/Vol-}"
+    s="${s//XF86AudioMute/Mute}"
+    s="${s//XF86AudioMicMute/Mic Mute}"
+    s="${s//XF86AudioNext/Next}"
+    s="${s//XF86AudioPrev/Prev}"
+    s="${s//XF86AudioPlay/Play}"
+    s="${s//XF86AudioPause/Pause}"
+    s="${s//XF86MonBrightnessUp/Bright+}"
+    s="${s//XF86MonBrightnessDown/Bright-}"
+    s="${s//XF86TouchpadToggle/Touchpad}"
+    s="${s//XF86TouchpadOn/Touchpad On}"
+    s="${s//XF86TouchpadOff/Touchpad Off}"
+    s="${s//XF86Calculator/Calc}"
+    s="${s//switch:on:Lid Switch/Lid closed}"
+    s="${s//Print/PrtSc}"
+    s="${s// super/Super}"
+    s="${s// shift/Shift}"
+    s="${s//  +/ }"
+    # trim
+    s="${s#"${s%%[![:space:]]*}"}"
+    s="${s%"${s##*[![:space:]]}"}"
+    printf '%s' "$s"
 }
 
 render() {
@@ -237,4 +249,33 @@ format_entries() {
     awk -F '\t' '{ printf "%-35s → %s\n", $1, $2 }'
 }
 
-render | prioritize_entries | format_entries | rofi -dmenu -i -p "$PROMPT" -theme "$THEME"
+build_entries_uncached() {
+    render | prioritize_entries | format_entries
+}
+
+output_entries() {
+    local key cache_file tmp_file
+    key=$(cache_key)
+    cache_file="$CACHE_DIR/keybinds-${key}.list"
+    if [[ -s "$cache_file" ]]; then
+        cat "$cache_file"
+    elif mkdir -p "$CACHE_DIR" 2>/dev/null; then
+        tmp_file=$(mktemp "$CACHE_DIR/keybinds.XXXXXX") || { build_entries_uncached; return; }
+        if build_entries_uncached >"$tmp_file"; then
+            mv "$tmp_file" "$cache_file"
+            find "$CACHE_DIR" -maxdepth 1 -type f -name 'keybinds-*.list' ! -name "keybinds-${key}.list" -delete 2>/dev/null || true
+            cat "$cache_file"
+        else
+            rm -f "$tmp_file"
+            build_entries_uncached
+        fi
+    else
+        build_entries_uncached
+    fi
+}
+
+if [[ "${1:-}" == "--print" || "${1:-}" == "-p" || "${1:-}" == "--refresh" ]]; then
+    output_entries
+else
+    output_entries | rofi -dmenu $ROFI_PERF -p "$PROMPT" -theme "$THEME"
+fi
