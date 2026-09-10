@@ -1,13 +1,3 @@
-vim.opt.clipboard = "unnamedplus"
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-
-local group = vim.api.nvim_create_augroup("user_clipboard", { clear = true })
-vim.api.nvim_create_autocmd("User", {
-  group = group,
-  pattern = "VeryLazy",
-  callback = function()
-    vim.opt.clipboard = "unnamedplus"
-  end,
-})
+-- Options are automatically loaded before lazy.nvim startup
+-- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
+-- Add any additional options here
