@@ -14,7 +14,7 @@ return {
 	editor = "kitty -e nvim",
 	terminal_tmux = "kitty -e tmux",
 	menu = "rofi -show drun",
-	file = HOME .. "/.local/bin/nautilus-gnome",
+	file = "kitty -e yazi",
 	scripts = HOME .. "/.config/hypr/scripts",
 	mod = "SUPER",
 }
