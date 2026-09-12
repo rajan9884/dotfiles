@@ -16,8 +16,12 @@ ln -sf "$WAYBAR_THEMES_DIR/$CHOICE/config.jsonc" "$HOME/.config/waybar/config.js
 ln -sf "$WAYBAR_THEMES_DIR/$CHOICE/style.css" "$HOME/.config/waybar/style.css"
 
 # 3. Restart Waybar
-killall waybar 2>/dev/null
-sleep 0.3
-waybar & disown
+# Always via systemd: a bare `waybar &` stacks a duplicate bar next to
+# waybar.service (same bug as swww-all.sh guards against).
+systemctl --user restart waybar.service 2>/dev/null || {
+    killall -q waybar .waybar-wrapped 2>/dev/null
+    sleep 0.3
+    setsid waybar >/dev/null 2>&1 < /dev/null &
+}
 
 notify-send "  Waybar Updated" "Style: $CHOICE applied" -i preferences-desktop-theme

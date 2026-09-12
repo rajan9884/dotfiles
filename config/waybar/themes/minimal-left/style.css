@@ -27,14 +27,13 @@ window#waybar {
     color: @primary;
 }
 
-#clock, #pulseaudio, #network, #battery, #custom-power, #custom-launcher, #tray, #custom-record, #custom-voxtype {
+#clock, #pulseaudio, #battery, #custom-power, #custom-launcher, #tray, #custom-record, #custom-voxtype {
     padding: 12px 0;
 }
 
 #custom-launcher { color: @primary; font-size: 18px; }
 #clock { color: @on_surface; font-size: 11px; }
 #pulseaudio { color: @secondary; }
-#network { color: @tertiary; }
 #battery { color: @primary; }
 #custom-power { color: @error; }
 #custom-record { color: @primary; }

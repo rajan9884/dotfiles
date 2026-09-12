@@ -20,7 +20,6 @@ fi
 build_menu() {
     echo "󰌾  Lock"
     echo "󰍃  Logout"
-    echo "󰹑  Screensaver"
     echo "󰤁  Sleep (suspend)"
     echo "󰜉  Reboot"
     echo "󰐥  Shutdown"
@@ -48,9 +47,6 @@ handle_selection() {
             if confirm_action "logout"; then
                 hyprctl dispatch "hl.dsp.exit()"
             fi ;;
-
-        "󰹑  Screensaver")
-            kitty --class arch-screensaver --start-as fullscreen --override window_padding_width=0 --override background_opacity=1.0 --override dynamic_background_opacity=no -e "$HOME/.local/bin/arch-screensaver" --now & ;;
 
         "󰤄  Sleep (suspend)")
             if confirm_action "suspend"; then

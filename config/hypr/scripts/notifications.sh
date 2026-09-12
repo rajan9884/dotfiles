@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check if using dunst or mako
 if command -v dunstctl &> /dev/null; then

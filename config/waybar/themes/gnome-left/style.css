@@ -51,7 +51,6 @@ window#waybar {
 }
 
 #pulseaudio,
-#network,
 #battery,
 #tray,
 #custom-power,
@@ -62,7 +61,6 @@ window#waybar {
 }
 
 #pulseaudio { color: @primary; }
-#network { color: @secondary; }
 #battery { color: @tertiary; }
 #custom-power { color: @error; font-size: 18px; }
 #custom-record { color: @primary; }

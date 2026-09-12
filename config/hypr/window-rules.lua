@@ -7,6 +7,14 @@ hl.window_rule({
 	suppress_event = "maximize",
 })
 
+-- Catch-all: `center` is a no-op for tiled windows, so this only
+-- affects floating ones (dialogs, popouts, toggled floats).
+hl.window_rule({
+	name = "float-center",
+	match = { class = ".*" },
+	center = true,
+})
+
 hl.window_rule({
 	name = "media-float",
 	match = { class = "^(imv|mpv)$" },
@@ -37,7 +45,7 @@ hl.window_rule({
 
 hl.window_rule({
 	name = "webapp-install-float",
-	match = { class = "(webapp-install|webapp-remove|wifi-share|menu-share|menu-transcode)" },
+	match = { class = "(webapp-install|webapp-remove|wifi-share)" },
 	float = true,
 	center = true,
 	size = { 650, 480 },

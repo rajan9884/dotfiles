@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 battery_path="/sys/class/power_supply/BAT0"
 [ ! -d "$battery_path" ] && battery_path="/sys/class/power_supply/BAT1"

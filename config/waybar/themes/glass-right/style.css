@@ -66,18 +66,17 @@ window#waybar {
 }
 
 /* ── System modules (translucent pills) ── */
-#pulseaudio, #network, #battery, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #custom-record, #custom-voxtype {
     padding: 8px 0;
     transition: all 200ms ease;
 }
 
-#pulseaudio:hover, #network:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
+#pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
     background: alpha(@primary, 0.1);
 }
 
 #pulseaudio { color: @tertiary; }
-#network    { color: @primary; }
-#battery    { color: @secondary; }
+#battery { color: @secondary; }
 #custom-record { color: @primary; }
 #custom-record.recording { color: @error; }
 #custom-voxtype { color: @secondary; }

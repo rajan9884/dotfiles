@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # ──────────────────────────────────────────────
 #   Volume OSD via swayosd-server (compact native OSD).
 #   pactl makes the change (exact 5% steps, 150% ceiling);

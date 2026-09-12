@@ -35,17 +35,15 @@ hl.bind(mod .. " + ALT + M", hl.dsp.workspace.toggle_special("music"), { descrip
 hl.bind(mod .. " + CTRL + ALT + M", hl.dsp.window.move({ workspace = "special:music", follow = false }), { description = "Move window to music scratchpad" })
 hl.bind(mod .. " + CTRL + Return", hl.dsp.workspace.toggle_special("terminal"), { description = "Toggle terminal scratchpad" })
 hl.bind(mod .. " + CTRL + SHIFT + Return", hl.dsp.window.move({ workspace = "special:terminal", follow = false }), { description = "Move window to terminal scratchpad" })
--- Workspace overview (HyprExpo; no-op until bin/build-hyprexpo has run)
-hl.bind(mod .. " + grave", hl.dsp.exec_cmd("hyprctl dispatch hyprexpo:expo toggle"), { description = "Workspace overview" })
 hl.bind(mod .. " + J", hl.dsp.layout("togglesplit"), { description = "Toggle window split" }) -- togglesplit (layoutmsg)
 hl.bind(mod .. " + SHIFT + F", hl.dsp.exec_cmd(vars.file))
 hl.bind(mod .. " + SHIFT + ALT + F", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/nautilus-cwd"), { description = "File manager (cwd)" })
-hl.bind(mod .. " + CTRL + Space", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/arch-wallpaper-picker"))
+hl.bind(mod .. " + CTRL + Space", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/nixos-wallpaper-picker"))
 hl.bind(mod .. " + R", hl.dsp.exec_cmd(scripts .. "/random-wall.sh"))
 
 hl.bind(
 	mod .. " + CTRL + SHIFT + Space",
-	hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/arch-theme-switcher")
+	hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/nixos-theme-switcher")
 )
 
 hl.bind(mod .. " + ALT + F", hl.dsp.window.fullscreen({ mode = "maximized" }))
@@ -73,7 +71,7 @@ for idx = 1, 5 do
 	)
 end
 
--- Workspace navigation (Omarchy-style)
+-- Workspace navigation
 hl.bind(mod .. " + TAB", hl.dsp.focus({ workspace = "e+1" }), { description = "Next workspace" })
 hl.bind(mod .. " + SHIFT + TAB", hl.dsp.focus({ workspace = "e-1" }), { description = "Previous workspace" })
 hl.bind(mod .. " + CTRL + TAB", hl.dsp.focus({ workspace = "previous" }), { description = "Former workspace" })
@@ -93,7 +91,7 @@ hl.bind(mod .. " + SLASH", hl.dsp.exec_cmd(scripts .. "/monitor-scaling.sh up"),
 hl.bind(mod .. " + ALT + SLASH", hl.dsp.exec_cmd(scripts .. "/monitor-scaling.sh down"), { description = "Monitor scaling down" })
 hl.bind("CTRL + ALT + DELETE", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/window-close-all"), { locked = true, description = "Close all windows" })
 
-hl.bind(mod .. " + CTRL + W", hl.dsp.exec_cmd("~/.config/waybar/scripts/wifi-menu.sh"))
+hl.bind(mod .. " + CTRL + W", hl.dsp.exec_cmd("kitty -e nmtui"), { description = "Network connections" })
 hl.bind(mod .. " + ESCAPE", hl.dsp.exec_cmd("~/.config/waybar/scripts/power-menu.sh"))
 hl.bind(mod .. " + CTRL + P", hl.dsp.exec_cmd("~/.config/waybar/scripts/power-menu.sh"), { description = "Power / logout menu" })
 hl.bind(mod .. " + CTRL + B", hl.dsp.exec_cmd("~/.config/waybar/scripts/bluetooth-menu.sh"), { description = "Bluetooth menu" })
@@ -101,10 +99,8 @@ hl.bind(mod .. " + ALT + C", hl.dsp.exec_cmd(vars.HOME .. "/.config/waybar/scrip
 hl.bind(mod .. " + CTRL + N", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/night-light-toggle"), { description = "Toggle nightlight" })
 hl.bind(mod .. " + CTRL + I", hl.dsp.exec_cmd(scripts .. "/idle-toggle.sh"), { description = "Toggle idle lock" })
 hl.bind(mod .. " + CTRL + E", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-emoji"), { description = "Emojis" })
-hl.bind(mod .. " + CTRL + Q", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-calc"), { description = "Calculator" })
-hl.bind("XF86Calculator", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-calc"), { locked = true, description = "Calculator" })
 
--- Cursor zoom (persistent, like Omarchy)
+-- Cursor zoom (persistent)
 hl.bind(mod .. " + CTRL + Z", function() local z = hl.get_config("cursor.zoom_factor") or 1; hl.config({ cursor = { zoom_factor = z + 1 } }) end, { description = "Zoom in" })
 hl.bind(mod .. " + CTRL + ALT + Z", function() hl.config({ cursor = { zoom_factor = 1 } }) end, { description = "Reset zoom" })
 
@@ -140,22 +136,24 @@ hl.bind(mod .. " + ALT + SHIFT + W", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/w
 hl.bind(mod .. " + ALT + SHIFT + X", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/webapp-remove-prompt"), { description = "Remove web app" })
 hl.bind(mod .. " + ALT + Q", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/wifi-share-prompt"), { description = "Share WiFi via QR" })
 
-hl.bind(mod .. " + SHIFT + Space", hl.dsp.exec_cmd("killall -SIGUSR1 waybar"), { locked = true })
+hl.bind(mod .. " + SHIFT + Space", hl.dsp.exec_cmd("killall -q -SIGUSR1 waybar .waybar-wrapped"), { locked = true, description = "Toggle waybar visibility" })
 
-hl.bind(mod .. " + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive -100 0"), { repeating = true })
-hl.bind(mod .. " + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 100 0"), { repeating = true })
-hl.bind(mod .. " + SHIFT + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 -100"), { repeating = true })
-hl.bind(mod .. " + SHIFT + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 100"), { repeating = true })
+-- Native dsp resize: `hyprctl dispatch resizeactive …` no longer parses on 0.55+
+-- (hyprctl wraps dispatch args as Lua), so dispatch in-process instead.
+hl.bind(mod .. " + minus", hl.dsp.window.resize({ x = -100, y = 0, relative = true }), { repeating = true })
+hl.bind(mod .. " + equal", hl.dsp.window.resize({ x = 100, y = 0, relative = true }), { repeating = true })
+hl.bind(mod .. " + SHIFT + minus", hl.dsp.window.resize({ x = 0, y = -100, relative = true }), { repeating = true })
+hl.bind(mod .. " + SHIFT + equal", hl.dsp.window.resize({ x = 0, y = 100, relative = true }), { repeating = true })
 
--- Resize steps: fine (±25) and coarse (±300), Omarchy parity
-hl.bind(mod .. " + ALT + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive -25 0"), { repeating = true })
-hl.bind(mod .. " + ALT + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 25 0"), { repeating = true })
-hl.bind(mod .. " + SHIFT + ALT + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 -25"), { repeating = true })
-hl.bind(mod .. " + SHIFT + ALT + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 25"), { repeating = true })
-hl.bind(mod .. " + CTRL + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive -300 0"), { repeating = true })
-hl.bind(mod .. " + CTRL + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 300 0"), { repeating = true })
-hl.bind(mod .. " + CTRL + SHIFT + minus", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 -300"), { repeating = true })
-hl.bind(mod .. " + CTRL + SHIFT + equal", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 300"), { repeating = true })
+-- Resize steps: fine (±25) and coarse (±300)
+hl.bind(mod .. " + ALT + minus", hl.dsp.window.resize({ x = -25, y = 0, relative = true }), { repeating = true })
+hl.bind(mod .. " + ALT + equal", hl.dsp.window.resize({ x = 25, y = 0, relative = true }), { repeating = true })
+hl.bind(mod .. " + SHIFT + ALT + minus", hl.dsp.window.resize({ x = 0, y = -25, relative = true }), { repeating = true })
+hl.bind(mod .. " + SHIFT + ALT + equal", hl.dsp.window.resize({ x = 0, y = 25, relative = true }), { repeating = true })
+hl.bind(mod .. " + CTRL + minus", hl.dsp.window.resize({ x = -300, y = 0, relative = true }), { repeating = true })
+hl.bind(mod .. " + CTRL + equal", hl.dsp.window.resize({ x = 300, y = 0, relative = true }), { repeating = true })
+hl.bind(mod .. " + CTRL + SHIFT + minus", hl.dsp.window.resize({ x = 0, y = -300, relative = true }), { repeating = true })
+hl.bind(mod .. " + CTRL + SHIFT + equal", hl.dsp.window.resize({ x = 0, y = 300, relative = true }), { repeating = true })
 
 -- Move focus (Vim-style)
 hl.bind(mod .. " + H", hl.dsp.focus({ direction = "left" }))
@@ -201,7 +199,9 @@ hl.bind(
 
 -- Emoji picker & keybindings cheat sheet (rofi themes pull matugen colors)
 hl.bind(mod .. " + period", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-emoji"))
-hl.bind(mod .. " + K", hl.dsp.exec_cmd(scripts .. "/keybinds-cheatsheet.sh"))
+hl.bind(mod .. " + K", hl.dsp.exec_cmd(scripts .. "/keybinds-cheatsheet.sh"), { description = "Keybindings cheatsheet" })
+hl.bind(mod .. " + slash", hl.dsp.exec_cmd(scripts .. "/keybinds-cheatsheet.sh"), { description = "Keybindings cheatsheet" })
+hl.bind(mod .. " + SHIFT + A", hl.dsp.exec_cmd(scripts .. "/animations-toggle.sh"), { description = "Toggle animations on/off" })
 
 -- Switch workspaces (1–10; keys 1–9 and 0)
 for i = 1, 10 do
@@ -289,7 +289,7 @@ hl.bind("SUPER + CTRL + Print", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/ocr-ex
 hl.bind("SUPER + CTRL + V", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-clipboard"), { description = "Clipboard history (Enter paste, Ctrl+Enter copy, Shift+Delete remove)" })
 hl.bind("SUPER + CTRL + SHIFT + V", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-clipboard clipboard-wipe"), { description = "Wipe clipboard history" })
 
--- ── Universal Clipboard (omarchy-style, terminal-aware) ─────────────
+-- ── Universal Clipboard (terminal-aware) ─────────────
 -- Send the chord with explicit mods straight to the focused surface, so the
 -- physically held SUPER doesn't merge into the injected key at the seat
 -- (which is what breaks plain wtype injection). The down/up split works around
@@ -349,11 +349,7 @@ hl.bind("SUPER + C", universal_clipboard_shortcut("CTRL", "C", "CTRL", "Insert")
 hl.bind("SUPER + V", universal_clipboard_shortcut("CTRL", "V", "SHIFT", "Insert"), { description = "Universal paste" })
 hl.bind("SUPER + X", send_shortcut_once("CTRL", "X"), { description = "Universal cut" })
 
--- ── Omarchy parity (no Quickshell) ──
-
--- Share / transcode (kitty+gum prompts)
-hl.bind(mod .. " + CTRL + S", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-share-prompt"), { description = "Share clipboard/file" })
-hl.bind(mod .. " + CTRL + period", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-transcode-prompt"), { description = "Transcode picture/video" })
+-- ── Extra menus ──
 
 -- Herdr keybindings cheatsheet (rofi)
 hl.bind(mod .. " + CTRL + K", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-herdr-keybindings"), { description = "Herdr keybindings" })
@@ -368,7 +364,5 @@ hl.bind(mod .. " + CTRL + BACKSPACE", function()
 	end
 end, { description = "Toggle single-window square aspect" })
 
--- Screensaver now (kitty + ttfx, omarchy logo art included) / theme menu
-hl.bind(mod .. " + ALT + L", hl.dsp.exec_cmd("kitty --class arch-screensaver --start-as fullscreen --override window_padding_width=0 --override background_opacity=1.0 -e " .. vars.HOME .. "/.local/bin/arch-screensaver --now"), { description = "Screensaver now" })
--- NOTE: SUPER+CTRL+SHIFT+Space is already owned by arch-theme-switcher above
+-- NOTE: SUPER+CTRL+SHIFT+Space is already owned by nixos-theme-switcher above
 -- (same combo, mods are order-insensitive) — do NOT add a theme-menu bind here.

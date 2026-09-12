@@ -66,16 +66,33 @@ statusbar {
     color: {{colors.on_surface_variant.default.hex}};
 }
 
-/* Context Menu */
+/* Context Menu (nm-applet tray menu, popovers) */
 menu, popover, .popup {
     background-color: {{colors.surface_container.default.hex}};
     color: {{colors.on_surface.default.hex}};
     border: 1px solid {{colors.outline_variant.default.hex}};
+    border-radius: 12px;
+    padding: 6px;
+}
+
+menu menuitem, popover modelbutton {
+    border-radius: 8px;
+    padding: 6px 12px;
 }
 
 menu menuitem:hover, popover modelbutton:hover {
     background-color: {{colors.primary.default.hex}};
     color: {{colors.on_primary.default.hex}};
+}
+
+menu menuitem:disabled, popover modelbutton:disabled {
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+menu separator, popover separator {
+    background-color: {{colors.outline_variant.default.hex}};
+    min-height: 1px;
+    margin: 6px 8px;
 }
 
 /* Buttons */

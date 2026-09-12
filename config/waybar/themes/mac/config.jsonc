@@ -25,17 +25,15 @@
     "modules-right": [
         "tray",
         "pulseaudio",
-        "network",
         "bluetooth",
         "battery",
-        "custom/updates",
         "custom/power"
     ],
 
     // ── Modules ─────────────────────────────────
 
     "custom/launcher": {
-        "format": "󰣇",
+        "format": "",
         "on-click": "rofi -show drun -theme ~/.config/rofi/theme.rasi",
         "tooltip": false
     },
@@ -95,18 +93,6 @@
         "on-click-right": "bluetoothctl show | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on"
     },
 
-    "network": {
-        "interval": 10,
-        "format-wifi": "󰤨  {essid}",
-        "format-ethernet": "󰈀  {ifname}",
-        "format-disconnected": "󰤭  offline",
-        "tooltip-format-wifi": "  {essid}\n󱑽  {signalStrength}%  ·  {bandwidthUpBits}↑  {bandwidthDownBits}↓\n󰩟  {ipaddr}/{cidr}",
-        "tooltip-format-ethernet": "󰈀  {ifname}\n󰩟  {ipaddr}/{cidr}",
-        "tooltip-format-disconnected": "No connection",
-        "on-click": "~/.config/waybar/scripts/wifi-menu.sh",
-        "on-click-right": "nmcli radio wifi | grep -q enabled && nmcli radio wifi off || nmcli radio wifi on"
-    },
-
     "battery": {
         "bat": "BAT0",
         "adapter": "ADP0",
@@ -145,15 +131,5 @@
         "format": "⏻",
         "on-click": "~/.config/waybar/scripts/power-menu.sh",
         "tooltip": false
-    },
-
-    "custom/updates": {
-    "format": "\udb81\udeb0  {}",
-    "escape": true,
-    "return-type": "json",
-    "exec": "~/.config/waybar/scripts/updates.sh",
-    "interval": 3600,
-    "on-click": "kitty -e yay -Syu; pkill -RTMIN+8 waybar",
-    "signal": 8
-}
+    }
 }

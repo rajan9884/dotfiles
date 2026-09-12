@@ -8,14 +8,6 @@
         "on-click": "kitty --class wiremix -e wiremix"
     },
 
-    "network": {
-        "interval": 10,
-        "format-wifi": "󰤨",
-        "format-ethernet": "󰈀",
-        "format-disconnected": "󰤭",
-        "on-click": "~/.config/waybar/scripts/wifi-menu.sh"
-    },
-
     "battery": {
         "bat": "BAT1",
         "adapter": "ADP0",
@@ -57,14 +49,6 @@
         "interval": 2,
         "on-click": "voxtype record stop",
         "align": 0.5
-    },
-
-    "custom/updates": {
-        "exec": "~/.config/waybar/scripts/updates.sh",
-        "return-type": "json",
-        "interval": 1800,
-        "on-click": "kitty -e bash -c 'yay -Syu; echo; read -p \"Press Enter to close...\"'",
-        "tooltip": true
     },
 
     "custom/group": {

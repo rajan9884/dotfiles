@@ -1,8 +1,12 @@
-#!/bin/bash
-if pgrep -x gammastep >/dev/null; then
-  pkill gammastep
+#!/usr/bin/env bash
+# Night light via hyprsunset (Hyprland-native gamma control).
+# Bound to SUPER+CTRL+N. Toggle: warm 4000K on, identity off.
+set -euo pipefail
+if pgrep -x hyprsunset >/dev/null; then
+  pkill -x hyprsunset
   notify-send "Night Light" "Disabled"
 else
-  gammastep -O 4000K &
-  notify-send "Night Light" "Enabled"
+  hyprsunset --temperature 4000 &
+  disown
+  notify-send "Night Light" "Enabled (4000K)"
 fi

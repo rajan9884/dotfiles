@@ -58,14 +58,13 @@ MENU+="󰕾  Sound\n$VOL_BAR\n"
 MENU+="󰔉  Focus\n$DND_STATE\n"
 MENU+="󰹑  Mirroring\nNone\n"
 MENU+="󰝚  Music\nNot Playing\n"
-MENU+="󰹑  Screensaver\nRun\n"
 MENU+="⏻  Power\nSystem"
 
 CHOICE=$(echo -e "$MENU" | rofi -dmenu -p "macOS" -theme "$THEME" -i)
 
 case "$CHOICE" in
     *"Wi-Fi"*)
-        ~/.config/waybar/scripts/wifi-menu.sh ;;
+        kitty -e nmtui ;;
     *"Bluetooth"*)
         ~/.config/waybar/scripts/bluetooth-menu.sh ;;
     *"Brightness"*)
@@ -76,8 +75,6 @@ case "$CHOICE" in
         if pgrep -x swaync >/dev/null 2>&1; then
             swaync-client -d
         fi ;;
-    *"Screensaver"*)
-        kitty --class arch-screensaver --start-as fullscreen --override window_padding_width=0 --override background_opacity=1.0 --override dynamic_background_opacity=no -e "$HOME/.local/bin/arch-screensaver" --now ;;
     *"Power"*)
         ~/.config/waybar/scripts/power-menu.sh ;;
 esac

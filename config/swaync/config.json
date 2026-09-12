@@ -53,7 +53,7 @@
             "actions": [
                 {
                     "label": "󰖩 WiFi",
-                    "command": "~/.config/waybar/scripts/wifi-menu.sh"
+                    "command": "kitty -e nmtui"
                 },
                 {
                     "label": "󰂯 BT",

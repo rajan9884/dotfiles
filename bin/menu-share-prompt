@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-# menu-share-prompt — small floating kitty wrapper (same pattern as webapp-install-prompt).
-# Float/size comes from window-rules.lua (class menu-share, 650x480 centered).
-# Usage: menu-share-prompt [args passed through to menu-share]
-export PATH="$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:$PATH"
-BIN="$(command -v menu-share 2>/dev/null || printf '%s/.local/bin/menu-share' "$HOME")"
-exec kitty --class menu-share --title "Share" -e bash -c '"$0" "$@"; echo; echo "Press Enter to close..."; read -r' "$BIN" "$@"

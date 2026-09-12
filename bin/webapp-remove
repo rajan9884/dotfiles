@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# omarchy:summary=Remove a web app desktop launcher
-# omarchy:args=[name]
+# nixos:summary=Remove a web app desktop launcher
+# nixos:args=[name]
 
 set -e
 
@@ -15,7 +15,7 @@ DESKTOP_DIR="$HOME/.local/share/applications/"
 # the ones a reconstructed path cannot reach.
 WEB_APP_PATHS=()
 while IFS= read -r -d '' file; do
-  if grep -q '^Exec=.*\(webapp-launch\|omarchy-launch-webapp\|omarchy-webapp-handler\).*' "$file"; then
+  if grep -q '^Exec=.*webapp-launch.*' "$file"; then
     WEB_APPS+=("$(basename "${file%.desktop}")")
     WEB_APP_PATHS+=("$file")
   fi

@@ -4,7 +4,7 @@
 hl.config({
 	input = {
 		kb_layout = "us",
-		-- Omarchy repeat feel: repeat kicks in after 250ms at 40/sec
+		-- Snappy repeat: kicks in after 250ms at 40/sec
 		-- (Hyprland defaults are 600ms / 25-sec and feel laggy on long-press).
 		repeat_rate = 40,
 		repeat_delay = 250,

@@ -10,7 +10,7 @@ window#waybar {
     background: transparent;
 }
 
-#custom-launcher, #workspaces, #clock, #pulseaudio, #network, #battery, #custom-power, #tray, #custom-record, #custom-voxtype {
+#custom-launcher, #workspaces, #clock, #pulseaudio, #battery, #custom-power, #tray, #custom-record, #custom-voxtype {
     background: @surface;
     border-radius: 20px;
     margin: 5px;

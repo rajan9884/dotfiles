@@ -25,12 +25,11 @@
     "modules-right": [
         "tray",
         "pulseaudio",
-        "network",
         "battery",
         "custom/power"
     ],
     "custom/launcher": {
-        "format": "󰣇",
+        "format": "",
         "on-click": "rofi -show drun -theme ~/.config/rofi/themes/modern/launcher.rasi",
         "tooltip": false
     },

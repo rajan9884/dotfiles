@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Floating-terminal wrapper for wifi-share (keeps window open on instant exit,
 # e.g. enterprise-WiFi refusal or no connection).
 # Usage: wifi-share-prompt [interface] [--password] [--copy]

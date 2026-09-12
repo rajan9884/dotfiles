@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 shuf -n 1 << EOF
 nice try genius 🤡

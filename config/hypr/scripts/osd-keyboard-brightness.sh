@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # ──────────────────────────────────────────────
 #   Keyboard-backlight OSD via swayosd-server.
 #   `cycle` wraps max → off (brightnessctl has no wrap for kbd).

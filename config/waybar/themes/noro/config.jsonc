@@ -23,17 +23,16 @@
         "custom/group"
     ],
     "modules-right": [
-        "tray",
         "custom/notifications",
         "custom/clipboard",
         "custom/power-profile",
         "battery",
-        "network",
+        "tray",
         "bluetooth",
         "custom/power"
     ],
     "custom/launcher": {
-        "format": "󰣇",
+        "format": "",
         "on-click": "rofi -show drun",
         "tooltip": false
     },
@@ -122,13 +121,6 @@
         ],
         "tooltip": false,
         "interval": 30
-    },
-    "network": {
-        "format-wifi": "󰤨",
-        "format-ethernet": "󰈀",
-        "format-disconnected": "󰤭",
-        "on-click": "~/.config/waybar/scripts/wifi-menu.sh",
-        "tooltip": false
     },
     "bluetooth": {
         "format": "󰂯",

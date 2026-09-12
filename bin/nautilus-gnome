@@ -3,4 +3,4 @@
 export XDG_CURRENT_DESKTOP=GNOME
 export XDG_SESSION_DESKTOP=GNOME
 export DESKTOP_SESSION=gnome
-exec /usr/bin/nautilus "$@"
+exec nautilus "$@"

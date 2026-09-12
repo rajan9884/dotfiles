@@ -11,7 +11,7 @@ configuration {
     display-window:      " Windows";
     drun-display-format: "{name}";
     font:                "NotoSansMono Nerd Font 12";
-    // Omarchy-style keyboard-driven behavior:
+    // Keyboard-driven behavior:
     // cycle = walker's selection_wrap; hover-select off = force_keyboard_focus
     cycle:               true;
     scroll-method:       0;
@@ -21,7 +21,7 @@ configuration {
     // Right-click highlights, left-click accepts, hover never steals focus.
     me-select-entry:     "MouseSecondary";
     me-accept-entry:     "MousePrimary";
-    // Fast keyword narrowing like omarchy.menu: fuzzy + fzf ranking,
+    // Fast keyword narrowing: fuzzy + fzf ranking,
     // tokenized multi-word queries, parallel filter threads.
     // NOTE: no custom kb-* bindings here — rofi 2.0.0-dirty hangs while
     // parsing most kb overrides (verified: even kb-row-up "Down" loops).

@@ -13,11 +13,28 @@ hl.config({
 	},
 })
 -- Bezier + per-leaf styles only take effect when ANIM_ENABLED is true.
+-- Timing: closes are faster than opens (snappy feel), layers/scratchpad glide.
 hl.curve("easeOutExpo", { type = "bezier", points = { { 0.16, 1 }, { 0.3, 1 } } })
 hl.animation({ leaf = "windows", enabled = ANIM_ENABLED, speed = 3, bezier = "easeOutExpo", style = "popin 80%" })
-hl.animation({ leaf = "windowsOut", enabled = ANIM_ENABLED, speed = 3, bezier = "easeOutExpo", style = "popin 80%" })
-hl.animation({ leaf = "fade", enabled = ANIM_ENABLED, speed = 3, bezier = "easeOutExpo" })
+hl.animation({ leaf = "windowsOut", enabled = ANIM_ENABLED, speed = 5.5, bezier = "easeOutExpo", style = "popin 80%" })
+hl.animation({ leaf = "windowsMove", enabled = ANIM_ENABLED, speed = 4, bezier = "easeOutExpo", style = "slide" })
+hl.animation({ leaf = "fade", enabled = ANIM_ENABLED, speed = 4, bezier = "easeOutExpo" })
+hl.animation({ leaf = "fadeOut", enabled = ANIM_ENABLED, speed = 5, bezier = "easeOutExpo" })
 hl.animation({ leaf = "workspaces", enabled = ANIM_ENABLED, speed = 3, bezier = "easeOutExpo", style = "slide" })
+hl.animation({ leaf = "specialWorkspace", enabled = ANIM_ENABLED, speed = 3.5, bezier = "easeOutExpo", style = "slidevert" })
+hl.animation({ leaf = "layers", enabled = ANIM_ENABLED, speed = 4, bezier = "easeOutExpo", style = "slide" })
+
+-- ── Focus clarity: dim + slightly fade inactive windows ──
+-- Merges per-key with the theme's decoration block (rounding/blur/shadow
+-- live in themes/*/theme.lua); verified via `hyprctl getoption`.
+hl.config({
+	decoration = {
+		dim_inactive = true,
+		dim_strength = 0.12,
+		dim_special = 0.0,
+		inactive_opacity = 0.93,
+	},
+})
 
 -- ── Layouts ──────────────────────────────────
 hl.config({

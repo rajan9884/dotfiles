@@ -37,7 +37,7 @@ case "$MODE" in
         }
         ;;
     wallpapers|background_menu|wallpaper-menu)
-        ~/.local/bin/arch-wallpaper-picker
+        ~/.local/bin/nixos-wallpaper-picker
         ;;
     power|power_menu|menu-power)
         THEME="$SCRIPTS_THEME"
@@ -46,7 +46,7 @@ case "$MODE" in
             read -r choice
             case "$choice" in
                 Lock)     hyprlock ;;
-                Logout)   hyprctl dispatch exit ;;
+                Logout)   hyprctl dispatch "hl.dsp.exit()" ;;
                 Reboot)   systemctl reboot ;;
                 Shutdown) systemctl poweroff ;;
                 Suspend)  systemctl suspend ;;
@@ -66,12 +66,8 @@ case "$MODE" in
             --hidden-descriptions \
             --selector-args "-theme \"$EMOJI_THEME\""
         ;;
-    calc|calc_menu|menu-calc)
-        THEME="$LAUNCHER_THEME"
-        rofi -show calc -modi calc -theme "$THEME"
-        ;;
     clipboard|clipboard_menu|menu-clipboard)
-        # Omarchy-style clipboard: rofi script-mode backend
+        # Clipboard: rofi script-mode backend
         # (config/rofi/clipboard.sh) + split-preview theme.
         # Enter pastes, Ctrl+Enter copies, Shift+Delete removes.
         THEME="$THEME_DIR/themes/noro/clipboard.rasi"

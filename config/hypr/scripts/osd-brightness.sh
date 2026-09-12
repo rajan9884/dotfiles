@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # ──────────────────────────────────────────────
 #   Brightness OSD via swayosd-server (compact native OSD).
 #   brightnessctl makes the change (exact 5% steps, default

@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# omarchy:summary=Create a desktop launcher for a web app
-# omarchy:args=[name url icon-url-or-name [custom-exec] [mime-types]]
+# nixos:summary=Create a desktop launcher for a web app
+# nixos:args=[name url icon-url-or-name [custom-exec] [mime-types]]
 
 set -e
 
@@ -15,7 +15,7 @@ safe_icon_name() {
 
 require_plain_name() {
   # The name becomes a filename. A slash would turn it into directory levels, so
-  # the launcher lands somewhere omarchy-webapp-remove cannot address and the app
+  # the launcher lands somewhere webapp-remove cannot address and the app
   # is stuck in the launcher; a leading ../ leaves the applications directory
   # altogether. Refuse rather than silently renaming what the user typed -- most
   # often it is a URL entered in the name field.
@@ -269,7 +269,7 @@ elif [[ -f $ICON_REF ]]; then
   ICON_VALUE=$(safe_icon_name "$APP_NAME")
   ICON_PATH=$(install_user_icon "$ICON_REF" "$ICON_VALUE")
 else
-  # Bundled Omarchy icons are package-owned under /usr/share/icons/hicolor.
+  # Bundled distro icons are package-owned under /usr/share/icons/hicolor.
   # Accept either "HEY" or the historical "HEY.png" argument form.
   ICON_VALUE=$(icon_name_from_ref "$ICON_REF")
   ICON_PATH=""

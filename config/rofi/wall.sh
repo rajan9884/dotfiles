@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Prefer standalone wallpapers, fallback to omarchy path for legacy installs
-WALL_DIR="/home/rajan/dotfiles/wallpapers"
-[[ -d "$WALL_DIR" ]] || WALL_DIR="/home/rajan/.config/omarchy/themes/snow_black/backgrounds"
+# Prefer the NixOS wallpaper store, fallback to the theme dir
+WALL_DIR="$HOME/.local/share/wallpapers"
 [[ -d "$WALL_DIR" ]] || WALL_DIR="$HOME/.config/theme/current"
 THUMB_DIR="/tmp/wall_thumbs"
 LOOKUP_FILE="/tmp/wall_lookup.json"
-SCRIPT_PATH="/home/rajan/.config/rofi/wall.sh"
+SCRIPT_PATH="$HOME/.config/rofi/wall.sh"
 selected="$1"
 
 mkdir -p "$THUMB_DIR"
@@ -17,8 +16,8 @@ if [[ -n "$selected" ]]; then
         exit 1
     fi
     full_path="${WALL_DIR}/${cleaned}"
-    nohup /home/rajan/.local/bin/set-wallpaper "$full_path" >/dev/null 2>&1 &
-    gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
+    nohup "$HOME/.config/hypr/scripts/swww-all.sh" "$full_path" >/dev/null 2>&1 &
+    dconf write /org/gnome/desktop/interface/icon-theme "'Papirus'" 2>/dev/null || true
 else
     pairs=()
     for f in "$WALL_DIR"/*.jpg "$WALL_DIR"/*.png "$WALL_DIR"/*.jpeg; do
@@ -48,6 +47,6 @@ else
     ' --args "${pairs[@]}" > "$LOOKUP_FILE"
 
     rofi -show wallpaper -modes "wallpaper:$SCRIPT_PATH" -p '🖼  Wallpaper' -show-icons \
-        -theme /home/rajan/.config/rofi/wallpaper.rasi \
+        -theme "$HOME/.config/rofi/wallpaper.rasi" \
         -theme-str 'entry { enabled: false; }'
 fi

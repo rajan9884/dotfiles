@@ -83,23 +83,19 @@ window#waybar {
     -gtk-icon-effect: dim;
 }
 
-#pulseaudio, #network, #battery, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #custom-record, #custom-voxtype {
     padding: 0 8px;
     margin: 4px 1px;
     border-radius: 10px;
     transition: all 200ms ease;
 }
 
-#pulseaudio:hover, #network:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
+#pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
     background: alpha(@primary, 0.12);
 }
 
 #pulseaudio {
     color: @tertiary;
-}
-
-#network {
-    color: @primary;
 }
 
 #battery {

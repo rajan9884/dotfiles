@@ -3,7 +3,9 @@
 #   arch-menu-images — image selector (rofi carousel)
 #   Shows a horizontal carousel of image thumbnails and prints the selected
 #   image path.
-#   Thumbnails come from rofi's XDG thumbnailers (glycin/vips pipeline).
+#   Icons are passed as direct file paths so rofi loads them via gdk-pixbuf
+#   (no dependency on pre-generated ~/.cache/thumbnails XDG cache, which was
+#   missing for jpg/png + most webp and left theme/wallpaper previews blank).
 #   Usage: arch-menu-images [--selected <image>] [--print-name] [--show-labels]
 #                           [--filterable] [--lazy-thumbnails]
 #                           <image-dir>...
@@ -110,6 +112,17 @@ fi
 #  Invoke rofi: plain text rows + thumbnail icons.
 # ──────────────────────────────────────────────
 
+# WebP thumbnails (the whole optimized/ collection): gdk-pixbuf only decodes
+# formats listed in a loaders.cache, and merely installing webp-pixbuf-loader
+# never registers it. HM deploys a stock-loaders + webp cache to a stable path
+# (see pixbufLoaders in bin.nix) — export it here so rofi renders webp icons.
+# Guarded: a dangling GDK_PIXBUF_MODULE_FILE would blind ALL icon loading,
+# so never export a missing file.
+_pixbuf_cache="$HOME/.cache/gdk-pixbuf/loaders.cache"
+if [[ -z ${GDK_PIXBUF_MODULE_FILE:-} && -f $_pixbuf_cache ]]; then
+  export GDK_PIXBUF_MODULE_FILE="$_pixbuf_cache"
+fi
+
 carousel_theme="${HOME}/.config/rofi/themes/active-image-carousel.rasi"
 [[ -f $carousel_theme ]] || carousel_theme="${XDG_DATA_HOME:-$HOME/.local/share}/rofi/themes/image-carousel.rasi"
 
@@ -120,11 +133,12 @@ rofi_args=(
   -theme "$carousel_theme"
 )
 
-# Build rofi input: one line per image, with its thumbnail attached via the
-# XDG thumbnail mechanism (\0icon\x1fthumbnail://<path>).
+# Build rofi input: one line per image, with the full image as its icon.
+# Direct paths (not thumbnail:// URIs) so missing XDG cache entries can't
+# leave entries blank.
 choice=$({
   for i in "${!displays[@]}"; do
-    printf '%s\0icon\x1fthumbnail://%s\n' "${displays[$i]}" "${paths[$i]}"
+    printf '%s\0icon\x1f%s\n' "${displays[$i]}" "${paths[$i]}"
   done
 } | rofi "${rofi_args[@]}" 2>/dev/null)
 

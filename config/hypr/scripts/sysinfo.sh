@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Get uptime (clean format)
 uptime_sec=$(awk '{print int($1)}' /proc/uptime)

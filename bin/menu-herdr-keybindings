@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# omarchy:summary=Display annotated Herdr keybindings using an interactive search menu.
-# omarchy:args=[--print|-p] [--config <path>]
+# nixos:summary=Display annotated Herdr keybindings using an interactive search menu.
+# nixos:args=[--print|-p] [--config <path>]
 
 print_only=false
 config_file="${HERDR_CONFIG_PATH:-${XDG_CONFIG_HOME:-$HOME/.config}/herdr/config.toml}"
@@ -28,8 +28,8 @@ while (($#)); do
   shift
 done
 
-# With no config file, Herdr runs on its own built-in defaults. Substituting the
-# Omarchy seed config here would describe bindings Herdr never loaded.
+# With no config file, Herdr runs on its own built-in defaults. Substituting a
+# seed config here would describe bindings Herdr never loaded.
 [[ -f $config_file ]] || config_file="/dev/null"
 
 # Herdr has no CLI that dumps resolved keybindings, so the action list and its

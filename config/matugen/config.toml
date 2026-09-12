@@ -82,10 +82,6 @@ output_path = "~/.config/ghostty/config.ghostty"
 input_path = "~/.config/matugen/templates/btop.theme"
 output_path = "~/.config/btop/themes/matugen.theme"
 
-[templates.fastfetch]
-input_path = "~/.config/matugen/templates/fastfetch.jsonc"
-output_path = "~/.config/fastfetch/config.jsonc"
-
 [templates.hyprlock]
 input_path = "~/.config/matugen/templates/hyprlock.conf"
 output_path = "~/.config/hypr/hyprlock-colors.conf"

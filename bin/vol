@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# vol cycle-sink — rotate the default PipeWire sink.
+[ "${1:-}" = cycle-sink ] || { echo "usage: vol cycle-sink" >&2; exit 1; }
+mapfile -t sinks < <(wpctl status 2>/dev/null | awk '
+  /Sinks:/ {in_sinks=1; next}
+  /Sources:|Filters:|Streams:|Devices:|Sinks *$/ {if (!/Sinks:/) in_sinks=0}
+  in_sinks && /[0-9]+\./ {
+    line=$0
+    current = (line ~ /\*/) ? 1 : 0
+    # id: first number before a dot
+    match(line, /[0-9]+\./)
+    id = substr(line, RSTART, RLENGTH-1)
+    gsub(/[^0-9]/, "", id)
+    # name: text after "ID. "
+    match(line, /[0-9]+\.[[:space:]]*/)
+    name = substr(line, RSTART + RLENGTH)
+    gsub(/\[vol.*/, "", name)
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", name)
+    print id "|" current "|" name
+  }')
+[ "${#sinks[@]}" -gt 0 ] || { notify-send "Audio output" "No sinks found"; exit 1; }
+cur_idx=-1
+for i in "${!sinks[@]}"; do
+  IFS='|' read -r _id is_cur _name <<< "${sinks[$i]}"
+  [ "$is_cur" = 1 ] && cur_idx=$i
+done
+if [ "$cur_idx" -ge 0 ]; then
+  next_idx=$(( (cur_idx + 1) % ${#sinks[@]} ))
+else
+  next_idx=0
+fi
+IFS='|' read -r next_id _next_cur next_name <<< "${sinks[$next_idx]}"
+wpctl set-default "$next_id" && notify-send "Audio output" "$next_name"

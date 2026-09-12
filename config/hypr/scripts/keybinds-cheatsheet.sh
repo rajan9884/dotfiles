@@ -12,12 +12,12 @@ HYP_DIR="$HOME/.config/hypr"
 THEME="$HOME/.config/rofi/active-picker.rasi"
 PROMPT="Keybindings"
 
-# Omarchy-style: keyboard-driven, instant filtering (see wifi-menu.sh).
+# Keyboard-driven, instant filtering.
 # NOTE: no -kb-row-* flags: rofi 2.0.0-dirty hangs parsing most kb
 # overrides (verified headless). Defaults already include Ctrl+p/n + arrows.
 ROFI_PERF="-show-icons -hover-select -matching fuzzy -sorting-method fzf -sort -tokenize -threads 0 -me-accept-entry MousePrimary -no-fixed-num-lines -i"
 
-# Omarchy caches parsed keybindings keyed by config hash so reopening is
+# Cache parsed keybindings keyed by config hash so reopening is
 # instant (no re-parse, no fork storm). Same idea here.
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/rofi"
 cache_key() {
@@ -64,8 +64,8 @@ label() {
         *'exec_cmd(terminal)'*)                    desc="Open terminal" ;;
         *'exec_cmd(menu)'*)                        desc="App launcher" ;;
         *'terminal-launch.sh'*)                    desc="Open terminal" ;;
-        *'arch-wallpaper-picker'*)                 desc="Wallpaper picker" ;;
-        *'arch-theme-switcher'*)                   desc="Theme switcher" ;;
+        *'nixos-wallpaper-picker'*)                desc="Wallpaper picker" ;;
+        *'nixos-theme-switcher'*)                  desc="Theme switcher" ;;
         *'capture-screen'*)                        desc="Capture entire screen" ;;
         *'capture-region'*)                        desc="Screenshot" ;;
         *'capture-satty'*)                         desc="Screenshot & annotate" ;;
@@ -73,7 +73,7 @@ label() {
         *'menu-clipboard'*)                        desc="Clipboard history" ;;
         *'exec_cmd(browser)'*)                     desc="Open browser" ;;
         *'exec_cmd(file)'*)                        desc="Open file manager" ;;
-        *'wifi-menu.sh'*)                          desc="Network menu" ;;
+        *'nmtui'*)                                    desc="Network connections" ;;
         *'power-menu.sh'*)                         desc="Power / logout menu" ;;
         *'bluetooth-menu.sh'*)                     desc="Bluetooth menu" ;;
         *'global-theme-selector.sh'*)              desc="Theme switcher" ;;
@@ -187,8 +187,7 @@ render() {
     printf '%s\t%s\n' "History viewer"           "First entry clears all history"
 }
 
-# Order the most useful/commonly-hit bindings first (mirrors Omarchy's
-# prioritize_entries), so the menu opens on the essentials instead of an
+# Order the most useful/commonly-hit bindings first (priority-ordered entries), so the menu opens on the essentials instead of an
 # arbitrary file-order dump. Lower priority number = shown first.
 prioritize_entries() {
     awk -F '\t' '
@@ -241,7 +240,7 @@ prioritize_entries() {
     cut -f2-
 }
 
-# Emit each entry as a single display line in Omarchy style — the key combo
+# Emit each entry as a single display line in menu style — the key combo
 # left-padded to a fixed column, then " → ", then a short description. rofi
 # then shows one roomy row per binding instead of two cramped side-by-side
 # columns (which is why the arrow separator was missing before).

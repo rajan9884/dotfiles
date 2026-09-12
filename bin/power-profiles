@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Power profile manager - mirrors omarchy's power-profiles helpers.
+# Power profile manager (performance/balanced/power-saver with AC/battery memory).
 #
 #   power-profiles list                 profiles bottom-up (current first), "<profile><TAB><0|1>"
 #   power-profiles get                  current active profile

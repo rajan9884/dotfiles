@@ -43,9 +43,7 @@ window#waybar {
 #clock,
 #pulseaudio,
 #bluetooth,
-#network,
 #battery,
-#custom-updates,
 #custom-power,
 #custom-voxtype,
 #custom-record,
@@ -73,10 +71,6 @@ window#waybar {
 #custom-power {
     padding-right: 10px;
     color: @error;
-}
-
-#custom-updates {
-    color: @secondary;
 }
 
 #battery.charging {

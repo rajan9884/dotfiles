@@ -2,11 +2,11 @@
 
 # ──────────────────────────────────────────────
 #   Random Wallpaper Switcher
-#   Picks from the restored optimized library
-#   (~/dotfiles/wallpapers/optimized, 413 images).
+#   Picks from the optimized library
+#   (~/.local/share/wallpapers/optimized, 413 images).
 # ──────────────────────────────────────────────
 
-WALL_DIRS=("$HOME/dotfiles/wallpapers/optimized")
+WALL_DIRS=("$HOME/.local/share/wallpapers/optimized")
 SCRIPT="$HOME/.config/hypr/scripts/swww-all.sh"
 
 # Select a random image from all wallpaper directories

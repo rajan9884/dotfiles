@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-# menu-transcode-prompt — small floating kitty wrapper (same pattern as webapp-install-prompt).
-# Float/size comes from window-rules.lua (class menu-transcode, 650x480 centered).
-# Usage: menu-transcode-prompt [args passed through to menu-transcode]
-export PATH="$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:$PATH"
-BIN="$(command -v menu-transcode 2>/dev/null || printf '%s/.local/bin/menu-transcode' "$HOME")"
-exec kitty --class menu-transcode --title "Transcode" -e bash -c '"$0" "$@"; echo; echo "Press Enter to close..."; read -r' "$BIN" "$@"

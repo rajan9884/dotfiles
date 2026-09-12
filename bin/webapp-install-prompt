@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Floating-terminal wrapper for webapp-install (terminal-prompt flow).
 # Usage: webapp-install-prompt [name url icon...] (passes through to webapp-install)
 set -e

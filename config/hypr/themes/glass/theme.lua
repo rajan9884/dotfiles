@@ -11,7 +11,7 @@ local ib = (colors and colors.inactive_border) or (type(inactive_border) == "str
 hl.config({
     decoration = {
     rounding = 20,
-    blur = { enabled = true, size = 6, passes = 4 },
+    blur = { enabled = false },
     shadow = {
         enabled = true,
         range = 10,

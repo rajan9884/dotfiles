@@ -31,8 +31,8 @@ case "$CHOICE" in
 esac
 
 # ── 1. Apply Selections ──
-ln -sf "$HOME/.config/hypr/themes/$HYPR/theme.conf" "$HOME/.config/hypr/theme.conf"
-# Lua (0.55+) — keep theme.lua in sync if the lua counterpart exists
+# NOTE: theme.conf (.conf layer) is retired — Lua is authoritative, so only
+# theme.lua is relinked. See hyprland.lua.
 if [ -f "$HOME/.config/hypr/themes/$HYPR/theme.lua" ]; then
     ln -sf "$HOME/.config/hypr/themes/$HYPR/theme.lua" "$HOME/.config/hypr/theme.lua"
 fi
@@ -52,7 +52,7 @@ SELECTED_WALL=$(find "$WALL_DIR" "$OPT_DIR" -type f \( -iname "*.jpg" -o -iname 
 
 # ── 4. Reload ──
 hyprctl reload
-killall waybar 2>/dev/null
+killall -q waybar .waybar-wrapped 2>/dev/null
 waybar & disown
 
 notify-send "  Theme: $THEME" "Full system aesthetic updated" -i preferences-desktop-theme

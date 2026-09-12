@@ -24,7 +24,7 @@ if [ -n "$SELECTED" ]; then
     ln -sf "$THEMES_DIR/$SELECTED/style.css" "$WAYBAR_DIR/style.css"
     
     # Restart Waybar to apply the new theme
-    killall waybar
+    killall -q waybar .waybar-wrapped 2>/dev/null || true
     waybar & disown
     
     notify-send "Waybar Theme Updated" "Switched to '$SELECTED' theme."

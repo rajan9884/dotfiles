@@ -22,14 +22,12 @@
     "modules-right": [
         "tray",
         "pulseaudio",
-        "network",
         "battery",
-        "custom/updates",
         "custom/power"
     ],
     // ── Modules ─────────────────────────────────
     "custom/launcher": {
-        "format": "󰣇",
+        "format": "",
         "on-click": "rofi -show drun -theme ~/.config/rofi/theme.rasi",
         "tooltip": false
     },
@@ -62,13 +60,6 @@
             ]
         },
         "on-click": "kitty --class wiremix -e wiremix"
-    },
-    "network": {
-        "interval": 10,
-        "format-wifi": "󰤨",
-        "format-ethernet": "󰈀",
-        "format-disconnected": "󰤭",
-        "on-click": "~/.config/waybar/scripts/wifi-menu.sh"
     },
     "battery": {
         "bat": "BAT0",
@@ -116,14 +107,5 @@
         "format": "⏻",
         "on-click": "~/.config/waybar/scripts/power-menu.sh",
         "tooltip": false
-    },
-    "custom/updates": {
-        "format": "󰏗 {}",
-        "escape": true,
-        "return-type": "json",
-        "exec": "~/.config/waybar/scripts/updates.sh",
-        "interval": 3600,
-        "on-click": "kitty -e yay -Syu; pkill -RTMIN+8 waybar",
-        "signal": 8
     }
 }

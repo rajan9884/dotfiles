@@ -28,7 +28,6 @@
         "tray",
         "custom/separator",
         "pulseaudio",
-        "network",
         "battery",
         "custom/separator2",
         "custom/power"

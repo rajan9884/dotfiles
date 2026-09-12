@@ -1,5 +1,5 @@
-/* ── Clipboard manager (Omarchy-style split preview) ──
- * Mirrors omarchy.clipboard: 875px card, left list + right preview,
+/* ── Clipboard manager (split preview) ──
+ * Mirrors the split-preview card: 875px card, left list + right preview,
  * 50px rows with 34px thumbnails, "Search clipboard…" header.
  * Used in rofi script-mode: entry icons feed icon-current-entry,
  * so images preview large on the right half as selection moves.
@@ -53,7 +53,7 @@ entry {
     font:             "JetBrainsMono Nerd Font 12";
 }
 
-/* Left list + right preview, split 50/50 like Omarchy's Row. */
+/* Left list + right preview, split 50/50. */
 listview-split {
     orientation:      horizontal;
     spacing:          0px;
@@ -110,7 +110,7 @@ element-text selected {
  * clipboard.sh (icon-current-entry can only display images).
  * Top-aligned so tall text previews read from the first line
  * instead of centering (which buried the start of long entries).
- * Divider echoes Omarchy's 1px vertical rule between list and
+  * Divider echoes the 1px vertical rule between list and
  * preview. Explicit px size: percentage sizes don't scale the
  * preview image in this widget. */
 icon-current-entry {

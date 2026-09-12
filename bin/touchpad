@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# touchpad [on|off|toggle] — via hyprctl device keyword + state file.
+STATE_DIR="$HOME/.local/state/nixos/toggles"
+mkdir -p "$STATE_DIR"
+name=$(hyprctl devices -j 2>/dev/null | jq -r '[.mice[]? | select(.name | test("touchpad|touch ?pad"; "i"))][0].name // empty')
+[ -n "$name" ] || { echo "no touchpad found" >&2; exit 1; }
+act="${1:-toggle}"
+if [ "$act" = toggle ]; then
+  if [ -f "$STATE_DIR/touchpad-off" ]; then act=on; else act=off; fi
+fi
+case "$act" in
+  on) hyprctl keyword "device[$name]:enabled" true >/dev/null && rm -f "$STATE_DIR/touchpad-off" && notify-send "Touchpad" "Enabled" ;;
+  off) hyprctl keyword "device[$name]:enabled" false >/dev/null && touch "$STATE_DIR/touchpad-off" && notify-send "Touchpad" "Disabled" ;;
+  *) echo "usage: touchpad [on|off|toggle]" >&2; exit 1 ;;
+esac

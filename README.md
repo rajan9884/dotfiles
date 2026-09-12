@@ -70,7 +70,7 @@ environment and defaults live in their own module and are easy to adjust.
 - **Screenshots & recording** — region snip to clipboard, annotate with satty, full-screen
   grab, color picker, OCR extract, wf-recorder capture with a Waybar indicator.
 - **Dictation ready** — optional voxtype push-to-talk (F9) with Waybar status.
-- **Idle automation** — screensaver at 150s, lock at 300s, lock-on-lid-close.
+- **Idle automation** — lock at 300s, display off at 360s, lock-on-lid-close.
 
 ## Waybar Presets
 - noro
@@ -187,8 +187,8 @@ yay -S zsh-autosuggestions
 
 ### Optional extras the keybinds expect
 
-- `arch-theme-switcher`, `arch-wallpaper-picker`, `arch-menu-images`, `arch-screensaver`,
-  `capture-region`, `capture-screen`, `power-profiles`, `menu-emoji`, `menu-calc`,
+- `arch-theme-switcher`, `arch-wallpaper-picker`, `arch-menu-images`,
+  `capture-region`, `capture-screen`, `power-profiles`, `menu-emoji`,
   `menu-clipboard`, `ocr-extract`, `night-light-toggle`, `capture-satty` — personal
   helper scripts. The `arch-*` pickers and the `capture-*` screenshot helpers ship in
   this repo under `bin/` (deployed to `~/.local/bin` by `install.sh`); the rest live in
@@ -211,7 +211,8 @@ The script:
 2. Symlinks every app config from `config/` into `~/.config/`
 3. Symlinks shell files (`zshrc`, `bashrc`, `bash_profile`, `dircolors`, `gitconfig`) into `$HOME`
 4. Wires the active-theme symlink chain (default theme: **Noro**)
-5. Installs the wallpaper collections into `~/.local/share/wallpapers`
+5. Installs the wallpaper collections into `~/.local/share/wallpapers` (cloned from the
+   separate [wallpapers repo](https://github.com/rajan9884/wallpapers))
 6. Runs matugen once so every app starts with the right palette
 
 Re-running is safe: symlinks are refreshed, real files are backed up, nothing is deleted.
@@ -231,9 +232,10 @@ Re-running is safe: symlinks are refreshed, real files are backed up, nothing is
 dotfiles/
 ├── install.sh                  # one-shot setup (safe to re-run)
 ├── bin/
-│   └── arch-*                   # wallpaper/theme pickers (rofi carousel) → ~/.local/bin
+│   ├── arch-*                   # wallpaper/theme pickers (rofi carousel) → ~/.local/bin
+│   └── *                        # screenshot, clipboard, webapp, wifi helpers → ~/.local/bin
 ├── scripts/
-│   └── build-wallpapers.sh     # regenerate the optimized wallpaper set
+│   └── systemd/                # optional system services (powertop)
 ├── config/
 │   ├── hypr/
 │   │   ├── hyprland.lua        # entry: requires the modules below
@@ -244,13 +246,13 @@ dotfiles/
 │   │   ├── look.lua            # animations, layouts, misc / render / debug
 │   │   ├── binds.lua           # keybindings
 │   │   ├── window-rules.lua    # window rules
-│   │   ├── hypridle.conf       # idle: screensaver 150s, lock 300s
+│   │   ├── hypridle.conf       # idle: lock 300s, display off 360s
 │   │   ├── hyprlock.conf       # lock screen (clock + date + input)
 │   │   ├── scripts/            # 20 helper scripts (theming, windows, media)
 │   │   └── themes/             # 5 theme packs (decoration + gaps per theme)
 │   ├── waybar/
 │   │   ├── modules.jsonc        # shared module definitions
-│   │   ├── scripts/             # wifi/bt/power menus, recorder, updates...
+│   │   ├── scripts/             # wifi/bt/power menus, recorder, vpn...
 │   │   └── themes/              # 15 bar styles
 │   ├── rofi/
 │   │   ├── config.rasi          # drun/run/window launcher
@@ -264,13 +266,11 @@ dotfiles/
 │   ├── nvim/                     # LazyVim: options, keymaps, matugen colorscheme
 │   ├── zed/settings.json
 │   ├── btop/btop.conf
-│   ├── swayosd/config.toml
 │   └── gtk-3.0/ gtk-4.0/         # settings.ini (theme, icons, cursor)
 ├── shell/
 │   ├── zshrc bashrc bash_profile
 │   ├── dircolors                 # bright-cyan dirs on dark backgrounds
 │   └── gitconfig                 # identity + defaults (no credentials)
-└── wallpapers/                   # optimized per-theme collections (glass...retro)
 ```
 
 ## Keybinds
@@ -410,10 +410,10 @@ in about a second.
 
 - Live location: `~/.local/share/wallpapers/<theme>/` (XDG data dir — safe from home-dir
   cleanup; all scripts point here)
-- Repo copy: `wallpapers/<theme>/` — deduplicated and compressed (105 MB to 54 MB) by
-  `scripts/build-wallpapers.sh`
-- To rebuild the repo set after adding wallpapers on your system:
-  `./scripts/build-wallpapers.sh` (env overrides: `WALLPAPER_SOURCE`, `JPEG_QUALITY`)
+- Source: the separate [wallpapers repo](https://github.com/rajan9884/wallpapers) —
+  `install.sh` clones it to `~/.local/share/wallpapers-upstream` and installs the
+  per-theme sets (`glass`, `material`, `modern`, `noro`, `retro`). Override with
+  `WALLPAPER_SOURCE=/path/to/wallpapers ./install.sh`.
 
 ## Changing defaults
 

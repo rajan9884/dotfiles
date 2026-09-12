@@ -39,3 +39,7 @@ config/nvim/lazyvim.json
 
 # Active-theme marker (written by theme-selector)
 config/hypr/.active-theme
+
+# Python bytecode (local syntax checks)
+__pycache__/
+*.pyc

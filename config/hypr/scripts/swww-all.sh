@@ -23,7 +23,7 @@ printf '%s' "$WALLPAPER" > ~/.cache/current-wallpaper
 
 # 2. Extract colors with Matugen
 # This updates colors for Waybar, Rofi, Kitty, Hyprland, etc.
-matugen image "$WALLPAPER" -c ~/.config/matugen/config.toml --source-color-index 0
+matugen image "$WALLPAPER" --type scheme-content -c ~/.config/matugen/config.toml --source-color-index 0
 
 # 2.5 Update Chromium/Helium theme
 # matugen rewrites ~/.config/helium-theme/manifest.json but keeps
@@ -54,11 +54,23 @@ fi
 # NOTE: SIGUSR2 only reloads waybar's own CSS, NOT the GTK theme.
 # Tray context menus are GTK menus styled by ~/.config/gtk-3.0/gtk.css,
 # which GTK loads once at process startup — so a full restart is needed
-# to re-theme them along with the bar.
-pkill -x waybar 2>/dev/null
-sleep 0.5
-waybar >/dev/null 2>&1 &
-disown 2>/dev/null
+# to re-theme them along with the bar. Always via systemd: a bare
+# `waybar &` stacks duplicate bars and dies with the parent script.
+systemctl --user restart waybar.service 2>/dev/null || {
+    pkill -x waybar 2>/dev/null; pkill -x .waybar-wrapped 2>/dev/null
+    sleep 0.5
+    setsid waybar >/dev/null 2>&1 < /dev/null &
+}
+
+# 3.5 Refresh nm-applet so its tray right-click menu picks up the new GTK CSS
+# (GTK parses gtk.css once at process startup, same as the note above).
+# Managed by the xdg-autostart generator unit — restart re-reads the theme
+# without stacking duplicate applets.
+systemctl --user restart 'app-nm\x2dapplet@autostart.service' 2>/dev/null || {
+    pkill -x nm-applet 2>/dev/null; pkill -x .nm-applet-wrap 2>/dev/null
+    sleep 0.5
+    setsid nm-applet >/dev/null 2>&1 < /dev/null &
+}
 
 # 4. Reload Kitty
 # SIGUSR1 tells kitty to reload its configuration
@@ -78,9 +90,14 @@ if hyprctl clients -j | grep -Fq '"class": "org.gnome.Nautilus"'; then
     nautilus --new-window >/dev/null 2>&1 &
 fi
 
-# 6.5 Reload Neovim
-# SIGUSR1 tells nvim to reload colors
-killall -SIGUSR1 nvim 2>/dev/null
+# 6.5 Neovim
+# nvim has no config-reload signal (SIGUSR1 is trapped but ignored), so
+# running instances keep the previous palette until restarted; new
+# instances read the regenerated matugen-colors.lua. Nudge instead of
+# signaling (a bare kill would be a no-op at best).
+if pgrep -x nvim >/dev/null 2>&1; then
+    notify-send "Neovim Theme Updated" "Restart nvim to apply new colors"
+fi
 
 
 
@@ -106,7 +123,7 @@ fi
 swaync --replace --style ~/.config/swaync/style.css & disown 2>/dev/null
 
 # swayosd-server is managed by systemd user service; restart it to reload CSS
-systemctl --user restart swayosd-server.service 2>/dev/null || true
+systemctl --user restart swayosd.service 2>/dev/null || true
 
 # 9. Notify
 notify-send "Theme Updated" "Colors extracted from $(basename "$WALLPAPER")" -i "$WALLPAPER"

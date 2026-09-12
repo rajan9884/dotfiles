@@ -7,8 +7,8 @@
 #     2. Symlinks every app config from <repo>/config/ into ~/.config/.
 #     3. Symlinks shell files (zshrc, bashrc, ...) into $HOME.
 #     4. Sets up the active-theme symlink chain (defaults to "Noro").
-#     5. Copies the optimized wallpaper collections into
-#        ~/.local/share/wallpapers (the XDG data location all scripts use).
+#     5. Clones the wallpaper collections repo and installs the per-theme
+#        sets into ~/.local/share/wallpapers (the XDG data location all scripts use).
 #     6. Regenerates the matugen color palette from the current wallpaper.
 #
 #   Safe to re-run: existing symlinks are refreshed, backups are only
@@ -98,7 +98,6 @@ APPS=(
     rofi
     kitty
     btop
-    swayosd
     matugen
     nvim
     zed
@@ -178,15 +177,34 @@ else
 fi
 
 # ── 4. Wallpapers → ~/.local/share/wallpapers ─
+# Wallpapers live in their own repo (keeps this one small). Clone it once,
+# then copy only the per-theme collection dirs — the pickers scan one level
+# deep, so extra top-level dirs (optimized/, docs) must not leak in.
 echo
 echo "==> Installing wallpaper collections"
+WALL_SRC="${WALLPAPER_SOURCE:-$HOME/.local/share/wallpapers-upstream}"
+WALL_REPO="https://github.com/rajan9884/wallpapers.git"
+if [ -d "$WALL_SRC/.git" ]; then
+    git -C "$WALL_SRC" pull --ff-only >/dev/null 2>&1 \
+        && info "wallpaper repo updated" \
+        || warn "wallpaper repo pull failed, using cached copy"
+elif [ -e "$WALL_SRC" ]; then
+    warn "wallpaper source exists but is not a git repo, using it as-is: $WALL_SRC"
+else
+    git clone --depth 1 "$WALL_REPO" "$WALL_SRC" >/dev/null 2>&1 \
+        && info "wallpaper repo cloned" \
+        || warn "wallpaper repo clone failed (offline?) — pickers will fall back to existing ~/.local/share/wallpapers"
+fi
 WALL_DST="$HOME/.local/share/wallpapers"
 mkdir -p "$WALL_DST"
-for theme_dir in "$REPO_ROOT/wallpapers"/*/; do
-    name="$(basename "$theme_dir")"
-    mkdir -p "$WALL_DST/$name"
-    cp -p "$theme_dir"* "$WALL_DST/$name/" 2>/dev/null || true
-    info "wallpapers: $name ($(ls "$WALL_DST/$name" | wc -l) files)"
+for theme in glass material modern noro retro; do
+    if [ -d "$WALL_SRC/$theme" ]; then
+        mkdir -p "$WALL_DST/$theme"
+        cp -p "$WALL_SRC/$theme"/* "$WALL_DST/$theme/" 2>/dev/null || true
+        info "wallpapers: $theme ($(ls "$WALL_DST/$theme" | wc -l) files)"
+    else
+        warn "wallpapers: '$theme' not in source, skipping"
+    fi
 done
 
 # ── 5. Executable bits ───────────────────────

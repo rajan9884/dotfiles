@@ -23,7 +23,7 @@ window#waybar {
 /* ── Grouping Strategy ── */
 #clock, #custom-user,
 #workspaces, #custom-launcher,
-#battery, #network, #bluetooth, #custom-power {
+#tray, #battery, #bluetooth, #custom-power {
     background: @surface; /* DYNAMIC: Based on wallpaper */
     color: @on_surface;    /* DYNAMIC: Based on wallpaper */
     padding: 4px 12px;
@@ -77,12 +77,6 @@ window#waybar {
     padding: 4px 8px;
     margin: 6px 0;
 }
-#custom-updates.updates-available {
-    color: @tertiary;
-}
-#custom-updates.updates-none {
-    color: @on_surface_variant;
-}
 /* --- Center Group [Workspaces | Bright | Vol] --- */
 #workspaces {
     border-radius: 12px 0 0 12px;
@@ -122,18 +116,15 @@ window#waybar {
     color: @on_primary;    /* DYNAMIC */
 }
 
-/* --- Right Group [Bat | Wifi | BT | Power] --- */
+/* --- Right Group [Bat | Tray | BT | Power] --- */
 #battery {
     border-radius: 12px 0 0 12px;
     margin-left: 30px;
     padding-left: 15px;
-
 }
-#network, #bluetooth {
+#tray {
     padding-left: 8px;
-}
-#network {
-    padding-right: 15px;
+    padding-right: 6px;
 }
 #bluetooth {
     background: @primary; /* DYNAMIC */
@@ -168,9 +159,6 @@ window#waybar {
     animation: pulse 1.5s infinite;
 }
 
-#network:hover {
-    color: @primary;
-}
 #custom-notifications.has-notifications {
     color: @tertiary;
 }
@@ -181,10 +169,9 @@ window#waybar {
     background: @surface_variant;
     border-color: @outline;
 }
-/* ── System Tray / Background Apps ─────────── */
+/* ── System Tray (middle segment of the right pill) ─── */
 #tray {
     color: @on_surface;
-    padding: 0 10px;
 }
 
 #tray > .passive {

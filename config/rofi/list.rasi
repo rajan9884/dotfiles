@@ -1,6 +1,6 @@
 /**
  * list.rasi — dense list-style theme for text-only dmenu pickers
- * (clipboard, emoji, keybindings, omarchy internal menus).
+ * (clipboard, emoji, keybindings, system menus).
  * columns: 1, horizontal element orientation, compact spacing.
  */
 

@@ -3,7 +3,7 @@
 set -euo pipefail
 
 terminal_pid=$(hyprctl activewindow | awk '/pid:/ {print $2}')
-kitty_socket="$XDG_RUNTIME_DIR/omarchy-kitty-$terminal_pid"
+kitty_socket="$XDG_RUNTIME_DIR/nixos-kitty-$terminal_pid"
 cwd=""
 
 if [[ -S $kitty_socket ]]; then

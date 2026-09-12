@@ -70,19 +70,18 @@ window#waybar {
     padding: 0 8px;
 }
 
-#pulseaudio, #network, #battery, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #custom-record, #custom-voxtype {
     padding: 0 10px;
     margin: 5px 2px;
     border-radius: 12px;
     transition: all 200ms ease;
 }
 
-#pulseaudio:hover, #network:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
+#pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
     background: alpha(@primary, 0.15);
 }
 
 #pulseaudio { color: @tertiary; }
-#network    { color: @primary; }
 #battery    { color: @secondary; }
 #custom-record { color: @primary; }
 #custom-record.recording { color: @error; }

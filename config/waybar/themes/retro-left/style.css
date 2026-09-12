@@ -50,17 +50,13 @@ window#waybar {
 }
 
 /* ── System modules ── */
-#pulseaudio, #network, #battery, #tray, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #tray, #custom-record, #custom-voxtype {
     padding: 10px 0;
     border-bottom: 1px solid alpha(@outline, 0.15);
 }
 
 #pulseaudio {
     color: @tertiary;
-}
-
-#network {
-    color: @primary;
 }
 
 #battery {

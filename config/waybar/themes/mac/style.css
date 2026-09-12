@@ -58,7 +58,6 @@ tooltip label {
 
 #tray,
 #pulseaudio,
-#network,
 #bluetooth,
 #battery,
 #custom-voxtype,
@@ -79,8 +78,4 @@ tooltip label {
     color: @error;
     padding: 0 16px;
     font-size: 14px;
-}
-
-#custom-updates {
-    color: @secondary;
 }

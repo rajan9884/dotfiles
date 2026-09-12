@@ -15,10 +15,8 @@
     "modules-center": [
         "clock",
         "hyprland/workspaces",
-        "custom/updates",
         "bluetooth",
         "pulseaudio",
-        "network",
         "battery",
         "custom/power"
     ],
@@ -60,14 +58,6 @@
         "on-click": "~/.config/waybar/scripts/bluetooth-menu.sh"
     },
 
-    "network": {
-        "interval": 10,
-        "format-wifi": "󰤨",
-        "format-ethernet": "󰈀",
-        "format-disconnected": "󰤭",
-        "on-click": "~/.config/waybar/scripts/wifi-menu.sh"
-    },
-
     "battery": {
         "bat": "BAT0",
         "adapter": "ADP0",
@@ -81,16 +71,6 @@
         "format-charging": "󰂄",
         "format-plugged": "󰂄",
         "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
-    },
-
-    "custom/updates": {
-        "format": "󰚰",
-        "escape": true,
-        "return-type": "json",
-        "exec": "~/.config/waybar/scripts/updates.sh",
-        "interval": 3600,
-        "on-click": "kitty -e yay -Syu; pkill -RTMIN+8 waybar",
-        "signal": 8
     },
 
     "custom/power": {

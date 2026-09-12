@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Get currently playing media via playerctl
 if command -v playerctl &> /dev/null; then

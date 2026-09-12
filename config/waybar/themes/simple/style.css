@@ -39,9 +39,7 @@ window#waybar {
 #clock,
 #pulseaudio,
 #bluetooth,
-#network,
 #battery,
-#custom-updates,
 #custom-power,
 #custom-voxtype,
 #custom-record,
@@ -61,10 +59,6 @@ window#waybar {
     color: @on_surface;
 }
 
-#network {
-    color: @on_surface;
-}
-
 #battery {
     color: @on_surface;
 }
@@ -75,10 +69,6 @@ window#waybar {
 
 #battery.critical:not(.charging) {
     color: @error;
-}
-
-#custom-updates {
-    color: @secondary;
 }
 
 #custom-power {

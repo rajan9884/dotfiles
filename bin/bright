@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# bright kbd-up|kbd-down|kbd-cycle — keyboard backlight (noop if none).
+dev=$(brightnessctl -m -c leds -l 2>/dev/null | grep -i kbd | head -n1 | cut -d, -f1)
+[ -n "$dev" ] || exit 0
+case "${1:-}" in
+  kbd-up) exec brightnessctl -d "$dev" set +10% ;;
+  kbd-down) exec brightnessctl -d "$dev" set 10%- ;;
+  kbd-cycle)
+    cur=$(brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f3)
+    if [ -n "$cur" ] && [ "$cur" -gt 0 ] 2>/dev/null; then
+      exec brightnessctl -d "$dev" set 0
+    else
+      exec brightnessctl -d "$dev" set 100%
+    fi ;;
+  *) exit 0 ;;
+esac

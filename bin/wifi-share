@@ -1,7 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Share the active Wi-Fi network via QR code + password.
-# Logic ported from Omarchy's omarchy-network-qr / omarchy-network-password,
-# adapted: renders with kitty icat (or chafa fallback) instead of Omarchy's QML card.
+# Renders with kitty icat (or chafa fallback).
 #
 # Usage: wifi-share [interface] [--password] [--copy]
 #   no flags  -> show QR + details, copy password to clipboard
@@ -46,8 +45,8 @@ wep_key=${fields[4]:-}
 
 [[ -n ${ssid:-} ]] || { echo "Could not read the Wi-Fi name" >&2; exit 1; }
 
-# Enterprise (EAP) networks have no PSK. Instead of refusing like Omarchy
-# does, share via the documented WPA-EAP QR extension so the guest's phone
+# Enterprise (EAP) networks have no PSK. Instead of refusing,
+# share via the documented WPA-EAP QR extension so the guest's phone
 # joins with *your* login:
 #   WIFI:T:WPA-EAP;S:<ssid>;E:<PEAP|TTLS|...>;PH2:<MSCHAPV2|...>;I:<identity>;P:<password>;;
 # SECURITY NOTE: the QR visibly contains your enterprise password — anyone

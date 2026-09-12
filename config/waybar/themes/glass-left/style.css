@@ -34,7 +34,7 @@ window#waybar {
     font-size: 11px;
 }
 
-#pulseaudio, #network, #battery, #custom-power, #custom-launcher, #tray, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #custom-power, #custom-launcher, #tray, #custom-record, #custom-voxtype {
     padding: 10px 0;
 }
 

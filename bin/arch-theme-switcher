@@ -10,7 +10,7 @@ set -e
 
 THEMES_PATH="$HOME/.config/hypr/themes"
 WALL_DIR="$HOME/.local/share/wallpapers"
-CACHE_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/arch/theme-selector"
+CACHE_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/nixos/theme-selector"
 preview_dir="$CACHE_PATH/previews"
 signature_file="$CACHE_PATH/signature"
 fast_signature_file="$CACHE_PATH/fast-signature"
