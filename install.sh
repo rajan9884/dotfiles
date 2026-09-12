@@ -279,8 +279,13 @@ if command -v matugen >/dev/null 2>&1; then
 
     # ── 6b. Package list restore (fresh machines) ──
     # Installed per-package: one conflict/broken build must not abort the rest.
+    # Skipped entirely where pacman is absent (non-Arch) — nothing here may
+    # abort the install under set -e.
     echo
     echo "==> Restoring packages from pkglist (if present)"
+    if ! command -v pacman >/dev/null 2>&1; then
+        warn "pacman not found — skipping package restore/refresh (Arch-only step)"
+    else
     if [ -f "$REPO_ROOT/pkglist/native.txt" ]; then
         # shellcheck disable=SC2086
         MISSING="$(comm -23 <(pkglist_lines "$REPO_ROOT/pkglist/native.txt") <(pacman -Qqe | sort) | tr '\n' ' ')"
@@ -326,6 +331,7 @@ if command -v matugen >/dev/null 2>&1; then
     pacman -Qqen > "$REPO_ROOT/pkglist/native.txt"
     pacman -Qqem > "$REPO_ROOT/pkglist/foreign.txt"
     info "package lists refreshed (commit them to keep the backup current)"
+    fi # command -v pacman
 
     # ── 6c. System resilience services ──
     echo
@@ -340,7 +346,7 @@ if command -v matugen >/dev/null 2>&1; then
         sudo systemctl daemon-reload
         sudo systemctl enable --now powertop >/dev/null 2>&1 && info "powertop autotune active" || warn "powertop skipped"
     fi
-    if ! pacman -Q timeshift >/dev/null 2>&1; then
+    if command -v pacman >/dev/null 2>&1 && ! pacman -Q timeshift >/dev/null 2>&1; then
         sudo pacman -S --noconfirm --needed timeshift || warn "timeshift install skipped (ext4 snapshots need it)"
     fi
     else
@@ -350,10 +356,10 @@ if command -v matugen >/dev/null 2>&1; then
     # ── 7. Default image viewer ──────────────
     echo
     echo "==> Setting default image viewer (imv)"
-    if [ "$SUDO_OK" -eq 1 ]; then
+    if [ "$SUDO_OK" -eq 1 ] && command -v pacman >/dev/null 2>&1; then
     sudo pacman -S --noconfirm --needed imv >/dev/null 2>&1 || warn "imv install skipped"
     else
-        warn "no sudo — skipping imv install"
+        warn "no sudo/pacman — skipping imv install"
     fi
     if [ -f "$HOME/.config/mimeapps.list" ]; then
         sed -i 's#=org\.gnome\.eog\.desktop#=imv.desktop#g; s#=eog\.desktop#=imv.desktop#g' "$HOME/.config/mimeapps.list"
