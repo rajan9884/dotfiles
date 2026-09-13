@@ -101,7 +101,6 @@ qt6ct
 reflector
 ripgrep
 rofi
-rofi-calc
 rofimoji
 rsync
 satty
