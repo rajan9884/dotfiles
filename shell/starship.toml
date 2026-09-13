@@ -1,0 +1,14 @@
+# ~/.config/starship.toml — Arch dotfiles.
+#
+# Defaults everywhere except the custom nix-shell detector. zsh uses its own
+# hand-rolled prompt (see shell/zshrc); this file drives bash (via
+# `eval "$(starship init bash)"`) and any other Starship-ready shell.
+
+[nix_shell]
+disabled = true
+
+[custom.nix-shell]
+command = "echo nix-shell"
+when = "test -n \"$IN_NIX_SHELL$NIX_TRY_SHELL\""
+format = "via [$output]($style) "
+style = "bold yellow"

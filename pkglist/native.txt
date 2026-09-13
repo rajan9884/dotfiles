@@ -56,6 +56,7 @@ kitty
 lazydocker
 lazygit
 libappindicator
+libnotify
 libvdpau
 libvips
 limine
@@ -67,6 +68,7 @@ mkinitcpio
 mpv
 nautilus
 neovim
+network-manager-applet
 networkmanager
 nm-connection-editor
 noto-fonts
@@ -137,12 +139,14 @@ wf-recorder
 wget
 wireless-regdb
 wiremix
+wireplumber
 wl-clip-persist
 wl-clipboard
 woff2-font-awesome
 wpa_supplicant
 wtype
 xdg-desktop-portal-hyprland
+xdg-utils
 xorg-xhost
 yazi
 zoxide

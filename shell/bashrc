@@ -1,39 +1,37 @@
+# ~/.bashrc — Arch dotfiles.
 #
-# ~/.bashrc
-#
+# Guarded tool inits: a missing tool is skipped silently, so the shell always
+# starts clean even mid-install (nothing here may error).
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# ── Aliases ──
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
-alias ff='fzf'
+alias ff="fzf --preview 'bat --color=always {}'"
+
+# ── Editor + fzf ──
+export FZF_DEFAULT_OPTS="--height 90% --reverse --border"
+export EDITOR="nvim" VISUAL="nvim"
 
 # ── Speed tools (zoxide/fzf/yazi/atuin/direnv) ──
-eval "$(zoxide init bash --cmd z)"
-source /usr/share/fzf/key-bindings.bash 2>/dev/null || true
-source /usr/share/fzf/completion.bash 2>/dev/null || true
-export FZF_DEFAULT_OPTS="--height 40% --reverse --border"
+if command -v zoxide >/dev/null 2>&1; then eval "$(zoxide init bash --cmd z)"; fi
+if [ -f /usr/share/fzf/key-bindings.bash ]; then source /usr/share/fzf/key-bindings.bash; fi
+if [ -f /usr/share/fzf/completion.bash ]; then source /usr/share/fzf/completion.bash; fi
+# Atuin owns Ctrl-R; fzf keeps Ctrl-T + Alt-C.
+if command -v atuin >/dev/null 2>&1; then eval "$(atuin init bash --disable-up-arrow)"; fi
+if command -v direnv >/dev/null 2>&1; then eval "$(direnv hook bash)"; fi
+if command -v starship >/dev/null 2>&1; then eval "$(starship init bash)"; fi
+
+# yazi: `y` cds into the directory you exit in
 y() {
-    local tmp="$(mktemp -t yazi-cwd.XXXXXX)"
-    command yazi "$@" --cwd-file="$tmp"
-    local cwd="$(cat -- "$tmp" 2>/dev/null)"
-    rm -f -- "$tmp"
-    [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && cd -- "$cwd"
+  local tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+  command yazi "$@" --cwd-file="$tmp"
+  local cwd="$(cat -- "$tmp" 2>/dev/null)"
+  rm -f -- "$tmp"
+  [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && cd -- "$cwd"
 }
-eval "$(atuin init bash --disable-up-arrow)"
-eval "$(direnv hook bash)"
-PS1='[\u@\h \W]\$ '
 
-# opencode
-export PATH=/home/rajan/.opencode/bin:$PATH
-
-# Pi
-export PATH="/home/rajan/.local/share/pi-node/node-v22.23.2-linux-x64/bin:$PATH"
-
-# Added by Antigravity CLI installer
-export PATH="/home/rajan/.local/bin:$PATH"
-
-eval "$(starship init bash)"
-
-. "$HOME/.local/share/../bin/env"
+# ~/.local/bin carries the repo helpers (arch-wallpaper-picker, …).
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac

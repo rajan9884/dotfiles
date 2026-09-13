@@ -38,12 +38,12 @@ hl.bind(mod .. " + CTRL + SHIFT + Return", hl.dsp.window.move({ workspace = "spe
 hl.bind(mod .. " + J", hl.dsp.layout("togglesplit"), { description = "Toggle window split" }) -- togglesplit (layoutmsg)
 hl.bind(mod .. " + SHIFT + F", hl.dsp.exec_cmd(vars.file))
 hl.bind(mod .. " + SHIFT + ALT + F", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/nautilus-cwd"), { description = "File manager (cwd)" })
-hl.bind(mod .. " + CTRL + Space", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/nixos-wallpaper-picker"))
+hl.bind(mod .. " + CTRL + Space", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/arch-wallpaper-picker"))
 hl.bind(mod .. " + R", hl.dsp.exec_cmd(scripts .. "/random-wall.sh"))
 
 hl.bind(
 	mod .. " + CTRL + SHIFT + Space",
-	hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/nixos-theme-switcher")
+	hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/arch-theme-switcher")
 )
 
 hl.bind(mod .. " + ALT + F", hl.dsp.window.fullscreen({ mode = "maximized" }))
@@ -364,5 +364,5 @@ hl.bind(mod .. " + CTRL + BACKSPACE", function()
 	end
 end, { description = "Toggle single-window square aspect" })
 
--- NOTE: SUPER+CTRL+SHIFT+Space is already owned by nixos-theme-switcher above
+-- NOTE: SUPER+CTRL+SHIFT+Space is already owned by arch-theme-switcher above
 -- (same combo, mods are order-insensitive) — do NOT add a theme-menu bind here.

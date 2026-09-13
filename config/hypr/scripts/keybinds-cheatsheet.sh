@@ -64,8 +64,8 @@ label() {
         *'exec_cmd(terminal)'*)                    desc="Open terminal" ;;
         *'exec_cmd(menu)'*)                        desc="App launcher" ;;
         *'terminal-launch.sh'*)                    desc="Open terminal" ;;
-        *'nixos-wallpaper-picker'*)                desc="Wallpaper picker" ;;
-        *'nixos-theme-switcher'*)                  desc="Theme switcher" ;;
+        *'arch-wallpaper-picker'*)                desc="Wallpaper picker" ;;
+        *'arch-theme-switcher'*)                  desc="Theme switcher" ;;
         *'capture-screen'*)                        desc="Capture entire screen" ;;
         *'capture-region'*)                        desc="Screenshot" ;;
         *'capture-satty'*)                         desc="Screenshot & annotate" ;;

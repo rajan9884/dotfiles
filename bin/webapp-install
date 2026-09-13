@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# nixos:summary=Create a desktop launcher for a web app
-# nixos:args=[name url icon-url-or-name [custom-exec] [mime-types]]
+# arch:summary=Create a desktop launcher for a web app
+# arch:args=[name url icon-url-or-name [custom-exec] [mime-types]]
 
 set -e
 

@@ -1,3 +1,6 @@
+[credential]
+	helper = store
+
 [user]
 	name = rj9884
 	email = rj.vidyagyan@gmail.com

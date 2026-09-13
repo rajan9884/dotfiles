@@ -5,6 +5,7 @@ claude-desktop
 cliamp-bin
 cloudflare-warp-bin
 helium-browser-bin
+herdr
 jdk
 localsend
 matugen-bin

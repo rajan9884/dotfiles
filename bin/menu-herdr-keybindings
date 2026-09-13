@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# nixos:summary=Display annotated Herdr keybindings using an interactive search menu.
-# nixos:args=[--print|-p] [--config <path>]
+# arch:summary=Display annotated Herdr keybindings using an interactive search menu.
+# arch:args=[--print|-p] [--config <path>]
 
 print_only=false
 config_file="${HERDR_CONFIG_PATH:-${XDG_CONFIG_HOME:-$HOME/.config}/herdr/config.toml}"

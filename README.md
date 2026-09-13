@@ -174,13 +174,11 @@ From AUR (yay):
 yay -S matugen-bin bibata-cursor-theme-bin
 ```
 
-Shell and editors:
+Shell and editors (all handled by `./install.sh` from `pkglist/` — no manual setup):
 
-```
-yay -S zsh-autosuggestions
-```
-
-- **Oh My Zsh**: `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"` (install with "keep .zshrc" — the repo links its own)
+- **Zsh**: no Oh My Zsh needed. `shell/zshrc` + `shell/bashrc` carry guarded
+  inits for zoxide/fzf/atuin/direnv/starship (skipped silently if a tool is
+  ever missing), and `shell/starship.toml` is linked to `~/.config/starship.toml`.
 - **Neovim**: `pacman -S neovim` (plugins bootstrap themselves on first run via lazy.nvim)
 - **Zed**: install from [zed.dev](https://zed.dev) — the repo only ships settings + theme
 - **dictation (optional)**: voxtype, adds F9 push-to-talk when present
@@ -205,15 +203,23 @@ cd ~/dotfiles
 ./install.sh
 ```
 
-The script:
+The script (one go on a minimal Arch install — packages first, then configs):
 
-1. Backs up any existing config dirs it replaces (into `~/.config-backup-<timestamp>`)
-2. Symlinks every app config from `config/` into `~/.config/`
-3. Symlinks shell files (`zshrc`, `bashrc`, `bash_profile`, `dircolors`, `gitconfig`) into `$HOME`
-4. Wires the active-theme symlink chain (default theme: **Noro**)
-5. Installs the wallpaper collections into `~/.local/share/wallpapers` (cloned from the
+1. Installs packages: bootstraps `git`/`base-devel`, then `yay`, then every
+   missing package from `pkglist/native.txt` (pacman, incl. hyprland) and
+   `pkglist/foreign.txt` (AUR, incl. matugen-bin, waybar-git, herdr)
+2. Backs up any existing config dirs it replaces (into `~/.config-backup-<timestamp>`)
+3. Symlinks every app config from `config/` into `~/.config/`
+4. Symlinks shell files (`zshrc`, `bashrc`, `gitconfig`) into `$HOME` and
+   `starship.toml` into `~/.config/starship.toml`
+5. Wires the active-theme symlink chain (default theme: **Noro**)
+6. Installs the wallpaper collections into `~/.local/share/wallpapers` (cloned from the
    separate [wallpapers repo](https://github.com/rajan9884/wallpapers))
-6. Runs matugen once so every app starts with the right palette
+7. Installs a `pactl`→`wpctl` shim only on PipeWire machines without real
+   pactl (so the volume OSD works; untouched when real pactl exists)
+8. Runs matugen once so every app starts with the right palette
+9. Verifies every binary, wallpaper set, symlink and generated palette —
+   exits nonzero with the exact fix if anything is missing
 
 Re-running is safe: symlinks are refreshed, real files are backed up, nothing is deleted.
 
@@ -232,7 +238,7 @@ Re-running is safe: symlinks are refreshed, real files are backed up, nothing is
 dotfiles/
 ├── install.sh                  # one-shot setup (safe to re-run)
 ├── bin/
-│   ├── arch-*                   # wallpaper/theme pickers (rofi carousel) → ~/.local/bin
+│   ├── arch-*                  # wallpaper/theme pickers (rofi carousel) → ~/.local/bin
 │   └── *                        # screenshot, clipboard, webapp, wifi helpers → ~/.local/bin
 ├── scripts/
 │   └── systemd/                # optional system services (powertop)

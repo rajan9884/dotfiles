@@ -37,7 +37,7 @@ case "$MODE" in
         }
         ;;
     wallpapers|background_menu|wallpaper-menu)
-        ~/.local/bin/nixos-wallpaper-picker
+        ~/.local/bin/arch-wallpaper-picker
         ;;
     power|power_menu|menu-power)
         THEME="$SCRIPTS_THEME"

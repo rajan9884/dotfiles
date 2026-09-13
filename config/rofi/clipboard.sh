@@ -104,7 +104,7 @@ do_copy() { # $1=id (empty = raw typed text)
 # Single column at preview-widget width: caption wraps + clips to
 # the fixed canvas, so long entries show their head at readable
 # size instead of shrinking. Font resolved via fontconfig —
-# hardcoded /usr/share/fonts paths don't exist on NixOS.
+# hardcoded /usr/share/fonts paths don't exist on Arch (fontconfig handles it).
 render_text_preview() { # $1=id $2=decoded-text-file $3=font
     local out="$CACHE_DIR/pv-$1.png"
     [ -s "$out" ] && return 0

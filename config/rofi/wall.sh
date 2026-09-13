@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prefer the NixOS wallpaper store, fallback to the theme dir
+# Prefer the shared wallpaper store, fallback to the theme dir
 WALL_DIR="$HOME/.local/share/wallpapers"
 [[ -d "$WALL_DIR" ]] || WALL_DIR="$HOME/.config/theme/current"
 THUMB_DIR="/tmp/wall_thumbs"
