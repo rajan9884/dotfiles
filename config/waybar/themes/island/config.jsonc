@@ -27,7 +27,7 @@
     ],
     // ── Modules ─────────────────────────────────
     "custom/launcher": {
-        "format": "",
+        "format": "",
         "on-click": "rofi -show drun -theme ~/.config/rofi/theme.rasi",
         "tooltip": false
     },

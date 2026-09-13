@@ -32,7 +32,7 @@
         "custom/power"
     ],
     "custom/launcher": {
-        "format": "",
+        "format": "",
         "on-click": "rofi -show drun",
         "tooltip": false
     },

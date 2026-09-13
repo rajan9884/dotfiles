@@ -14,7 +14,7 @@ export LS_COLORS="di=38;5;45:ln=38;5;75:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;3
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # ── Prompt (Optimized Pill Style) ──
-PROMPT=$'\n%{%F{magenta}%}%{%K{magenta}%}%{%F{black}%}  %{%F{white}%} %~ %{%k%}%{%F{magenta}%}%{%f%}\n%{%F{magenta}%}❯ %{%f%}'
+PROMPT=$'\n%{%F{magenta}%}%{%K{magenta}%}%{%F{black}%}  %{%F{white}%} %~ %{%k%}%{%F{magenta}%}%{%f%}\n%{%F{magenta}%}❯ %{%f%}'
 RPROMPT=""
 
 # ── Editor ──
@@ -44,3 +44,6 @@ case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$P
 
 # Desktop info on login
 command -v fastfetch >/dev/null 2>&1 && fastfetch
+
+# Added by Antigravity CLI installer
+export PATH="/home/rj9884/.local/bin:$PATH"

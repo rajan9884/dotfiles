@@ -361,7 +361,7 @@ command -v matugen >/dev/null 2>&1 || { fail "matugen missing after step 1 — r
 WALL="$(find "$WALL_DST/$THEME_LOWER" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) 2>/dev/null | sort | head -n 1)"
 [ -n "$WALL" ] || { fail "no wallpaper found for theme '$THEME_LOWER' in $WALL_DST/$THEME_LOWER"; exit 1; }
 matugen image "$WALL" -c "$HOME/.config/matugen/config.toml" --source-color-index 0 \
-    && info "palette generated from $WALL" \
+    && { info "palette generated from $WALL"; printf '%s' "$WALL" > "$HOME/.cache/current-wallpaper"; } \
     || { fail "matugen failed on $WALL — run it manually after first login"; exit 1; }
 
 # ── 9. System & hardware configuration ────────
