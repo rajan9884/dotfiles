@@ -1,0 +1,6 @@
+[Unit]
+Description=Apply remembered power profile for current AC/battery state
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/power-profiles autodetect

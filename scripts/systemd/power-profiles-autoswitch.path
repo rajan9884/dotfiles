@@ -1,0 +1,10 @@
+[Unit]
+Description=Watch AC adapter and battery state for power profile switching
+
+[Path]
+PathChanged=/sys/class/power_supply/ACAD/online
+PathChanged=/sys/class/power_supply/BAT1/status
+Unit=power-profiles-autoswitch.service
+
+[Install]
+WantedBy=default.target

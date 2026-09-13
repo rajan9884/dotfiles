@@ -1,6 +1,6 @@
 {
     "include": [
-        "/home/rajan/.config/waybar/modules.jsonc"
+        "~/.config/waybar/modules.jsonc"
     ],
     "layer": "top",
     "position": "top",

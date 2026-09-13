@@ -70,10 +70,6 @@ output_path = "~/.config/helium-theme/manifest.json"
 input_path = "~/.config/matugen/templates/vscode-colors.json"
 output_path = "~/.config/Code/User/matugen-colors.json"
 
-[templates.zed]
-input_path = "~/.config/matugen/templates/zed.json"
-output_path = "~/.config/zed/themes/matugen.json"
-
 [templates.ghostty]
 input_path = "~/.config/matugen/templates/ghostty.conf"
 output_path = "~/.config/ghostty/config.ghostty"

@@ -55,7 +55,8 @@ case "$MODE" in
         }
         ;;
     emoji|emoji_menu|menu-emoji)
-        EMOJI_THEME="$HOME/.local/share/rofimoji/themes/emoji-grid.rasi"
+        EMOJI_THEME="$HOME/.config/rofi/themes/emoji-grid.rasi"
+        [ -f "$EMOJI_THEME" ] || EMOJI_THEME="$HOME/.local/share/rofimoji/themes/emoji-grid.rasi"
         # NOTE: keep selector-args to a single -theme. Passing -theme-str
         # with multiple blocks (entry placeholder + textbox font) makes
         # rofi leak the raw theme text into the search box, so those

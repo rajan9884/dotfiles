@@ -16,7 +16,6 @@ config/fastfetch/config.jsonc
 config/swayosd/style.css
 config/btop/themes/matugen.theme
 config/nvim/lua/matugen-colors.lua
-config/zed/themes/matugen.json
 config/helium-theme/manifest.json
 config/hypr/hyprlock-colors.conf
 config/swaync/style.css

@@ -66,4 +66,7 @@ hl.config({
 		-- vfr moved here from misc.vfr (0.55)
 		vfr = true,
 	},
+	xwayland = {
+		enabled = false,
+	},
 })

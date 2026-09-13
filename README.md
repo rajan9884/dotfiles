@@ -5,7 +5,7 @@
 # Arch + Hyprland Dotfiles
 
 A dynamic, wallpaper-driven Hyprland setup for Arch Linux. Change your wallpaper and the
-entire system re-themes itself — Waybar, Rofi, Kitty, Hyprland, GTK, Neovim, Zed, VS Code,
+entire system re-themes itself — Waybar, Rofi, Kitty, Hyprland, GTK, Neovim, VS Code,
 the browser, notifications, everything — through a Material You color pipeline built on
 [matugen](https://github.com/InioX/matugen).
 
@@ -41,7 +41,7 @@ https://github.com/user-attachments/assets/18fc7426-f8b7-4349-ae4f-4c4e70d48b56
 | Terminal     | Kitty |
 | Notifications| Dunst |
 | Shell        | Zsh + Oh My Zsh + autosuggestions |
-| Editor       | Neovim (LazyVim) / Zed |
+| Editor       | Neovim (LazyVim) |
 | Wallpaper    | awww + matugen |
 | OSD          | SwayOSD |
 | Idle/Lock    | hypridle + hyprlock |
@@ -180,7 +180,6 @@ Shell and editors (all handled by `./install.sh` from `pkglist/` — no manual s
   inits for zoxide/fzf/atuin/direnv/starship (skipped silently if a tool is
   ever missing), and `shell/starship.toml` is linked to `~/.config/starship.toml`.
 - **Neovim**: `pacman -S neovim` (plugins bootstrap themselves on first run via lazy.nvim)
-- **Zed**: install from [zed.dev](https://zed.dev) — the repo only ships settings + theme
 - **dictation (optional)**: voxtype, adds F9 push-to-talk when present
 
 ### Optional extras the keybinds expect
@@ -206,8 +205,8 @@ cd ~/dotfiles
 The script (one go on a minimal Arch install — packages first, then configs):
 
 1. Installs packages: bootstraps `git`/`base-devel`, then `yay`, then every
-   missing package from `pkglist/native.txt` (pacman, incl. hyprland) and
-   `pkglist/foreign.txt` (AUR, incl. matugen-bin, waybar-git, herdr)
+   missing package from `pkglist/native.txt` (pacman, incl. hyprland, waybar) and
+   `pkglist/foreign.txt` (AUR, incl. matugen-bin, herdr)
 2. Backs up any existing config dirs it replaces (into `~/.config-backup-<timestamp>`)
    and symlinks every app config from `config/` into `~/.config/`
 3. Symlinks shell files (`zshrc`, `bashrc`, `gitconfig`) into `$HOME` and
@@ -215,11 +214,11 @@ The script (one go on a minimal Arch install — packages first, then configs):
 4. Wires the active-theme symlink chain (default theme: **Noro**)
 5. Installs the wallpaper collections into `~/.local/share/wallpapers` (cloned from the
    separate [wallpapers repo](https://github.com/rajan9884/wallpapers))
-6. Deploys the helper scripts from `bin/` into `~/.local/bin` (plus rofimoji themes)
+6. Links helper scripts from `bin/` into `~/.local/bin` and wires the rofimoji theme
 7. Installs a `pactl`→`wpctl` shim only on PipeWire machines without real
    pactl (so the volume OSD works; untouched when real pactl exists)
 8. Runs matugen once so every app starts with the right palette
-9. Enables resilience services (ufw, cronie, powertop)
+9. Enables resilience services (power-profiles-daemon, autoswitch, ufw, powertop)
 10. Verifies every binary, wallpaper set, symlink and generated palette —
     exits nonzero with the exact fix if anything is missing
 
@@ -272,7 +271,6 @@ dotfiles/
 │   │   ├── config.toml           # which apps get generated colors
 │   │   └── templates/            # 21 color templates (the theming engine)
 │   ├── nvim/                     # LazyVim: options, keymaps, matugen colorscheme
-│   ├── zed/settings.json
 │   ├── btop/btop.conf
 │   └── gtk-3.0/ gtk-4.0/         # settings.ini (theme, icons, cursor)
 ├── shell/
@@ -396,7 +394,7 @@ wallpaper -> awww (set) -> matugen (palette) -> 21 templates -> every app
    20 templates in `config/matugen/templates/` into live config files:
    `~/.config/waybar/colors.css`, `~/.config/hypr/colors.lua`, `~/.config/kitty/colors.conf`,
    GTK css, `~/.config/fastfetch/config.jsonc`,
-   `~/.config/nvim/lua/matugen-colors.lua`, `~/.config/zed/themes/matugen.json`,
+   `~/.config/nvim/lua/matugen-colors.lua`,
    `~/.config/ghostty/config.ghostty`, swayosd css, btop theme, VS Code colors, a
    Brave/Firefox browser theme, and more.
 4. It then pokes each app to reload: `killall -SIGUSR2 waybar`, `killall -SIGUSR1 kitty`
