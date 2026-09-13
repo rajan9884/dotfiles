@@ -209,17 +209,19 @@ The script (one go on a minimal Arch install — packages first, then configs):
    missing package from `pkglist/native.txt` (pacman, incl. hyprland) and
    `pkglist/foreign.txt` (AUR, incl. matugen-bin, waybar-git, herdr)
 2. Backs up any existing config dirs it replaces (into `~/.config-backup-<timestamp>`)
-3. Symlinks every app config from `config/` into `~/.config/`
-4. Symlinks shell files (`zshrc`, `bashrc`, `gitconfig`) into `$HOME` and
+   and symlinks every app config from `config/` into `~/.config/`
+3. Symlinks shell files (`zshrc`, `bashrc`, `gitconfig`) into `$HOME` and
    `starship.toml` into `~/.config/starship.toml`
-5. Wires the active-theme symlink chain (default theme: **Noro**)
-6. Installs the wallpaper collections into `~/.local/share/wallpapers` (cloned from the
+4. Wires the active-theme symlink chain (default theme: **Noro**)
+5. Installs the wallpaper collections into `~/.local/share/wallpapers` (cloned from the
    separate [wallpapers repo](https://github.com/rajan9884/wallpapers))
+6. Deploys the helper scripts from `bin/` into `~/.local/bin` (plus rofimoji themes)
 7. Installs a `pactl`→`wpctl` shim only on PipeWire machines without real
    pactl (so the volume OSD works; untouched when real pactl exists)
 8. Runs matugen once so every app starts with the right palette
-9. Verifies every binary, wallpaper set, symlink and generated palette —
-   exits nonzero with the exact fix if anything is missing
+9. Enables resilience services (ufw, cronie, powertop)
+10. Verifies every binary, wallpaper set, symlink and generated palette —
+    exits nonzero with the exact fix if anything is missing
 
 Re-running is safe: symlinks are refreshed, real files are backed up, nothing is deleted.
 
@@ -274,9 +276,9 @@ dotfiles/
 │   ├── btop/btop.conf
 │   └── gtk-3.0/ gtk-4.0/         # settings.ini (theme, icons, cursor)
 ├── shell/
-│   ├── zshrc bashrc bash_profile
-│   ├── dircolors                 # bright-cyan dirs on dark backgrounds
-│   └── gitconfig                 # identity + defaults (no credentials)
+│   ├── zshrc bashrc              # Arch-style shells (guarded tool inits)
+│   ├── starship.toml             # prompt theme (~/.config/starship.toml)
+│   └── gitconfig                 # identity + defaults (shared credential store)
 ```
 
 ## Keybinds
