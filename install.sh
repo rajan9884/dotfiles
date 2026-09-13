@@ -226,6 +226,7 @@ link_config_file() {
 echo
 echo "==> [3/10] Linking shell files"
 link_home zshrc
+link_home zprofile
 link_home bashrc
 link_home gitconfig
 link_config_file starship.toml starship.toml
@@ -463,7 +464,7 @@ done
 
 for link in "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/rofi" \
             "$HOME/.config/kitty" "$HOME/.config/matugen" "$HOME/.zshrc" \
-            "$HOME/.bashrc" "$HOME/.config/starship.toml" \
+            "$HOME/.zprofile" "$HOME/.bashrc" "$HOME/.config/starship.toml" \
             "$HYPR_CFG/theme.conf" "$HYPR_CFG/theme.lua" \
             "$WAYBAR_CFG/config.jsonc" "$WAYBAR_CFG/style.css"; do
     if [ -e "$link" ] || [ -L "$link" ]; then
