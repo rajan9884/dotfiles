@@ -4,8 +4,8 @@
 #
 #   Order matters (do NOT reorder):
 #     0. Preflight: Arch check, root guard, sudo verification & keepalive.
-#     1. Packages FIRST: bootstrap archlinux-keyring/git/base-devel, then yay,
-#        then repo + AUR packages. Everything below assumes the tools exist.
+#     1. Packages FIRST: bootstrap archlinux-keyring/git/base-devel, then official
+#        repo packages (including matugen). AUR packages installed via yay if present.
 #     2. Symlink every app config from <repo>/config/ into ~/.config/.
 #     3. Symlink shell files (zshrc, bashrc, gitconfig, starship.toml).
 #     4. Wire the active-theme symlink chain (default "Noro").
@@ -100,31 +100,13 @@ pkglist_lines() {
 
 # ── 1. Packages FIRST ────────────────────────
 echo
-echo "==> [1/10] Installing packages (bootstrap → repo → AUR)"
+echo "==> [1/10] Installing packages (archlinux-keyring + git + base-devel → repo packages)"
 # Minimal Arch requires fresh keyrings and base build tools first
 sudo pacman -Syu --noconfirm --needed archlinux-keyring git base-devel \
     && info "base tools ready (archlinux-keyring + git + base-devel)" \
     || { fail "pacman bootstrap failed — check mirrors/network, then re-run ./install.sh"; exit 1; }
 
-# 1b. yay bootstrap
-if ! command -v yay >/dev/null 2>&1; then
-    info "bootstrapping yay AUR helper..."
-    YAY_BUILD="$(mktemp -d)"
-    if git clone https://aur.archlinux.org/yay-bin.git "$YAY_BUILD" >/dev/null 2>&1 \
-        && (cd "$YAY_BUILD" && makepkg -si --noconfirm >/dev/null 2>&1); then
-        info "yay bootstrapped successfully"
-    else
-        fail "yay bootstrap failed — check makepkg dependencies or network, then re-run ./install.sh"
-        rm -rf "$YAY_BUILD"
-        exit 1
-    fi
-    rm -rf "$YAY_BUILD"
-else
-    info "yay already present"
-fi
-command -v yay >/dev/null 2>&1 || { fail "yay still missing after bootstrap — aborting"; exit 1; }
-
-# 1c. Repo packages (from pkglist/native.txt)
+# 1b. Repo packages (from pkglist/native.txt)
 if [ -f "$REPO_ROOT/pkglist/native.txt" ]; then
     # shellcheck disable=SC2086
     MISSING="$(LC_ALL=C comm -23 <(pkglist_lines "$REPO_ROOT/pkglist/native.txt") <(pacman -Qq | LC_ALL=C sort) | tr '\n' ' ')"
@@ -140,26 +122,25 @@ else
     exit 1
 fi
 
-# 1d. AUR packages (from pkglist/foreign.txt)
+# 1c. AUR packages (optional: if yay is present, or user installs manually)
 if [ -f "$REPO_ROOT/pkglist/foreign.txt" ]; then
-    # shellcheck disable=SC2086
-    MISSING_AUR="$(LC_ALL=C comm -23 <(pkglist_lines "$REPO_ROOT/pkglist/foreign.txt") <(pacman -Qqm | LC_ALL=C sort) | tr '\n' ' ')"
-    if [ -n "$MISSING_AUR" ]; then
-        info "installing $(printf '%s' "$MISSING_AUR" | wc -w) missing AUR packages"
+    if command -v yay >/dev/null 2>&1; then
         # shellcheck disable=SC2086
-        install_pkgs "yay -S" $MISSING_AUR
+        MISSING_AUR="$(LC_ALL=C comm -23 <(pkglist_lines "$REPO_ROOT/pkglist/foreign.txt") <(pacman -Qqm | LC_ALL=C sort) | tr '\n' ' ')"
+        if [ -n "$MISSING_AUR" ]; then
+            info "installing $(printf '%s' "$MISSING_AUR" | wc -w) missing AUR packages with yay"
+            # shellcheck disable=SC2086
+            install_pkgs "yay -S --noconfirm --needed --answerclean None --answerdiff None --answeredit None --sudoloop" $MISSING_AUR
+        else
+            info "all pkglist AUR packages already installed"
+        fi
     else
-        info "all pkglist AUR packages already installed"
+        warn "yay not installed — skipping AUR packages (install manually from pkglist/foreign.txt)"
     fi
-else
-    fail "pkglist/foreign.txt not found in repo — aborting"
-    exit 1
 fi
 
 if [ -n "$FAILED_PKGS" ]; then
     fail "these packages need manual attention (conflict/build error):$FAILED_PKGS"
-    # shellcheck disable=SC2086
-    fail "retry with: yay -S --needed $FAILED_PKGS"
     fail "fix them, then re-run ./install.sh (it resumes where it left off)"
     exit 1
 fi
@@ -468,7 +449,11 @@ need_cmd kitty "sudo pacman -S --needed kitty"
 need_cmd starship "sudo pacman -S --needed starship"
 need_cmd zsh "sudo pacman -S --needed zsh"
 need_cmd nvim "sudo pacman -S --needed neovim"
-need_cmd yay "bootstrap failed — see step 1"
+if command -v yay >/dev/null 2>&1; then
+    info "ok: yay"
+else
+    info "optional: yay not installed (install manually if needed)"
+fi
 if command -v pactl >/dev/null 2>&1 || [ -x "$HOME/.local/bin/pactl" ]; then
     info "ok: pactl (or ~/.local/bin/pactl shim)"
 else
@@ -482,7 +467,11 @@ need_cmd yazi "sudo pacman -S --needed yazi"
 need_cmd fzf "sudo pacman -S --needed fzf"
 need_cmd zoxide "sudo pacman -S --needed zoxide"
 need_cmd atuin "sudo pacman -S --needed atuin"
-need_cmd herdr "yay -S --needed herdr"
+if command -v herdr >/dev/null 2>&1; then
+    info "ok: herdr"
+else
+    info "optional: herdr not installed (available in pkglist/foreign.txt)"
+fi
 need_cmd gum "sudo pacman -S --needed gum"
 need_cmd chromium "sudo pacman -S --needed chromium"
 need_cmd fastfetch "sudo pacman -S --needed fastfetch"

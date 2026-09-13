@@ -1,7 +1,5 @@
 bibata-cursor-theme-bin
 cloudflare-warp-bin
-herdr
-matugen-bin
+herdr-bin
 papirus-folders
 ttf-material-design-icons-extended
-yay-bin
