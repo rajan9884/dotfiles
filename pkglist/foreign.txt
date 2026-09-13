@@ -1,5 +1,2 @@
-bibata-cursor-theme-bin
-cloudflare-warp-bin
-herdr-bin
-papirus-folders
-ttf-material-design-icons-extended
+# Foreign/AUR packages are omitted (pure official Arch repositories setup).
+# All desktop requirements (Hyprland, Waybar, Matugen, etc.) are installed via pacman.

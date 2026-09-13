@@ -204,9 +204,8 @@ cd ~/dotfiles
 
 The script (one go on a minimal Arch install — packages first, then configs):
 
-1. Installs packages: bootstraps `git`/`base-devel`, then `yay`, then every
-   missing package from `pkglist/native.txt` (pacman, incl. hyprland, waybar) and
-   `pkglist/foreign.txt` (AUR, incl. matugen-bin, herdr)
+1. Installs packages: bootstraps `archlinux-keyring`/`git`/`base-devel`, then every
+   missing package from `pkglist/native.txt` (official pacman repos, incl. hyprland, waybar, matugen)
 2. Backs up any existing config dirs it replaces (into `~/.config-backup-<timestamp>`)
    and symlinks every app config from `config/` into `~/.config/`
 3. Symlinks shell files (`zshrc`, `bashrc`, `gitconfig`) into `$HOME` and

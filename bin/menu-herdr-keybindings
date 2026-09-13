@@ -11,6 +11,14 @@ config_file="${HERDR_CONFIG_PATH:-${XDG_CONFIG_HOME:-$HOME/.config}/herdr/config
 export PATH="$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:$PATH"
 HERDR_BIN="$(command -v herdr 2>/dev/null || printf '%s/.local/bin/herdr' "$HOME")"
 
+if ! command -v "$HERDR_BIN" >/dev/null 2>&1 && [ ! -x "$HERDR_BIN" ]; then
+  if [ -x "$HOME/.config/hypr/scripts/keybinds-cheatsheet.sh" ]; then
+    exec "$HOME/.config/hypr/scripts/keybinds-cheatsheet.sh" "$@"
+  else
+    exit 0
+  fi
+fi
+
 while (($#)); do
   case "$1" in
     --print|-p)

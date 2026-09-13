@@ -5,7 +5,7 @@
 #   Order matters (do NOT reorder):
 #     0. Preflight: Arch check, root guard, sudo verification & keepalive.
 #     1. Packages FIRST: bootstrap archlinux-keyring/git/base-devel, then official
-#        repo packages (including matugen). AUR packages installed via yay if present.
+#        repo packages (including matugen) from pkglist/native.txt. Foreign/AUR pkgs skipped.
 #     2. Symlink every app config from <repo>/config/ into ~/.config/.
 #     3. Symlink shell files (zshrc, bashrc, gitconfig, starship.toml).
 #     4. Wire the active-theme symlink chain (default "Noro").
@@ -122,22 +122,7 @@ else
     exit 1
 fi
 
-# 1c. AUR packages (optional: if yay is present, or user installs manually)
-if [ -f "$REPO_ROOT/pkglist/foreign.txt" ]; then
-    if command -v yay >/dev/null 2>&1; then
-        # shellcheck disable=SC2086
-        MISSING_AUR="$(LC_ALL=C comm -23 <(pkglist_lines "$REPO_ROOT/pkglist/foreign.txt") <(pacman -Qqm | LC_ALL=C sort) | tr '\n' ' ')"
-        if [ -n "$MISSING_AUR" ]; then
-            info "installing $(printf '%s' "$MISSING_AUR" | wc -w) missing AUR packages with yay"
-            # shellcheck disable=SC2086
-            install_pkgs "yay -S --noconfirm --needed --answerclean None --answerdiff None --answeredit None --sudoloop" $MISSING_AUR
-        else
-            info "all pkglist AUR packages already installed"
-        fi
-    else
-        warn "yay not installed — skipping AUR packages (install manually from pkglist/foreign.txt)"
-    fi
-fi
+# 1c. Foreign/AUR packages intentionally skipped (pure official repo setup)
 
 if [ -n "$FAILED_PKGS" ]; then
     fail "these packages need manual attention (conflict/build error):$FAILED_PKGS"
@@ -449,11 +434,6 @@ need_cmd kitty "sudo pacman -S --needed kitty"
 need_cmd starship "sudo pacman -S --needed starship"
 need_cmd zsh "sudo pacman -S --needed zsh"
 need_cmd nvim "sudo pacman -S --needed neovim"
-if command -v yay >/dev/null 2>&1; then
-    info "ok: yay"
-else
-    info "optional: yay not installed (install manually if needed)"
-fi
 if command -v pactl >/dev/null 2>&1 || [ -x "$HOME/.local/bin/pactl" ]; then
     info "ok: pactl (or ~/.local/bin/pactl shim)"
 else
@@ -467,11 +447,6 @@ need_cmd yazi "sudo pacman -S --needed yazi"
 need_cmd fzf "sudo pacman -S --needed fzf"
 need_cmd zoxide "sudo pacman -S --needed zoxide"
 need_cmd atuin "sudo pacman -S --needed atuin"
-if command -v herdr >/dev/null 2>&1; then
-    info "ok: herdr"
-else
-    info "optional: herdr not installed (available in pkglist/foreign.txt)"
-fi
 need_cmd gum "sudo pacman -S --needed gum"
 need_cmd chromium "sudo pacman -S --needed chromium"
 need_cmd fastfetch "sudo pacman -S --needed fastfetch"
