@@ -38,6 +38,9 @@ config/nvim/lazyvim.json
 # Active-theme marker (written by theme-selector)
 config/hypr/.active-theme
 
+# cliamp playlists (runtime-generated from ~/Music folders by install.sh)
+config/cliamp/playlists/
+
 # Python bytecode (local syntax checks)
 __pycache__/
 *.pyc

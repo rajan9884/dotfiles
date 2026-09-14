@@ -13,6 +13,7 @@
 #     6. Symlink ~/.local/bin helpers, rofimoji theme, and systemd user units.
 #     7. pactl shim (PipeWire-only machines, volume OSD backend).
 #     8. Generate the matugen palette from the active theme's wallpaper.
+#     8b. Bind cliamp to ~/Music: one live [[dir]] playlist per Music folder.
 #     9. Configure system & user services (audio, network, bluetooth, power,
 #        groups, xdg-user-dirs, MIME types).
 #    10. Verify EVERYTHING and fail loudly if anything is missing.
@@ -159,6 +160,7 @@ APPS=(
     rofi
     kitty
     btop
+    cliamp
     matugen
     nvim
     swaync
@@ -365,6 +367,25 @@ matugen image "$WALL" -c "$HOME/.config/matugen/config.toml" --source-color-inde
     && { info "palette generated from $WALL"; printf '%s' "$WALL" > "$HOME/.cache/current-wallpaper"; } \
     || { fail "matugen failed on $WALL — run it manually after first login"; exit 1; }
 
+# ── 8b. cliamp: bind ~/Music, each folder → live playlist ──
+echo
+echo "==> [8b/10] Binding cliamp to ~/Music (each folder = a playlist)"
+CLIAMP_CFG="$HOME/.config/cliamp"
+mkdir -p "$CLIAMP_CFG/playlists"
+if [ -d "$HOME/Music" ] && compgen -G "$HOME/Music/*/" >/dev/null 2>&1; then
+    pl_count=0
+    for pl_dir in "$HOME/Music"/*/; do
+        [ -d "$pl_dir" ] || continue
+        pl_name="$(basename "$pl_dir")"
+        pl_file="$CLIAMP_CFG/playlists/$pl_name.toml"
+        [ -f "$pl_file" ] || printf '[[dir]]\npath = "~/Music/%s"\n' "$pl_name" > "$pl_file"
+        pl_count=$((pl_count + 1))
+    done
+    info "cliamp: $pl_count folder playlists in $CLIAMP_CFG/playlists"
+else
+    warn "cliamp: ~/Music is missing or empty — skipping folder playlists (add music folders, then re-run)"
+fi
+
 # ── 9. System & hardware configuration ────────
 echo
 echo "==> [9/10] Configuring system, audio, hardware groups and services"
@@ -452,6 +473,13 @@ need_cmd gum "sudo pacman -S --needed gum"
 need_cmd chromium "sudo pacman -S --needed chromium"
 need_cmd fastfetch "sudo pacman -S --needed fastfetch"
 need_cmd btop "sudo pacman -S --needed btop"
+
+# cliamp is AUR-only (manual step) — soft check, do not fail the install
+if command -v cliamp >/dev/null 2>&1; then
+    info "ok: cliamp"
+else
+    warn "cliamp not installed — AUR only (yay -S cliamp-bin); playlists in ~/.config/cliamp/playlists still generated"
+fi
 
 # Zsh plugins sourced by shell/zshrc (without these, zsh aborts on startup)
 for plugin in \

@@ -2,7 +2,9 @@
 # repositories setup). Install these manually after a fresh setup to match a
 # fully-configured machine:
 #
-#   sudo pacman -S --needed yay && yay -S yay-bin cloudflare-warp-bin
+#   sudo pacman -S --needed yay && yay -S yay-bin cloudflare-warp-bin cliamp-bin
 #
-# yay-bin            AUR helper used by optional scripts/tooling
+# yay-bin              AUR helper used by optional scripts/tooling
 # cloudflare-warp-bin  Cloudflare WARP VPN (personal use)
+# cliamp-bin           Terminal music player (config via config/cliamp/, folder
+#                      playlists auto-generated from ~/Music by install.sh)

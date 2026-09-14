@@ -172,7 +172,7 @@ qt5ct
 From AUR (yay) — *only* these are required on top of `install.sh`:
 
 ```
-yay -S yay-bin cloudflare-warp-bin   # AUR helper + personal VPN
+yay -S yay-bin cloudflare-warp-bin cliamp-bin   # AUR helper + personal VPN + music player
 ```
 
 > Note: `install.sh` deliberately installs official-repo packages only.
