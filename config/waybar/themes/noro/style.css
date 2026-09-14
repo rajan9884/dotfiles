@@ -145,13 +145,29 @@ window#waybar {
 /* --- Hover & Active --- */
 #workspaces button {
     color: @on_surface_variant;
-    padding: 0 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    opacity: 0.35;
+    padding: 0 6px;
+    border-radius: 8px;
+}
+#workspaces button:not(.empty):not(.active) {
+    color: @primary;
+    opacity: 1;
 }
 #workspaces button.active {
-    color: @primary;
+    color: @on_surface_variant;
+    background: transparent;
+    border-color: @primary;
+    opacity: 0.6;
+}
+#workspaces button.urgent {
+    color: @error;
+    opacity: 1;
 }
 #workspaces button:hover {
-    color: @secondary;
+    color: @primary;
+    opacity: 1;
 }
 
 #battery.charging {
