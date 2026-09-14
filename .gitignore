@@ -44,3 +44,11 @@ config/cliamp/playlists/
 # Python bytecode (local syntax checks)
 __pycache__/
 *.pyc
+
+# cliamp runtime state
+config/cliamp/cliamp.log
+config/cliamp/cliamp.sock.pid
+config/cliamp/history.toml
+
+# GTK runtime bookmarks
+config/gtk-3.0/bookmarks
