@@ -1,0 +1,24 @@
+{
+    "logo": {
+        "type": "file",
+        "source": "/home/rj9884/.config/fastfetch/penguin.txt"
+    },
+    "modules": [
+        {"type": "title", "keyWidth": 0},
+        "separator",
+        "os",
+        "host",
+        "kernel",
+        "uptime",
+        "packages",
+        "shell",
+        "wm",
+        "terminal",
+        {"type": "cpu", "temp": true},
+        "gpu",
+        "memory",
+        "disk",
+        "colors",
+        "break"
+    ]
+}

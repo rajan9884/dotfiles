@@ -37,6 +37,7 @@ gnome-text-editor
 gobject-introspection
 grim
 gst-libav
+gst-plugin-pipewire
 gst-plugins-bad
 gst-plugins-base
 gst-plugins-good
@@ -58,6 +59,7 @@ lazydocker
 lazygit
 libappindicator
 libnotify
+libpulse
 libvdpau
 libvips
 linux
@@ -87,6 +89,7 @@ pamixer
 papirus-icon-theme
 pipewire
 pipewire-alsa
+pipewire-jack
 pipewire-pulse
 playerctl
 polkit
@@ -156,3 +159,6 @@ yazi
 zoxide
 zram-generator
 zsh
+zsh-autosuggestions
+zsh-completions
+zsh-syntax-highlighting

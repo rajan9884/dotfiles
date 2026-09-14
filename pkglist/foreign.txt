@@ -1,2 +1,8 @@
-# Foreign/AUR packages are omitted (pure official Arch repositories setup).
-# All desktop requirements (Hyprland, Waybar, Matugen, etc.) are installed via pacman.
+# Foreign/AUR packages — NOT installed by install.sh (pure official Arch
+# repositories setup). Install these manually after a fresh setup to match a
+# fully-configured machine:
+#
+#   sudo pacman -S --needed yay && yay -S yay-bin cloudflare-warp-bin
+#
+# yay-bin            AUR helper used by optional scripts/tooling
+# cloudflare-warp-bin  Cloudflare WARP VPN (personal use)

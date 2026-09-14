@@ -152,11 +152,12 @@ Core (pacman):
 
 ```
 hyprland hypridle hyprlock waybar rofi kitty swayosd
-awww matugen (matugen-bin on AUR) fastfetch btop
+awww matugen fastfetch btop
 grim slurp wl-clipboard cliphist hyprpicker wf-recorder satty
 brightnessctl pamixer playerctl networkmanager
 polkit-gnome xdg-desktop-portal-hyprland
 nautilus wiremix tmux fzf starship
+zsh-autosuggestions zsh-syntax-highlighting zsh-completions
 ```
 
 Fonts and appearance:
@@ -168,17 +169,25 @@ adw-gtk3 flat-remix-gtk-theme (or your preferred dark GTK theme)
 qt5ct
 ```
 
-From AUR (yay):
+From AUR (yay) — *only* these are required on top of `install.sh`:
 
 ```
-yay -S matugen-bin bibata-cursor-theme-bin
+yay -S yay-bin cloudflare-warp-bin   # AUR helper + personal VPN
 ```
+
+> Note: `install.sh` deliberately installs official-repo packages only.
+> The list above is the manual remainder for an identical setup (also documented
+> in `pkglist/foreign.txt`). Everything else — including the zsh plugins
+> (`zsh-autosuggestions`, `zsh-syntax-highlighting`, `zsh-completions`) used by
+> `shell/zshrc` — comes from `pkglist/native.txt` automatically.
 
 Shell and editors (all handled by `./install.sh` from `pkglist/` — no manual setup):
 
-- **Zsh**: no Oh My Zsh needed. `shell/zshrc` + `shell/bashrc` carry guarded
-  inits for zoxide/fzf/atuin/direnv/starship (skipped silently if a tool is
-  ever missing), and `shell/starship.toml` is linked to `~/.config/starship.toml`.
+- **Zsh**: no Oh My Zsh needed. `zshrc` sources `zsh-autosuggestions`,
+  `zsh-syntax-highlighting` and `zsh-completions` (installed via pacman);
+  `shell/zshrc` + `shell/bashrc` carry guarded inits for zoxide/fzf/atuin/direnv/starship
+  (skipped silently if a tool is ever missing) and `shell/starship.toml` is linked
+  to `~/.config/starship.toml`.
 - **Neovim**: `pacman -S neovim` (plugins bootstrap themselves on first run via lazy.nvim)
 - **dictation (optional)**: voxtype, adds F9 push-to-talk when present
 

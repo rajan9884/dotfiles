@@ -164,10 +164,10 @@ APPS=(
     swaync
     gtk-3.0
     gtk-4.0
+    fastfetch
 )
 
 GENERATED_APPS=(
-    fastfetch
     ghostty
     helium-theme
     swaync
@@ -453,6 +453,18 @@ need_cmd chromium "sudo pacman -S --needed chromium"
 need_cmd fastfetch "sudo pacman -S --needed fastfetch"
 need_cmd btop "sudo pacman -S --needed btop"
 
+# Zsh plugins sourced by shell/zshrc (without these, zsh aborts on startup)
+for plugin in \
+    /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh \
+    /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
+    if [ -f "$plugin" ]; then
+        info "ok: $plugin"
+    else
+        fail "MISSING: $plugin (sudo pacman -S --needed zsh-autosuggestions zsh-syntax-highlighting zsh-completions)"
+        PROBLEMS=$((PROBLEMS + 1))
+    fi
+done
+
 for theme in glass material modern noro retro; do
     if [ -n "$(ls -A "$WALL_DST/$theme" 2>/dev/null)" ]; then
         info "ok: wallpapers/$theme"
@@ -465,6 +477,7 @@ done
 for link in "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/rofi" \
             "$HOME/.config/kitty" "$HOME/.config/matugen" "$HOME/.zshrc" \
             "$HOME/.zprofile" "$HOME/.bashrc" "$HOME/.config/starship.toml" \
+            "$HOME/.config/fastfetch/penguin.txt" \
             "$HYPR_CFG/theme.conf" "$HYPR_CFG/theme.lua" \
             "$WAYBAR_CFG/config.jsonc" "$WAYBAR_CFG/style.css"; do
     if [ -e "$link" ] || [ -L "$link" ]; then
