@@ -27,6 +27,7 @@
         "custom/clipboard",
         "custom/power-profile",
         "battery",
+        "custom/wifi",
         "tray",
         "bluetooth",
         "custom/power"
@@ -149,6 +150,14 @@
         "format": "",
         "on-click": "~/.local/bin/menu-clipboard",
         "tooltip": false
+    },
+    "custom/wifi": {
+        "exec": "~/.config/waybar/scripts/wifi-status.sh",
+        "return-type": "json",
+        "interval": 5,
+        "on-click": "~/.config/waybar/scripts/wifi-menu.sh",
+        "signal": 14,
+        "tooltip": true
     },
     "custom/notifications": {
         "exec": "~/.config/waybar/scripts/notifications.sh",

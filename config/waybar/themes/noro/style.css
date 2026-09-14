@@ -71,11 +71,19 @@ window#waybar {
 }
 /* --- Utility icons (backgroundless, float between the three capsules) --- */
 #custom-notifications, #custom-clipboard,
-#custom-power-profile {
+#custom-power-profile, #custom-wifi {
     background: transparent;
     color: @on_surface;
     padding: 4px 8px;
     margin: 6px 0;
+}
+#custom-wifi.wifi-on {
+    color: @primary;
+}
+#custom-wifi.wifi-off,
+#custom-wifi.wifi-disconnected {
+    color: @on_surface_variant;
+    opacity: 0.6;
 }
 /* --- Center Group [Workspaces | Bright | Vol] --- */
 #workspaces {
