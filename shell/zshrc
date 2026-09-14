@@ -10,12 +10,40 @@ alias grep='grep --color=auto'
 alias ff="fzf --preview 'bat --color=always {}'"
 
 # ── LS colours + completion colours ──
-export LS_COLORS="di=38;5;45:ln=38;5;75:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32"
+# Palette codes (0-15) not 256-index: they follow the matugen-theed
+# terminal palette (ghostty/kitty map color4=primary, color6=tertiary_container).
+export LS_COLORS="di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32"
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # ── Prompt (Optimized Pill Style) ──
 PROMPT=$'\n%{%F{magenta}%}%{%K{magenta}%}%{%F{black}%}  %{%F{white}%} %~ %{%k%}%{%F{magenta}%}%{%f%}\n%{%F{magenta}%}❯ %{%f%}'
 RPROMPT=""
+
+
+
+# ── Command history ──
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt EXTENDED_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+
+# ── Autosuggestions (up-arrow cycles suggestions) ──
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#777777'
+
+# ── Tab completion (zsh-completions + compinit) ──
+fpath=(/usr/share/zsh/site-functions $fpath)
+autoload -Uz compinit && compinit
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' verbose true
+
+# ── Syntax highlighting (MUST be LAST plugin) ──
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # ── Editor ──
 export EDITOR="nvim" VISUAL="nvim"
@@ -47,3 +75,4 @@ command -v fastfetch >/dev/null 2>&1 && fastfetch
 
 # Added by Antigravity CLI installer
 export PATH="/home/rj9884/.local/bin:$PATH"
+export PATH=/home/rj9884/.opencode/bin:$PATH

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Launch Chromium with the matugen "helium" theme applied on every start.
+#
+# matugen rewrites ~/.config/helium-theme/manifest.json on each wallpaper
+# change. Chromium only applies an unpacked theme while it's loaded, and
+# --load-extension is ephemeral (dropped on relaunch), so we inject it on
+# every launch to keep the browser following the current palette.
+exec /usr/bin/chromium --load-extension="$HOME/.config/helium-theme" "$@"
