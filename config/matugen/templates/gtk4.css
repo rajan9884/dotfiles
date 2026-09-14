@@ -67,6 +67,16 @@ text selection {
     color: {{colors.on_primary.default.hex}};
 }
 
+/* Full-bleed color: libadwaita apps (GNOME Text Editor, etc.) leave the
+   text/scroll area on the theme default unless forced explicitly */
+textview,
+textview.view,
+.view,
+scrolledwindow {
+    background-color: {{colors.surface.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+}
+
 /* Headerbar flatness (override libadwaita gradient shading) */
 headerbar {
     background-image: none;
