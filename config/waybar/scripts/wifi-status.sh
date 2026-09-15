@@ -15,6 +15,7 @@ I_WIFIOFF=$'\U000F05AA'  # md-wifi_off
 I_WIFIOUT=$'\U000F092F'  # md-wifi_strength_outline
 I_ETHER=$'\U000F0200'    # md-ethernet
 I_TETHER=$'\U000F0121'   # md-cellphone_link
+I_HOTSPOT=$'\U000F0003'  # md-access_point
 
 signal_icon() {
     local s="$1"
@@ -37,6 +38,23 @@ radio="$(nmcli -t -f WIFI radio 2>/dev/null || echo unknown)"
 
 if [[ "$radio" == "disabled" ]]; then
     jq -cn --arg i "$I_WIFIOFF" '{text:$i, tooltip:"Wi-Fi off (click to enable)", class:"wifi-off"}'
+    exit 0
+fi
+
+# Hotspot (access point) active? `--active` only accepts summary fields, so
+# read 802-11-wireless.mode per active wireless connection.
+hs_ssid=""
+while IFS= read -r name; do
+    [[ -n "$name" ]] || continue
+    if [[ "$(nmcli -g 802-11-wireless.mode connection show "$name" 2>/dev/null)" == "ap" ]]; then
+        hs_ssid="$(nmcli -g 802-11-wireless.ssid connection show "$name" 2>/dev/null)"
+        break
+    fi
+done < <(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null |
+    awk -F: '$2=="802-11-wireless"{print $1}')
+if [[ -n "$hs_ssid" ]]; then
+    jq -cn --arg i "$I_HOTSPOT" --arg ssid "$hs_ssid" \
+        '{text:$i, tooltip:("Hotspot: "+$ssid+" active (click to manage)"), class:"wifi-hotspot"}'
     exit 0
 fi
 

@@ -92,6 +92,9 @@ window#waybar {
 #custom-wifi.wifi-tether {
     color: @on_surface_variant;
 }
+#custom-wifi.wifi-hotspot {
+    color: @tertiary;
+}
 #custom-wifi.wifi-off,
 #custom-wifi.wifi-disconnected {
     color: @on_surface_variant;

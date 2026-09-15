@@ -37,7 +37,7 @@ PREVIEW_BG='#0f1512'
 PREVIEW_POINTSIZE=15
 # Preview canvas: content width + border ~= 470px preview widget.
 PREVIEW_W=430
-PREVIEW_H=600
+PREVIEW_H=400
 mkdir -p "$CACHE_DIR"
 
 # Full `cliphist list` line for a numeric id (empty if gone).

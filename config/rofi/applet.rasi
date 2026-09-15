@@ -1,0 +1,116 @@
+/* ═══════════════════════════════════════════════════════════
+ *   Applet base — Apple Control Center style (rofi 2.x)
+ *   Solid high-contrast card, inverse hover pill,
+ *   one consistent row height, no divider lines.
+ *   Individual menus @import this and tweak width/placeholder.
+ * ═══════════════════════════════════════════════════════════ */
+
+@import "colors.rasi"
+
+* {
+    font: "JetBrainsMono Nerd Font Mono 13";
+
+    bg-card:  @background;
+    bg-field: @background-alt;
+    fg:       @foreground;
+    dim:      #a9a69e;
+    accent:   @selected;
+
+    background-color: transparent;
+    text-color: @fg;
+}
+
+window {
+    location:         north east;
+    anchor:           north east;
+    x-offset:         -16;
+    y-offset:         64;
+    width:            400px;
+    padding:          10px;
+    border-radius:    18px;
+    border:           1px solid;
+    border-color:     #55534c;
+    background-color: @bg-card;
+}
+
+mainbox {
+    spacing:          6px;
+    padding:          0;
+    children:         [ inputbar, listview, message ];
+}
+
+/* ── Search / filter field (slim pill) ── */
+inputbar {
+    background-color: transparent;
+    padding:          2px 4px 6px 4px;
+    spacing:          8px;
+    children:         [ prompt, entry ];
+}
+
+prompt {
+    text-color:       @fg;
+    vertical-align:   0.5;
+}
+
+entry {
+    background-color:    @bg-field;
+    border-radius:       10px;
+    padding:             8px 12px;
+    text-color:          @fg;
+    placeholder:         "Filter…";
+    placeholder-color:   @dim;
+    caret-color:         @accent;
+    vertical-align:      0.5;
+}
+
+/* ── Rows: uniform height, rounded inverse pill on hover ── */
+listview {
+    columns:          1;
+    lines:            16;
+    spacing:          2px;
+    padding:          2px;
+    scrollbar:        false;
+    fixed-height:     false;
+    dynamic:          true;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @fg;
+    padding:          10px 12px;
+    spacing:          10px;
+    border-radius:    11px;
+}
+
+element selected.normal,
+element selected.active,
+element selected {
+    background-color: @active;
+    text-color:       @background;
+}
+
+element-icon {
+    size:             20px;
+}
+
+element-text {
+    vertical-align:   0.5;
+}
+
+element-text selected.normal,
+element-text selected.active,
+element-text selected {
+    text-color: @background;
+}
+
+/* ── Footer status hint ── */
+message {
+    background-color: transparent;
+    padding:          6px 6px 0 6px;
+    border-radius:    8px;
+}
+
+message textbox {
+    text-color: @dim;
+    font:       "JetBrainsMono Nerd Font Mono Italic 12";
+}

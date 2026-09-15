@@ -62,16 +62,6 @@ systemctl --user restart waybar.service 2>/dev/null || {
     setsid waybar >/dev/null 2>&1 < /dev/null &
 }
 
-# 3.5 Refresh nm-applet so its tray right-click menu picks up the new GTK CSS
-# (GTK parses gtk.css once at process startup, same as the note above).
-# Managed by the xdg-autostart generator unit — restart re-reads the theme
-# without stacking duplicate applets.
-systemctl --user restart 'app-nm\x2dapplet@autostart.service' 2>/dev/null || {
-    pkill -x nm-applet 2>/dev/null; pkill -x .nm-applet-wrap 2>/dev/null
-    sleep 0.5
-    setsid nm-applet >/dev/null 2>&1 < /dev/null &
-}
-
 # 4. Reload Kitty
 # SIGUSR1 tells kitty to reload its configuration
 killall -SIGUSR1 kitty

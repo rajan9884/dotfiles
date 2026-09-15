@@ -11,7 +11,7 @@ done
 }
 
 # List images from all directories, pass to rofi, and get selection
-SELECTED=$(find "${WALLPAPER_DIRS[@]}" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) -printf "%p\n" 2>/dev/null | sort | rofi -dmenu -i -p "Select Wallpaper" -theme ~/.config/rofi/theme.rasi)
+SELECTED=$(find "${WALLPAPER_DIRS[@]}" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) -printf "%p\n" 2>/dev/null | sort | rofi -dmenu -i -p "Select Wallpaper" -theme ~/.config/rofi/active-picker.rasi)
 
 if [ -n "$SELECTED" ]; then
     # Call the existing swww-all.sh script which runs matugen for colors

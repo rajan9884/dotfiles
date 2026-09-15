@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════════════════════════════
+ *   Wi-Fi text input (SSID / password) — solid, matches
+ *   wifi-menu.rasi contrast.
+ * ═══════════════════════════════════════════════════════════ */
+
+@import "colors.rasi"
+
+* {
+    font: "JetBrainsMono Nerd Font Mono 13";
+
+    bg-card:   @background;
+    bg-field:  @background-alt;
+    fg:        @foreground;
+    dim:       #a9a69e;
+    accent:    @selected;
+
+    background-color: transparent;
+    text-color: @fg;
+}
+
+window {
+    location:         north east;
+    anchor:           north east;
+    x-offset:         -16;
+    y-offset:         64;
+    width:            400px;
+    padding:          12px;
+    border-radius:    16px;
+    border:           1px solid;
+    border-color:     #55534c;
+    background-color: @bg-card;
+}
+
+inputbar {
+    background-color: transparent;
+    padding:          2px;
+    spacing:          10px;
+    children:         [ prompt, entry ];
+}
+
+prompt {
+    text-color:       @dim;
+    vertical-align:   0.5;
+}
+
+entry {
+    background-color:    @bg-field;
+    border-radius:       10px;
+    padding:             10px 12px;
+    text-color:          @fg;
+    caret-color:         @accent;
+    vertical-align:      0.5;
+}
+
+listview { enabled: false; }
+message  { enabled: false; }

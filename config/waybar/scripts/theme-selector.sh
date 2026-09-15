@@ -15,7 +15,7 @@ fi
 THEMES=$(ls -1 "$THEMES_DIR")
 
 # Use rofi to prompt the user
-SELECTED=$(echo "$THEMES" | rofi -dmenu -i -p "Select Waybar Theme" -theme ~/.config/rofi/theme.rasi)
+SELECTED=$(echo "$THEMES" | rofi -dmenu -i -p "Select Waybar Theme" -theme ~/.config/rofi/active-scripts.rasi)
 
 # If a theme was selected
 if [ -n "$SELECTED" ]; then

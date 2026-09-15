@@ -1,124 +1,55 @@
 /* ── Clipboard manager (split preview) ──
- * Mirrors the split-preview card: 875px card, left list + right preview,
- * 50px rows with 34px thumbnails, "Search clipboard…" header.
+ * Applet base with a two-pane layout: left list + right live preview.
  * Used in rofi script-mode: entry icons feed icon-current-entry,
  * so images preview large on the right half as selection moves.
  */
-@import "~/.config/rofi/colors.rasi"
-
-* {
-    bg:       @background;
-    bg-alt:   @background-alt;
-    fg:       @foreground;
-    accent:   @selected;
-    urgent:   @urgent;
-
-    background-color: transparent;
-    text-color:       @fg;
-}
+@import "~/.config/rofi/applet.rasi"
 
 window {
-    width:            875px;
-    background-color: @bg;
-    border:           2px solid;
-    border-color:     @accent;
-    border-radius:    12px;
-    padding:          0;
-    location:         center;
-    anchor:           center;
+    width:      875px;
+    location:   center;
+    anchor:     center;
+    x-offset:   0;
+    y-offset:   0;
 }
 
+/* Left list + right preview, split ~half-half. */
 mainbox {
-    background-color: @bg;
-    border-radius:    12px;
-    children:         [ inputbar, listview-split ];
-    spacing:          0;
-    padding:          0;
+    children: [ inputbar, listview-split ];
 }
 
-inputbar {
-    background-color: @bg-alt;
-    border-radius:    12px 12px 0 0;
-    padding:          14px 20px;
-    spacing:          10px;
-    children:         [ entry ];
-}
-
-entry {
-    background-color: transparent;
-    text-color:       @fg;
-    placeholder:      "Search clipboard…";
-    placeholder-color: @fg;
-    vertical-align:   0.5;
-    font:             "JetBrainsMono Nerd Font 12";
-}
-
-/* Left list + right preview, split 50/50. */
 listview-split {
     orientation:      horizontal;
     spacing:          0px;
     children:         [ listview, icon-current-entry ];
-    background-color: @bg;
-    border-radius:    0 0 12px 12px;
+    background-color: @bg-card;
+    border-radius:    0 0 18px 18px;
     padding:          8px;
 }
 
 listview {
-    background-color: transparent;
-    columns:          1;
-    lines:            10;
-    width:            350px;
-    spacing:          2px;
-    padding:          0 8px 0 0;
-    scrollbar:        false;
-    fixed-height:     true;
-    dynamic:          true;
-}
-
-element {
-    background-color: transparent;
-    text-color:       @fg;
-    orientation:      horizontal;
-    children:         [ element-icon, element-text ];
-    padding:          8px 12px;
-    spacing:          10px;
-    border-radius:    12px;
-}
-
-element selected.normal {
-    background-color: @accent;
-    text-color:       @bg;
+    width:    350px;
+    lines:    8;
+    padding:  0 8px 0 0;
 }
 
 element-icon {
-    size:             34px;
-}
-
-element-text {
-    text-color:       @fg;
-    vertical-align:   0.5;
-    font:             "JetBrainsMono Nerd Font 11";
-}
-
-element-text selected.normal,
-element-text selected {
-    text-color:       @bg;
+    size: 34px;
 }
 
 /* Right-half live preview of the selected entry: images render
  * large, text rows show their full contents rasterized to PNG by
  * clipboard.sh (icon-current-entry can only display images).
- * Top-aligned so tall text previews read from the first line
- * instead of centering (which buried the start of long entries).
-  * Divider echoes the 1px vertical rule between list and
- * preview. Explicit px size: percentage sizes don't scale the
- * preview image in this widget. */
+ * Top-aligned so tall text previews read from the first line.
+ * Explicit px size: percentage sizes don't scale the preview image.
+ * Divider echoes the 1px vertical rule between list and preview.
+ */
 icon-current-entry {
     expand:           true;
-    size:             470px;
+    size:             300px;
     background-color: transparent;
     border:           0px 0px 0px 1px;
-    border-color:     @bg-alt;
+    border-color:     @bg-field;
     border-radius:    0px;
     vertical-align:   0;
     horizontal-align: 0.5;

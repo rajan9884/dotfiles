@@ -100,7 +100,7 @@ EMOJIS="😀  Grinning face
 ↩️  Left arrow curving right
 "
 
-pick=$(printf '%s\n' "$EMOJIS" | rofi -dmenu -theme ~/.config/rofi/list.rasi -p '😀  Emoji' -i -lines 12)
+pick=$(printf '%s\n' "$EMOJIS" | rofi -dmenu -theme ~/.config/rofi/active-picker.rasi -p '😀  Emoji' -i -lines 12)
 [[ -z "$pick" ]] && exit 0
 emoji="${pick%%  *}"
 printf '%s' "$emoji" | wl-copy
