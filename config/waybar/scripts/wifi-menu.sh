@@ -5,11 +5,28 @@
 #   networking, hidden network, hotspot, details.
 # ──────────────────────────────────────────────
 
-THEME="$HOME/.config/rofi/active-scripts.rasi"
+THEME="$HOME/.config/rofi/wifi-menu.rasi"
 DIVIDER="────────────────────────────"
 
+I_SIG4=$'\U000F0928'     # md-wifi_strength_4
+I_SIG3=$'\U000F0925'     # md-wifi_strength_3
+I_SIG2=$'\U000F0922'     # md-wifi_strength_2
+I_SIG1=$'\U000F091F'     # md-wifi_strength_1
+I_SIG0=$'\U000F092D'     # md-wifi_strength_off
+I_WIFIOFF=$'\U000F05AA'  # md-wifi_off
+I_WIFIOUT=$'\U000F092F'  # md-wifi_strength_outline
+I_LOCK=$'\U000F033E'     # md-lock
+I_HIDDEN=$'\U000F0209'   # md-eye_off
+I_HOTSPOT=$'\U000F0003'  # md-access_point
+I_DETAILS=$'\U000F02FD'  # md-information_outline
+I_EDIT=$'\U000F062E'     # md-tune
+I_LINKOFF=$'\U000F0338'  # md-link_off
+I_NET=$'\U000F1616'      # md-connection
+
 notify() {
-    notify-send -a "Network" -i network-wireless "$1" "$2" -t 4000
+    local dur=4000
+    if [[ "$1" == "-t" ]]; then dur="$2"; shift 2; fi
+    notify-send -a "Network" -i network-wireless -t "$dur" "$1" "$2"
 }
 
 wifi_iface() {
@@ -18,11 +35,11 @@ wifi_iface() {
 
 signal_icon() {
     local s="$1"
-    if (( s >= 80 )); then printf '󰤨'
-    elif (( s >= 60 )); then printf '󰤥'
-    elif (( s >= 40 )); then printf '󰤢'
-    elif (( s >= 20 )); then printf '󰤟'
-    else printf '󰤯'; fi
+    if (( s >= 80 )); then printf '%s' "$I_SIG4"
+    elif (( s >= 60 )); then printf '%s' "$I_SIG3"
+    elif (( s >= 40 )); then printf '%s' "$I_SIG2"
+    elif (( s >= 20 )); then printf '%s' "$I_SIG1"
+    else printf '%s' "$I_SIG0"; fi
 }
 
 get_radio() {
@@ -51,26 +68,24 @@ build_menu() {
     read -r active_ssid active_signal < <(get_active)
 
     if [[ "$radio" == "disabled" ]]; then
-        echo "󰤮  Wi-Fi is OFF"
+        echo "$I_WIFIOFF  Wi-Fi is OFF"
         echo "$DIVIDER"
-        echo "󰤨  Turn Wi-Fi ON"
-        echo "󰧌  Hidden Network…"
+        echo "$I_SIG4  Turn Wi-Fi ON"
+        echo "$I_HIDDEN  Hidden Network…"
         echo "$DIVIDER"
         if [[ "$networking" == "disabled" ]]; then
-            echo "󰇚  Enable Networking"
+            echo "$I_NET  Enable Networking"
         else
-            echo "󰇚  Disable Networking"
+            echo "$I_NET  Disable Networking"
         fi
-        echo "󰤪  Edit Connections…"
+        echo "$I_EDIT  Edit Connections…"
         return
     fi
 
     if [[ -n "$active_ssid" ]]; then
-        local aicon
-        aicon="$(signal_icon "${active_signal:-0}")"
-        echo "$aicon  Connected: $active_ssid"
+        echo "$I_SIG4  Connected: $active_ssid ($active_signal%)"
     else
-        echo "󰤭  Wi-Fi ON — no connection"
+        echo "$I_WIFIOUT  Wi-Fi ON — no connection"
     fi
     echo "$DIVIDER"
 
@@ -84,7 +99,7 @@ build_menu() {
         local icon
         icon="$(signal_icon "$signal")"
         if [[ "$sec" == *"WPA"* || "$sec" == *"WEP"* ]]; then
-            echo "$icon  $ssid  󰢷"
+            echo "$icon  $ssid  $I_LOCK"
         else
             echo "$icon  $ssid"
         fi
@@ -113,27 +128,27 @@ for ssid, (sig, sec) in sorted(best.items(), key=lambda kv: -kv[1][0]):
 
     if [[ -n "$active_ssid" ]]; then
         echo "$DIVIDER"
-        echo "󰖪  Disconnect"
+        echo "$I_LINKOFF  Disconnect"
     fi
     echo "$DIVIDER"
 
-    echo "󰧌  Hidden Network…"
+    echo "$I_HIDDEN  Hidden Network…"
     if hotspot_running; then
-        echo "󰋎  Disable Hotspot"
+        echo "$I_HOTSPOT  Disable Hotspot"
     else
-        echo "󰋎  Enable Hotspot"
+        echo "$I_HOTSPOT  Enable Hotspot"
     fi
-    echo "󰖟  Connection Details…"
-    echo "󰤪  Edit Connections…"
+    echo "$I_DETAILS  Connection Details…"
+    echo "$I_EDIT  Edit Connections…"
     echo "$DIVIDER"
 
     if [[ "$radio" == "enabled" ]]; then
-        echo "󰤮  Turn Wi-Fi OFF"
+        echo "$I_WIFIOFF  Turn Wi-Fi OFF"
     fi
     if [[ "$networking" == "disabled" ]]; then
-        echo "󰇚  Enable Networking"
+        echo "$I_NET  Enable Networking"
     else
-        echo "󰇚  Disable Networking"
+        echo "$I_NET  Disable Networking"
     fi
 }
 
@@ -172,43 +187,59 @@ connection_details() {
         return
     fi
     local details
-    details="$(nmcli -e yes -t -f SSID,SIGNAL,SECURITY,CHAN,BSSID,SPEED dev wifi list ifname "$iface" 2>/dev/null |
-        awk -F: -v s="$ssid" '$1==s{print "SSID:     "$1"\nSignal:   "$2"\nSecurity: "$3"\nChannel:  "$4"\nBSSID:    "$5"\nRate:     "$6" Mb/s"; exit}')"
+    details="$(nmcli -e yes -t -f SSID,SIGNAL,SECURITY,CHAN,BSSID,RATE dev wifi list --rescan no ifname "$iface" 2>/dev/null |
+        python3 -c '
+import sys, re
+ssid_arg = sys.argv[1]
+def unesc(s): return re.sub(r"\\(.)", r"\1", s)
+for line in sys.stdin:
+    p = re.split(r"(?<!\\):", line.rstrip("\n"))
+    if len(p) < 6:
+        continue
+    if unesc(p[0]).strip() == ssid_arg:
+        print("SSID:     " + unesc(p[0]).strip())
+        print("Signal:   " + p[1] + "%")
+        print("Security: " + unesc(p[2]))
+        print("Channel:  " + p[3])
+        print("BSSID:    " + unesc(p[4]))
+        print("Rate:     " + p[5])
+        break
+' "$ssid")"
     notify -t 8000 "$ssid" "$details"
 }
 
 handle_selection() {
     local choice="$1"
     case "$choice" in
-        "󰤮  Wi-Fi is OFF"*|"󰤭  Wi-Fi ON"*|"󰤨  Connected:"*|"$DIVIDER")
+        "$I_WIFIOFF  Wi-Fi is OFF"*|"$I_WIFIOUT  Wi-Fi ON"*|"$I_SIG4  Connected:"*|"$DIVIDER")
             return ;;
 
-        "󰤨  Turn Wi-Fi ON")
+        "$I_SIG4  Turn Wi-Fi ON")
             nmcli radio wifi on 2>/dev/null
             notify "Wi-Fi ON" "Wireless radio enabled"
             sleep 1
             main ;;
 
-        "󰤮  Turn Wi-Fi OFF")
+        "$I_WIFIOFF  Turn Wi-Fi OFF")
             nmcli radio wifi off 2>/dev/null
             notify "Wi-Fi OFF" "Wireless radio disabled" ;;
 
-        "󰇚  Enable Networking")
+        "$I_NET  Enable Networking")
             nmcli networking on 2>/dev/null
             notify "Networking ON" "NetworkManager is enabled"
             sleep 1
             main ;;
 
-        "󰇚  Disable Networking")
+        "$I_NET  Disable Networking")
             nmcli networking off 2>/dev/null
             notify "Networking OFF" "NetworkManager is disabled" ;;
 
-        "󰧌  Hidden Network…")
+        "$I_HIDDEN  Hidden Network…")
             hidden_network
             sleep 1
             main ;;
 
-        "󰋎  Enable Hotspot")
+        "$I_HOTSPOT  Enable Hotspot")
             local iface
             iface="$(wifi_iface)"
             nmcli radio wifi on 2>/dev/null
@@ -217,29 +248,35 @@ handle_selection() {
             sleep 1
             main ;;
 
-        "󰋎  Disable Hotspot")
+        "$I_HOTSPOT  Disable Hotspot")
             nmcli dev wifi hotspot off 2>/dev/null
             notify "Hotspot" "Wi-Fi hotspot disabled"
             sleep 1
             main ;;
 
-        "󰖟  Connection Details…")
+        "$I_DETAILS  Connection Details…")
             connection_details ;;
 
-        "󰤪  Edit Connections…")
+        "$I_EDIT  Edit Connections…")
             command -v nm-connection-editor >/dev/null 2>&1 \
                 && nm-connection-editor \
                 || notify "Not installed" "Install network-manager-applet for the editor" ;;
 
-        "󰖪  Disconnect")
-            nmcli connection down active 2>/dev/null
-            notify "Disconnected" "The active connection was disconnected"
+        "$I_LINKOFF  Disconnect")
+            local active
+            active="$(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null | awk -F: '$2=="802-11-wireless"{print $1; exit}')"
+            if [[ -z "$active" ]]; then
+                notify "Nothing to disconnect" "No active Wi-Fi connection"
+            else
+                nmcli connection down "$active" 2>/dev/null
+                notify "Disconnected" "Disconnected from $active"
+            fi
             sleep 1
             main ;;
 
         *)
             local ssid
-            ssid="$(echo "$choice" | sed 's/^[^ ]*  *//; s/  *󰢷$//')"
+            ssid="$(echo "$choice" | sed 's/^[^ ]*  *//; s/  *'"$I_LOCK"'$//')"
             [[ -z "$ssid" ]] && return
             connect_network "$ssid"
             sleep 1
@@ -250,7 +287,7 @@ handle_selection() {
 main() {
     local menu choice
     menu="$(build_menu)"
-    choice="$(echo "$menu" | rofi -dmenu -p "󰤨  Network" -lines 12 -theme "$THEME" -i)"
+    choice="$(echo "$menu" | rofi -dmenu -p "$I_SIG4  Network" -lines 16 -theme "$THEME" -i)"
     [[ -z "$choice" ]] && exit 0
     handle_selection "$choice"
 }

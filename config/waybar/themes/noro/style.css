@@ -23,7 +23,7 @@ window#waybar {
 /* ── Grouping Strategy ── */
 #clock, #custom-user,
 #workspaces, #custom-launcher,
-#tray, #battery, #bluetooth, #custom-power {
+#battery, #bluetooth, #custom-power {
     background: @surface; /* DYNAMIC: Based on wallpaper */
     color: @on_surface;    /* DYNAMIC: Based on wallpaper */
     padding: 4px 12px;
@@ -71,14 +71,26 @@ window#waybar {
 }
 /* --- Utility icons (backgroundless, float between the three capsules) --- */
 #custom-notifications, #custom-clipboard,
-#custom-power-profile, #custom-wifi {
+#custom-power-profile {
     background: transparent;
+    color: @on_surface;
+    padding: 4px 8px;
+    margin: 6px 0;
+}
+#custom-wifi {
+    background: @surface;
     color: @on_surface;
     padding: 4px 8px;
     margin: 6px 0;
 }
 #custom-wifi.wifi-on {
     color: @primary;
+}
+#custom-wifi.wifi-wired {
+    color: @tertiary;
+}
+#custom-wifi.wifi-tether {
+    color: @on_surface_variant;
 }
 #custom-wifi.wifi-off,
 #custom-wifi.wifi-disconnected {
@@ -131,8 +143,10 @@ window#waybar {
     padding-left: 15px;
 }
 #tray {
-    padding-left: 8px;
-    padding-right: 6px;
+    background: transparent;
+    color: @on_surface;
+    padding: 4px 8px;
+    margin: 6px 0 6px 30px;
 }
 #bluetooth {
     background: @primary; /* DYNAMIC */
@@ -193,11 +207,7 @@ window#waybar {
     background: @surface_variant;
     border-color: @outline;
 }
-/* ── System Tray (middle segment of the right pill) ─── */
-#tray {
-    color: @on_surface;
-}
-
+/* ── System Tray ─── */
 #tray > .passive {
     opacity: 0.7;
 }

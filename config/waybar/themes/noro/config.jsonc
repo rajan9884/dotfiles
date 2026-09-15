@@ -23,12 +23,12 @@
         "custom/group"
     ],
     "modules-right": [
+        "tray",
         "custom/notifications",
         "custom/clipboard",
         "custom/power-profile",
         "battery",
         "custom/wifi",
-        "tray",
         "bluetooth",
         "custom/power"
     ],

@@ -16,7 +16,7 @@
 }
 
 window {
-    width:            400px;
+    width:            420px;
     background-color: @bg;
     border:           2px solid;
     border-color:     @accent;
@@ -68,8 +68,8 @@ listview {
     background-color: @bg;
     border-radius:    0 0 12px 12px;
     columns:          1;
-    lines:            10;
-    spacing:          2px;
+    lines:            16;
+    spacing:          4px;
     padding:          10px;
     scrollbar:        false;
     fixed-height:     false;
