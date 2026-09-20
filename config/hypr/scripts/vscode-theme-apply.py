@@ -165,7 +165,7 @@ def derive_palette(primary_hex):
         "tags": spin(base_h, 285, 0.65, 0.92),
         "punctuation": spin(base_h, 180, 0.45, 0.82),
         "storage": spin(base_h, 0, 0.60, 0.80),
-        "comments": spin(base_h, 0, 0.18, 0.50),
+        "comments": spin(base_h, 0, 0.15, 0.62),
         "variables": "#F2EFF2",
         "red": red,
         "invalid": "#FF5370",
@@ -313,6 +313,19 @@ def apply_code(current, fragment, p):
     for i, key in enumerate(["keywords", "tags", "functions",
                              "types", "red", "strings"]):
         cc["editorBracketHighlight.foreground%d" % (i + 1)] = p[key]
+    # Bracket-pair guides: same hues as the brackets but ~25% alpha, so
+    # the verticals and the horizontal stubs (bracketPairsHorizontal)
+    # read as faint structure instead of glowing lines.
+    for i, key in enumerate(["keywords", "tags", "functions",
+                             "types", "red", "strings"]):
+        cc["editorBracketPairGuide.background%d" % (i + 1)] = p[key] + "40"
+    cc["editorGuides.bracketPairsHorizontalGuideline"] = "#2E2E38"
+    cc["editorGuides.activeBracketPairsHorizontalGuideline"] = \
+        p["keywords"] + "66"
+    cc["editorStickyScroll.background"] = "#050505F2"
+    cc["editorStickyScroll.border"] = "#1a1a1a"
+    cc["editorStickyScrollHover.background"] = "#0A0A0EF2"
+    cc["editorStickyScroll.shadow"] = "#00000000"
     cc["charts.green"] = p["strings"]
     cc["charts.yellow"] = p["types"]
     cc["charts.red"] = p["red"]
@@ -363,6 +376,13 @@ def save_settings(path, data):
         fh.write("\n")
 
 
+def themed_by_omarchy(data):
+    # A full theme (e.g. Omarchy) defines every color itself, so layering
+    # matugen overrides on top would corrupt its look. Switch colorTheme
+    # away to re-enable matugen theming for that file.
+    return data.get("workbench.colorTheme") == "Omarchy"
+
+
 def main() -> int:
     if not os.path.isfile(FRAG):
         return 0
@@ -376,12 +396,20 @@ def main() -> int:
     p = derive_palette(primary)
     cursor = boost(primary)
 
-    save_settings(SETTINGS_CODE,
-                  apply_code(load_settings(SETTINGS_CODE), fragment, p))
+    code_data = load_settings(SETTINGS_CODE)
+    if themed_by_omarchy(code_data):
+        print("skip %s (Omarchy theme active)" % SETTINGS_CODE)
+    else:
+        save_settings(SETTINGS_CODE,
+                      apply_code(code_data, fragment, p))
     oss_path = SETTINGS_OSS
     if os.path.isdir(os.path.dirname(oss_path)):
-        save_settings(oss_path,
-                      apply_oss(load_settings(oss_path), p, cursor))
+        oss_data = load_settings(oss_path)
+        if themed_by_omarchy(oss_data):
+            print("skip %s (Omarchy theme active)" % oss_path)
+        else:
+            save_settings(oss_path,
+                          apply_oss(oss_data, p, cursor))
     return 0
 
 

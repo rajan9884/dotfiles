@@ -37,6 +37,15 @@ hl.window_rule({
 	opacity = "1 1",
 })
 
+-- VS Code: a whisper of transparency. Real see-through needs the
+-- compositor (per-color alpha inside VS Code alone composites against
+-- its own opaque window), so this lives here, not in the theme.
+hl.window_rule({
+	name = "code-translucent",
+	match = { class = "^(code|Code|code-oss)$" },
+	opacity = "0.92 0.88",
+})
+
 hl.window_rule({
 	name = "previewer-no-default-opacity",
 	match = { class = "org.gnome.NautilusPreviewer" },
