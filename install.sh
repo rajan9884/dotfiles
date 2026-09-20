@@ -3,7 +3,7 @@
 #   install.sh — one-shot setup: minimal Arch → working Hyprland desktop.
 #
 #   Order matters (do NOT reorder):
-#     0. Preflight: Arch check, root guard, sudo verification & keepalive.
+#     0. Preflight: Arch check, root guard, sudo verification (rofi askpass) & keepalive.
 #     1. Packages FIRST: bootstrap archlinux-keyring/git/base-devel, then official
 #        repo packages (including matugen) from pkglist/native.txt. Foreign/AUR pkgs skipped.
 #     2. Symlink every app config from <repo>/config/ into ~/.config/.
@@ -50,6 +50,25 @@ if [ -n "${SUDO_ASKPASS:-}" ] && [ ! -x "$SUDO_ASKPASS" ]; then
     unset SUDO_ASKPASS
 fi
 
+# Password prompt via rofi: sudo's own prompt needs a TTY on stdin, so when
+# stdin is piped/absent (or a launcher hides it) sudo looks "stuck" with no
+# visible prompt. rofi pops a masked password box on the compositor instead,
+# so expose it as SUDO_ASKPASS and validate with `sudo -A` — the whole run
+# then re-prompts visibly if the timestamp lapses. (First run on minimal Arch
+# may not have rofi yet; it gets installed in step 1 and the askpass kicks in
+# on re-runs. If askpass.rasi's matugen colors are missing, plain rofi is used.)
+SUDO_ASKPASS_TMP=""
+if ! sudo -n -v 2>/dev/null && [ -z "${SUDO_ASKPASS:-}" ] && command -v rofi >/dev/null 2>&1; then
+    SUDO_ASKPASS_TMP="$(mktemp)"
+    {
+        printf '%s\n' '#!/usr/bin/env bash' "ROFI_THEME=\"$REPO_ROOT/config/rofi/askpass.rasi\""
+        printf '%s\n' 'if [ -f "${ROFI_THEME%/*}/colors.rasi" ]; then' '    exec timeout 120 rofi -dmenu -password -p "sudo password" -theme "$ROFI_THEME"' 'else' '    exec timeout 120 rofi -dmenu -password -p "sudo password"' 'fi'
+    } > "$SUDO_ASKPASS_TMP"
+    chmod +x "$SUDO_ASKPASS_TMP"
+    export SUDO_ASKPASS="$SUDO_ASKPASS_TMP"
+    info "using rofi password prompt (sudo askpass)"
+fi
+
 # Prompt once up front for sudo access and keep it alive in the background.
 SUDO_OK=0
 if sudo -n -v 2>/dev/null; then
@@ -58,16 +77,20 @@ elif [ -t 0 ]; then
     if sudo -v; then
         SUDO_OK=1
     fi
+elif [ -n "${SUDO_ASKPASS:-}" ]; then
+    if sudo -A -v; then
+        SUDO_OK=1
+    fi
 fi
 if [ "$SUDO_OK" -ne 1 ]; then
-    fail "sudo authentication failed or unavailable — re-run with sudo access (packages + services need root)."
+    fail "sudo authentication failed or unavailable — re-run in a terminal with sudo access (packages + services need root)."
     exit 1
 fi
 
 # Keep sudo alive throughout installation
 while true; do sudo -n true 2>/dev/null; sleep 50; kill -0 "$$" || exit; done 2>/dev/null &
 SUDO_KEEPALIVE_PID=$!
-trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true' EXIT
+trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true; [ -n "$SUDO_ASKPASS_TMP" ] && rm -f "$SUDO_ASKPASS_TMP"' EXIT
 
 # Install packages in batch first for speed; fallback to one at a time if
 # a single failure occurs (conflict, removed package, build error).
