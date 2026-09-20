@@ -81,7 +81,7 @@ case "${1:-autodetect}" in
     ;;
   menu)
     THEME="$HOME/.config/rofi/active-scripts.rasi"
-    [[ -f "$THEME" ]] || THEME="$HOME/.config/rofi/material-scripts.rasi"
+    [[ -f "$THEME" ]] || THEME="$HOME/.config/rofi/theme.rasi"
     current=$(current_profile)
     entries=()
     while read -r p active; do

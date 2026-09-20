@@ -18,6 +18,7 @@ https://github.com/user-attachments/assets/18fc7426-f8b7-4349-ae4f-4c4e70d48b56
 
 - [Overview](#overview)
 - [Features](#features)
+- [Waybar Presets](#waybar-prests)
 - [Screenshots](#screenshots)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -36,7 +37,7 @@ https://github.com/user-attachments/assets/18fc7426-f8b7-4349-ae4f-4c4e70d48b56
 |--------------|------|
 | OS           | Arch Linux (rolling) |
 | Compositor   | Hyprland (Lua config, 0.55+) |
-| Status bar   | Waybar (15 switchable styles) |
+| Status bar   | Waybar (15 switchable styles, matugen colors) |
 | Launcher     | Rofi (drun / run / window + menus) |
 | Terminal     | Kitty |
 | Notifications| Dunst |
@@ -56,12 +57,12 @@ environment and defaults live in their own module and are easy to adjust.
 
 - **True dynamic theming** — one keybind (Super+R) changes the wallpaper and regenerates a
   Material You palette that propagates to every app that supports colors, live.
-- **5 full theme packs** (Noro, Material, Retro, Modern, Glass) — each defines Hyprland
-  decoration, a Waybar style, matching Rofi menus and its own wallpaper collection.
-  Switch the whole system look from one picker (Super+Ctrl+Shift+Space).
-- **Horizontal thumbnail carousel** — the wallpaper picker (Super+Ctrl+Space) and theme
-  switcher (Super+Ctrl+Shift+Space) open an instant, centered Rofi carousel of image
-  thumbnails (`active-image-carousel.rasi`) that you scroll with the arrow keys.
+- **One static look, wallpaper-driven** — a single Hyprland decoration and set of
+  Rofi menus, plus 15 switchable Waybar styles (Super+ALT+W); colors always follow
+  the active wallpaper via matugen. No system theme packs.
+- **Horizontal thumbnail carousel** — the wallpaper picker (Super+Ctrl+Space) opens an
+  instant, centered Rofi carousel of image thumbnails (`image-carousel.rasi`) that you
+  scroll with the arrow keys.
 - **Omarchy-style quality-of-life**: scratchpad, workspace cycling, window groups,
   per-window transparency/gaps toggles, saved window sizes, monitor scaling on the fly,
   cursor zoom, universal Super+C/V clipboard that works in terminals too.
@@ -71,6 +72,17 @@ environment and defaults live in their own module and are easy to adjust.
   grab, color picker, OCR extract, wf-recorder capture with a Waybar indicator.
 - **Dictation ready** — optional voxtype push-to-talk (F9) with Waybar status.
 - **Idle automation** — lock at 300s, display off at 360s, lock-on-lid-close.
+
+## Waybar
+
+Single top bar by default (`config/waybar/config.jsonc` + `style.css`, symlinked
+into one of the presets); its colors come from the wallpaper via matugen
+(`colors.css`). Switch between the 15 styles in `config/waybar/themes/` with
+Super+ALT+W (bottom-dock, cyber-left, dynamic-island, floating-bar, glass-left,
+glass-right, gnome-left, island, mac, minimal-left, modern-left, noro, pill,
+retro-left, simple). Toggle bar visibility with Super+Shift+Space.
+
+---
 
 ## Waybar Presets
 - noro
@@ -130,7 +142,6 @@ environment and defaults live in their own module and are easy to adjust.
   <img width="2880" height="110" alt="pill" src="https://github.com/user-attachments/assets/15c2fb5d-cfd2-48d5-92a0-980c82d3424a" />
 
 ---
-
 
 ## Screenshots
 
@@ -193,10 +204,10 @@ Shell and editors (all handled by `./install.sh` from `pkglist/` — no manual s
 
 ### Optional extras the keybinds expect
 
-- `arch-theme-switcher`, `arch-wallpaper-picker`, `arch-menu-images`,
+- `arch-wallpaper-picker`, `arch-menu-images`,
   `capture-region`, `capture-screen`, `power-profiles`, `menu-emoji`,
   `menu-clipboard`, `ocr-extract`, `night-light-toggle`, `capture-satty` — personal
-  helper scripts. The `arch-*` pickers and the `capture-*` screenshot helpers ship in
+  helper scripts. The `arch-*` picker and the `capture-*` screenshot helpers ship in
   this repo under `bin/` (deployed to `~/.local/bin` by `install.sh`); the rest live in
   `~/.local/bin` and everything degrades gracefully if a script is missing (binds that
   call them just won't do anything).
@@ -219,8 +230,10 @@ The script (one go on a minimal Arch install — packages first, then configs):
    and symlinks every app config from `config/` into `~/.config/`
 3. Symlinks shell files (`zshrc`, `bashrc`, `gitconfig`) into `$HOME` and
    `starship.toml` into `~/.config/starship.toml`
-4. Wires the active-theme symlink chain (default theme: **Noro**)
-5. Installs the wallpaper collections into `~/.local/share/wallpapers` (cloned from the
+4. Checks the single static look (one Hyprland/Waybar/Rofi style; colors come
+   from the wallpaper via matugen)
+5. Installs the single flat wallpaper library into
+   `~/.local/share/wallpapers/Wallpaper` (from the `Wallpaper/` set of the
    separate [wallpapers repo](https://github.com/rajan9884/wallpapers))
 6. Links helper scripts from `bin/` into `~/.local/bin` and wires the rofimoji theme
 7. Installs a `pactl`→`wpctl` shim only on PipeWire machines without real
@@ -231,8 +244,6 @@ The script (one go on a minimal Arch install — packages first, then configs):
     exits nonzero with the exact fix if anything is missing
 
 Re-running is safe: symlinks are refreshed, real files are backed up, nothing is deleted.
-
-> Prefer a different default theme? `ACTIVE_THEME=Material ./install.sh`
 
 ## Post-install
 
@@ -247,7 +258,7 @@ Re-running is safe: symlinks are refreshed, real files are backed up, nothing is
 dotfiles/
 ├── install.sh                  # one-shot setup (safe to re-run)
 ├── bin/
-│   ├── arch-*                  # wallpaper/theme pickers (rofi carousel) → ~/.local/bin
+│   ├── arch-wallpaper-picker   # wallpaper picker (rofi carousel) → ~/.local/bin
 │   └── *                        # screenshot, clipboard, webapp, wifi helpers → ~/.local/bin
 ├── scripts/
 │   └── systemd/                # optional system services (powertop)
@@ -263,17 +274,16 @@ dotfiles/
 │   │   ├── window-rules.lua    # window rules
 │   │   ├── hypridle.conf       # idle: lock 300s, display off 360s
 │   │   ├── hyprlock.conf       # lock screen (clock + date + input)
-│   │   ├── scripts/            # 20 helper scripts (theming, windows, media)
-│   │   └── themes/             # 5 theme packs (decoration + gaps per theme)
+│   │   ├── scripts/            # helper scripts (wallpaper, windows, media)
 │   ├── waybar/
 │   │   ├── modules.jsonc        # shared module definitions
 │   │   ├── scripts/             # wifi/bt/power menus, recorder, vpn...
-│   │   └── themes/              # 15 bar styles
+│   │   └── themes/              # 15 waybar styles (switch with Super+ALT+W)
 │   ├── rofi/
 │   │   ├── config.rasi          # drun/run/window launcher
 │   │   ├── theme.rasi           # dmenu-style picker (matugen colored)
 │   │   ├── power-menu.rasi etc. # dashboard menus
-│   │   └── themes/              # per-theme launcher/picker/scripts + active-image-carousel.rasi
+│   │   ├── image-carousel.rasi  # thumbnail carousel for the wallpaper picker
 │   ├── kitty/kitty.conf         # fonts, padding, clipboard passthrough
 │   ├── matugen/
 │   │   ├── config.toml           # which apps get generated colors
@@ -307,13 +317,12 @@ dotfiles/
 | Super+Escape | Power menu |
 | Super+K | Keybind cheatsheet |
 
-### Theming
+### Wallpaper & utilities
 
 | Bind | Action |
 |------|--------|
 | Super+R | Random wallpaper (full re-theme) |
 | Super+CTRL+Space | Wallpaper picker |
-| Super+CTRL+SHIFT+Space | **Full theme switcher** (5 packs + wallpaper + waybar style) |
 | Super+ALT+W | Waybar style selector (15 styles) |
 | Super+period | Emoji picker |
 | Super+CTRL+E | Emoji/symbol alt |
@@ -412,22 +421,23 @@ Because the *generated* files live on disk but are gitignored, a fresh install b
 the palette the install script generated — and any wallpaper change re-themes everything
 in about a second.
 
-### Theme packs vs bar styles
+### Static look + wallpaper colors
 
-- A **theme pack** (`config/hypr/themes/<name>`) sets Hyprland decoration: rounding, blur,
-  shadow, gaps, border colors, layout.
-- A **bar style** (`config/waybar/themes/<name>`) is an independent Waybar layout
-  (islands, docks, pills, mac-style, minimal...). The global theme switcher pairs each
-  pack with a matching default bar style, but you can mix freely with Super+ALT+W.
+- The **static look** is fixed: `config/hypr/theme.lua` (decoration, gaps, borders)
+  and the Rofi styles (`config/rofi/active-*.rasi`, `image-carousel.rasi`, ...).
+- **Waybar has 15 switchable styles** (`config/waybar/themes/<name>`, Super+ALT+W);
+  whichever is active gets its colors from the wallpaper the same way.
+- **Colors always follow the wallpaper**: any wallpaper change runs matugen and
+  re-tints every app. There are no theme packs or style switchers.
 
 ## Wallpapers
 
-- Live location: `~/.local/share/wallpapers/<theme>/` (XDG data dir — safe from home-dir
-  cleanup; all scripts point here)
-- Source: the separate [wallpapers repo](https://github.com/rajan9884/wallpapers) —
-  `install.sh` clones it to `~/.local/share/wallpapers-upstream` and installs the
-  per-theme sets (`glass`, `material`, `modern`, `noro`, `retro`). Override with
-  `WALLPAPER_SOURCE=/path/to/wallpapers ./install.sh`.
+- Live location: `~/.local/share/wallpapers/Wallpaper/` — one flat library, no
+  subfolders (XDG data dir — safe from home-dir cleanup; all scripts point here)
+- Source: the `Wallpaper/` set of the separate
+  [wallpapers repo](https://github.com/rajan9884/wallpapers) — `install.sh` clones
+  it to `~/.local/share/wallpapers-upstream` and installs the flat set. Override
+  with `WALLPAPER_SOURCE=/path/to/wallpapers ./install.sh`.
 
 ## Changing defaults
 
@@ -435,8 +445,7 @@ in about a second.
 |----------------|------|
 | Monitor, scale, refresh | `config/hypr/env.lua` — `hl.monitor(...)` |
 | Terminal/browser/file manager | `config/hypr/vars.lua` — "shared command strings" |
-| Default theme at install | `ACTIVE_THEME=Material ./install.sh` |
-| Fonts | `config/kitty/kitty.conf`, `config/waybar/themes/*/style.css` |
+| Fonts | `config/kitty/kitty.conf`, `config/waybar/style.css` |
 | Idle timings | `config/hypr/hypridle.conf` |
 | Which apps get themed | `config/matugen/config.toml` |
 | Colors of a given app | matching template in `config/matugen/templates/` |
@@ -446,8 +455,8 @@ in about a second.
 - **Colors look stale after a wallpaper change** — run `matugen image <wallpaper>
   -c ~/.config/matugen/config.toml` manually and check for template errors.
 - **Waybar didn't reload** — `killall -SIGUSR2 waybar` or just restart waybar.
-- **Rofi shows default theme** — the `active-*.rasi` symlinks live in `~/.config/rofi/`;
-  re-run the theme switcher or `./install.sh` to rebuild the chain.
+- **Rofi shows wrong colors** — the `active-*.rasi` files live in `~/.config/rofi/`;
+  re-run `./install.sh` to re-check them (they are tracked real files now).
 - **GTK apps don't recolor** — GTK4 apps read css at launch; restart the app (nautilus is
   auto-restarted by the script when open).
 - **Keys like XF86TouchpadToggle don't work** — check your laptop's Fn-lock; binds are on
@@ -463,4 +472,3 @@ in about a second.
 - [Oh My Zsh](https://ohmyz.sh) + zsh-autosuggestions
 - [Papirus](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) icons,
 - [Bibata](https://github.com/ful1e5/Bibata_Cursor) cursors
-

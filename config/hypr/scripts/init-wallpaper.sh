@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────
 #   Ensure wallpaper is displayed on Hyprland start
+#   (single flat library: ~/.local/share/wallpapers/Wallpaper)
 # ──────────────────────────────────────────────
+
+WALL_DIR="$HOME/.local/share/wallpapers/Wallpaper"
 
 # Wait for awww-daemon socket to be ready (up to 3s)
 for i in {1..30}; do
@@ -19,14 +22,13 @@ fi
 # Try restoring cached wallpaper
 awww restore 2>/dev/null
 
-# If still not displaying an image, restore from ~/.cache/current-wallpaper or theme
+# If still not displaying an image, restore from ~/.cache/current-wallpaper
+# or fall back to the first wallpaper in the library.
 if ! awww query 2>/dev/null | grep -q "image:"; then
     if [ -s "$HOME/.cache/current-wallpaper" ] && [ -f "$(<"$HOME/.cache/current-wallpaper")" ]; then
         "$HOME/.config/hypr/scripts/swww-all.sh" "$(<"$HOME/.cache/current-wallpaper")"
     else
-        ACTIVE_THEME=$(cat "$HOME/.config/hypr/.active-theme" 2>/dev/null | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
-        [ -z "$ACTIVE_THEME" ] && ACTIVE_THEME="noro"
-        WALL=$(find "$HOME/.local/share/wallpapers/$ACTIVE_THEME" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) 2>/dev/null | head -n 1)
+        WALL=$(find "$WALL_DIR" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null | sort | head -n 1)
         if [ -n "$WALL" ]; then
             "$HOME/.config/hypr/scripts/swww-all.sh" "$WALL"
         else

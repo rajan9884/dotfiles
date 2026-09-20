@@ -8,11 +8,13 @@
 #        repo packages (including matugen) from pkglist/native.txt. Foreign/AUR pkgs skipped.
 #     2. Symlink every app config from <repo>/config/ into ~/.config/.
 #     3. Symlink shell files (zshrc, bashrc, gitconfig, starship.toml).
-#     4. Wire the active-theme symlink chain (default "Noro").
-#     5. Install wallpaper collections (with offline asset fallback).
+#     4. Check the single static look (one hypr/waybar/rofi style; colors come
+#        from the wallpaper via matugen — no theme packs).
+#     5. Install the single flat wallpaper library
+#        (~/.local/share/wallpapers/Wallpaper, with offline asset fallback).
 #     6. Symlink ~/.local/bin helpers, rofimoji theme, and systemd user units.
 #     7. pactl shim (PipeWire-only machines, volume OSD backend).
-#     8. Generate the matugen palette from the active theme's wallpaper.
+#     8. Generate the matugen palette from a wallpaper in the library.
 #     8b. Bind cliamp to ~/Music: one live [[dir]] playlist per Music folder.
 #     9. Configure system & user services (audio, network, bluetooth, power,
 #        groups, xdg-user-dirs, MIME types).
@@ -26,8 +28,6 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d-%H%M%S)"
-ACTIVE_THEME="${ACTIVE_THEME:-Noro}"
-THEME_LOWER="$(printf '%s' "$ACTIVE_THEME" | tr '[:upper:]' '[:lower:]')"
 
 info()  { printf '  \033[1;32m==>\033[0m %s\n' "$*"; }
 warn()  { printf '  \033[1;33m ->\033[0m %s\n' "$*"; }
@@ -256,34 +256,46 @@ link_home bashrc
 link_home gitconfig
 link_config_file starship.toml starship.toml
 
-# ── 4. Active theme symlink chain ────────────
+# ── 4. Static look (no theme packs) ──────────
 echo
-echo "==> [4/10] Setting active theme: $ACTIVE_THEME"
+echo "==> [4/10] Checking single wallpaper-driven look"
 HYPR_CFG="$HOME/.config/hypr"
 WAYBAR_CFG="$HOME/.config/waybar"
 ROFI_CFG="$HOME/.config/rofi"
 
-if [ -f "$HYPR_CFG/themes/$THEME_LOWER/theme.conf" ]; then
-    ln -sf "$HYPR_CFG/themes/$THEME_LOWER/theme.conf" "$HYPR_CFG/theme.conf"
-    ln -sf "$HYPR_CFG/themes/$THEME_LOWER/theme.lua"  "$HYPR_CFG/theme.lua"
-    ln -sf "$WAYBAR_CFG/themes/$THEME_LOWER/config.jsonc" "$WAYBAR_CFG/config.jsonc"
-    ln -sf "$WAYBAR_CFG/themes/$THEME_LOWER/style.css"    "$WAYBAR_CFG/style.css"
-    ln -sf "$ROFI_CFG/themes/$THEME_LOWER/launcher.rasi"  "$ROFI_CFG/active-launcher.rasi"
-    ln -sf "$ROFI_CFG/themes/$THEME_LOWER/scripts.rasi"   "$ROFI_CFG/active-scripts.rasi"
-    ln -sf "$ROFI_CFG/themes/$THEME_LOWER/picker.rasi"    "$ROFI_CFG/active-picker.rasi"
-    printf '%s\n' "$ACTIVE_THEME" > "$HYPR_CFG/.active-theme"
-    info "theme chain linked ($THEME_LOWER)"
-else
-    fail "theme '$ACTIVE_THEME' not found in $HYPR_CFG/themes — aborting (pick one of: $(ls "$HYPR_CFG/themes" | tr '\n' ' '))"
+for static in "$HYPR_CFG/theme.lua" \
+              "$ROFI_CFG/active-launcher.rasi" "$ROFI_CFG/active-scripts.rasi" \
+              "$ROFI_CFG/active-picker.rasi"; do
+    if [ -s "$static" ] && [ ! -L "$static" ]; then
+        info "static look ok: $static"
+    else
+        fail "static look file missing or still a symlink: $static (re-clone the dotfiles repo)"
+        exit 1
+    fi
+done
+
+# Waybar style is switchable: config + style must exist and resolve into
+# the presets directory (default: noro).
+for wbcfg in "$WAYBAR_CFG/config.jsonc" "$WAYBAR_CFG/style.css"; do
+    if [ -s "$wbcfg" ]; then
+        info "waybar style ok: $wbcfg"
+    else
+        fail "waybar style missing: $wbcfg (re-run ./install.sh)"
+        exit 1
+    fi
+done
+if [ -z "$(ls -A "$WAYBAR_CFG/themes" 2>/dev/null)" ]; then
+    fail "waybar presets missing in $WAYBAR_CFG/themes (re-clone the dotfiles repo)"
     exit 1
 fi
+info "waybar presets ok ($(ls "$WAYBAR_CFG/themes" | wc -l) styles)"
 
-# ── 5. Wallpapers → ~/.local/share/wallpapers ─
+# ── 5. Wallpapers → ~/.local/share/wallpapers/Wallpaper ─
 echo
-echo "==> [5/10] Installing wallpaper collections"
+echo "==> [5/10] Installing single flat wallpaper library"
 WALL_SRC="${WALLPAPER_SOURCE:-$HOME/.local/share/wallpapers-upstream}"
 WALL_REPO="https://github.com/rajan9884/wallpapers.git"
-WALL_DST="$HOME/.local/share/wallpapers"
+WALL_DST="$HOME/.local/share/wallpapers/Wallpaper"
 mkdir -p "$WALL_DST"
 
 if [ -d "$WALL_SRC/.git" ]; then
@@ -300,21 +312,30 @@ else
     fi
 fi
 
-WALL_OK=1
-for theme in glass material modern noro retro; do
-    mkdir -p "$WALL_DST/$theme"
-    if [ -d "$WALL_SRC/$theme" ] && [ -n "$(ls -A "$WALL_SRC/$theme" 2>/dev/null)" ]; then
-        cp -p "$WALL_SRC/$theme"/* "$WALL_DST/$theme/" 2>/dev/null || true
-        info "wallpapers: $theme ($(ls "$WALL_DST/$theme" | wc -l) files)"
-    elif [ -f "$REPO_ROOT/assets/fallback-wallpaper.jpg" ]; then
-        cp -p "$REPO_ROOT/assets/fallback-wallpaper.jpg" "$WALL_DST/$theme/nord-wallpaper.jpg"
-        warn "seeded fallback wallpaper for $theme"
+# Single flat library: every image directly in $WALL_DST (no subfolders).
+# Sources, in order: the upstream repo's Wallpaper/ set, then legacy
+# optimized/, then any flat WALLPAPER_SOURCE dir, then bundled fallback.
+if [ -d "$WALL_SRC/Wallpaper" ] && [ -n "$(ls -A "$WALL_SRC/Wallpaper" 2>/dev/null)" ]; then
+    cp -p "$WALL_SRC/Wallpaper"/* "$WALL_DST/" 2>/dev/null || true
+    info "wallpapers: library ($(ls "$WALL_DST" | wc -l) files from Wallpaper/)"
+elif [ -d "$WALL_SRC/optimized" ] && [ -n "$(ls -A "$WALL_SRC/optimized" 2>/dev/null)" ]; then
+    cp -p "$WALL_SRC/optimized"/* "$WALL_DST/" 2>/dev/null || true
+    info "wallpapers: library ($(ls "$WALL_DST" | wc -l) files from optimized/ legacy)"
+elif [ -d "$WALL_SRC" ] && [ -n "$(find "$WALL_SRC" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) -print -quit 2>/dev/null)" ]; then
+    cp -p "$WALL_SRC"/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP} "$WALL_DST/" 2>/dev/null || true
+    info "wallpapers: library ($(ls "$WALL_DST" | wc -l) files from $WALL_SRC)"
+fi
+# Remove any nested folders so the library stays flat.
+find "$WALL_DST" -mindepth 1 -type d -exec rm -rf {} + 2>/dev/null || true
+if [ -z "$(ls -A "$WALL_DST" 2>/dev/null)" ]; then
+    if [ -f "$REPO_ROOT/assets/fallback-wallpaper.jpg" ]; then
+        cp -p "$REPO_ROOT/assets/fallback-wallpaper.jpg" "$WALL_DST/fallback-wallpaper.jpg"
+        warn "seeded fallback wallpaper"
     else
-        fail "wallpapers: '$theme' missing from $WALL_SRC"
-        WALL_OK=0
+        fail "wallpaper library empty and no fallback asset — aborting"
+        exit 1
     fi
-done
-[ "$WALL_OK" -eq 1 ] || { fail "wallpaper install incomplete — aborting"; exit 1; }
+fi
 
 # ── 6. Helpers, rofimoji, systemd units ──────
 echo
@@ -331,10 +352,18 @@ for helper in "$REPO_ROOT/bin"/*; do
     info "helper: $(basename "$helper")"
 done
 
-# Wire rofimoji theme
+# Drop helpers removed from the repo (theme selectors) so old links dangle no more.
+for stale in arch-theme-apply arch-theme-switcher waybar-selector; do
+    if [ -L "$HOME/.local/bin/$stale" ] && [ ! -e "$HOME/.local/bin/$stale" ]; then
+        rm -f "$HOME/.local/bin/$stale"
+        info "removed stale helper link: $stale"
+    fi
+done
+
+# Wire rofimoji theme (single shared file, no theme packs)
 mkdir -p "$HOME/.local/share/rofimoji/themes"
-if [ -f "$REPO_ROOT/config/rofi/themes/emoji-grid.rasi" ]; then
-    ln -sf "$HOME/.config/rofi/themes/emoji-grid.rasi" "$HOME/.local/share/rofimoji/themes/emoji-grid.rasi"
+if [ -f "$REPO_ROOT/config/rofi/emoji-grid.rasi" ]; then
+    ln -sf "$HOME/.config/rofi/emoji-grid.rasi" "$HOME/.local/share/rofimoji/themes/emoji-grid.rasi"
     info "rofimoji theme linked"
 fi
 
@@ -384,8 +413,8 @@ fi
 echo
 echo "==> [8/10] Generating initial color palette"
 command -v matugen >/dev/null 2>&1 || { fail "matugen missing after step 1 — re-run ./install.sh"; exit 1; }
-WALL="$(find "$WALL_DST/$THEME_LOWER" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) 2>/dev/null | sort | head -n 1)"
-[ -n "$WALL" ] || { fail "no wallpaper found for theme '$THEME_LOWER' in $WALL_DST/$THEME_LOWER"; exit 1; }
+WALL="$(find "$WALL_DST" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null | sort | head -n 1)"
+[ -n "$WALL" ] || { fail "no wallpaper found in $WALL_DST"; exit 1; }
 matugen image "$WALL" -c "$HOME/.config/matugen/config.toml" --source-color-index 0 \
     && { info "palette generated from $WALL"; printf '%s' "$WALL" > "$HOME/.cache/current-wallpaper"; } \
     || { fail "matugen failed on $WALL — run it manually after first login"; exit 1; }
@@ -516,20 +545,23 @@ for plugin in \
     fi
 done
 
-for theme in glass material modern noro retro; do
-    if [ -n "$(ls -A "$WALL_DST/$theme" 2>/dev/null)" ]; then
-        info "ok: wallpapers/$theme"
-    else
-        fail "EMPTY: $WALL_DST/$theme (re-run step 5 or set WALLPAPER_SOURCE)"
-        PROBLEMS=$((PROBLEMS + 1))
-    fi
-done
+if [ -n "$(ls -A "$WALL_DST" 2>/dev/null)" ]; then
+    info "ok: wallpapers/Wallpaper ($(ls "$WALL_DST" | wc -l) files, flat)"
+else
+    fail "EMPTY: $WALL_DST (re-run step 5 or set WALLPAPER_SOURCE)"
+    PROBLEMS=$((PROBLEMS + 1))
+fi
+
+if [ -n "$(find "$WALL_DST" -mindepth 1 -type d -print -quit 2>/dev/null)" ]; then
+    fail "NESTED DIRS in $WALL_DST (library must be flat — remove subfolders)"
+    PROBLEMS=$((PROBLEMS + 1))
+fi
 
 for link in "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/rofi" \
             "$HOME/.config/kitty" "$HOME/.config/matugen" "$HOME/.zshrc" \
             "$HOME/.zprofile" "$HOME/.bashrc" "$HOME/.config/starship.toml" \
             "$HOME/.config/fastfetch/penguin.txt" \
-            "$HYPR_CFG/theme.conf" "$HYPR_CFG/theme.lua" \
+            "$HYPR_CFG/theme.lua" \
             "$WAYBAR_CFG/config.jsonc" "$WAYBAR_CFG/style.css"; do
     if [ -e "$link" ] || [ -L "$link" ]; then
         info "ok: $link"

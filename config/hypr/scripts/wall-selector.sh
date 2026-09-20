@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────
-#   Wallpaper Selector (theme-aware)
+#   Wallpaper Selector (wallpaper-driven)
 #   Routes through the quattro-style thumbnail picker.
 # ──────────────────────────────────────────────
 

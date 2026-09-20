@@ -1,7 +1,7 @@
--- ── Noro Theme — Lua (0.55+) ──
--- Mirrors themes/noro/theme.conf · generated port
--- Expects colors.lua to be loaded (provides active_border / inactive_border)
--- Safe to `pcall(require, "colors")` if needed.
+-- ── Static decoration (wallpaper-driven) ──
+-- Single fixed look: gaps, rounding, blur, shadow.
+-- Border colors come from matugen (colors.lua), regenerated from
+-- the active wallpaper in ~/.local/share/wallpapers/Wallpaper/.
 
 local colors = nil
 pcall(function()

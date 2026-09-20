@@ -4,7 +4,6 @@
 # ──────────────────────────────────────────────
 
 WAYBAR_THEMES_DIR="$HOME/.config/waybar/themes"
-ACTIVE_THEME_FILE="$HOME/.config/hypr/.active-theme"
 
 # 1. List available styles
 CHOICE=$(ls "$WAYBAR_THEMES_DIR" | sort | rofi -dmenu -i -p "  Waybar Style" -theme ~/.config/rofi/active-scripts.rasi)

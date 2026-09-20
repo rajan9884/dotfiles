@@ -1,2 +1,0 @@
-/* Script menus (theme selectors, power, wipe confirms) — applet base. */
-@import "~/.config/rofi/applet.rasi"

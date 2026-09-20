@@ -112,7 +112,7 @@ fi
 #  Invoke rofi: plain text rows + thumbnail icons.
 # ──────────────────────────────────────────────
 
-# WebP thumbnails (the whole optimized/ collection): gdk-pixbuf only decodes
+# WebP thumbnails (the whole Wallpaper/ collection): gdk-pixbuf only decodes
 # formats listed in a loaders.cache, and merely installing webp-pixbuf-loader
 # never registers it. HM deploys a stock-loaders + webp cache to a stable path
 # (see pixbufLoaders in bin.nix) — export it here so rofi renders webp icons.
@@ -123,7 +123,7 @@ if [[ -z ${GDK_PIXBUF_MODULE_FILE:-} && -f $_pixbuf_cache ]]; then
   export GDK_PIXBUF_MODULE_FILE="$_pixbuf_cache"
 fi
 
-carousel_theme="${HOME}/.config/rofi/themes/active-image-carousel.rasi"
+carousel_theme="${HOME}/.config/rofi/image-carousel.rasi"
 [[ -f $carousel_theme ]] || carousel_theme="${XDG_DATA_HOME:-$HOME/.local/share}/rofi/themes/image-carousel.rasi"
 
 rofi_args=(

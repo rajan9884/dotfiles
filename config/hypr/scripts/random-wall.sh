@@ -2,20 +2,18 @@
 
 # ──────────────────────────────────────────────
 #   Random Wallpaper Switcher
-#   Picks from the optimized library
-#   (~/.local/share/wallpapers/optimized, 413 images).
+#   Picks from the single flat library
+#   (~/.local/share/wallpapers/Wallpaper).
 # ──────────────────────────────────────────────
 
-WALL_DIRS=("$HOME/.local/share/wallpapers")
-[ -d "$HOME/Pictures/Wallpapers/optimized" ] && WALL_DIRS+=("$HOME/Pictures/Wallpapers/optimized")
-[ -d "$HOME/.local/share/wallpapers/optimized" ] && WALL_DIRS+=("$HOME/.local/share/wallpapers/optimized")
+WALL_DIR="$HOME/.local/share/wallpapers/Wallpaper"
 SCRIPT="$HOME/.config/hypr/scripts/swww-all.sh"
 
-# Select a random image from all wallpaper directories
-SELECTED_WALL=$(find "${WALL_DIRS[@]}" -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) 2>/dev/null | shuf -n 1)
+# Select a random image from the wallpaper directory
+SELECTED_WALL=$(find "$WALL_DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.jpeg" -o -iname "*.webp" \) 2>/dev/null | shuf -n 1)
 
 if [ -n "$SELECTED_WALL" ]; then
     "$SCRIPT" "$SELECTED_WALL"
 else
-    notify-send "Wallpaper Error" "No images found in wallpaper directories" -u critical
+    notify-send "Wallpaper Error" "No images found in $WALL_DIR" -u critical
 fi

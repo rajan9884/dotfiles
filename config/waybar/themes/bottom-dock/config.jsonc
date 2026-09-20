@@ -30,7 +30,7 @@
     ],
     "custom/launcher": {
         "format": "",
-        "on-click": "rofi -show drun -theme ~/.config/rofi/themes/modern/launcher.rasi",
+        "on-click": "rofi -show drun -theme ~/.config/rofi/active-launcher.rasi",
         "tooltip": false
     },
     "hyprland/workspaces": {

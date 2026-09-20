@@ -31,7 +31,7 @@
 
     "custom/launcher": {
         "format": "",
-        "on-click": "rofi -show drun -theme ~/.config/rofi/themes/glass/launcher.rasi",
+        "on-click": "rofi -show drun -theme ~/.config/rofi/active-launcher.rasi",
         "tooltip": false,
         "align": 0.5
     },

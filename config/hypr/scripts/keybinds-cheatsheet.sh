@@ -3,7 +3,7 @@
 #   Keybindings Cheatsheet
 #   Parses the live hl.bind() calls from hyprland.lua and pipes an
 #   aligned key + description list through rofi -dmenu.
-#   Uses the active scripts theme (which @imports matugen colors.rasi).
+#   Uses the active picker style (which @imports matugen colors.rasi).
 # ──────────────────────────────────────────────
 
 set -euo pipefail
@@ -65,7 +65,6 @@ label() {
         *'exec_cmd(menu)'*)                        desc="App launcher" ;;
         *'terminal-launch.sh'*)                    desc="Open terminal" ;;
         *'arch-wallpaper-picker'*)                desc="Wallpaper picker" ;;
-        *'arch-theme-switcher'*)                  desc="Theme switcher" ;;
         *'capture-screen'*)                        desc="Capture entire screen" ;;
         *'capture-region'*)                        desc="Screenshot" ;;
         *'capture-satty'*)                         desc="Screenshot & annotate" ;;
@@ -76,11 +75,9 @@ label() {
         *'nmtui'*)                                    desc="Network connections" ;;
         *'power-menu.sh'*)                         desc="Power / logout menu" ;;
         *'bluetooth-menu.sh'*)                     desc="Bluetooth menu" ;;
-        *'global-theme-selector.sh'*)              desc="Theme switcher" ;;
-        *'theme-selector.sh'*)                     desc="Wallpaper switcher" ;;
         *'random-wall.sh'*)                        desc="Random wallpaper" ;;
-        *'waybar-selector.sh'*)                    desc="Waybar theme selector" ;;
-        *'killall -SIGUSR1 waybar'*)               desc="Toggle top bar" ;;
+        *'waybar-selector.sh'*)                    desc="Waybar style selector" ;;
+        *'killall -q -SIGUSR1 waybar'*)            desc="Toggle top bar" ;;
         *'swaync-client --close-latest'*)        desc="Dismiss notification" ;;
         *'swaync-client --close-all'*)            desc="Dismiss all notifications" ;;
         *'swaync-client --toggle-dnd'*)           desc="Toggle notification silencing" ;;

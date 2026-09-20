@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Toggle window gaps between zero and the theme defaults (in/out).
+# Toggle window gaps between zero and the static defaults (in/out).
 set -euo pipefail
 
 IN=$(hyprctl getoption general:gaps_in -j | jq -r '.int')

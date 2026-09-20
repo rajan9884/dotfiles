@@ -3,8 +3,8 @@
 #   macOS Control Center (Refined Visuals)
 # ──────────────────────────────────────────────
 
-THEME="$HOME/.config/rofi/themes/macos/control-center.rasi"
-[ -f "$THEME" ] || THEME="$HOME/.config/rofi/material-scripts.rasi"
+THEME="$HOME/.config/rofi/control-center.rasi"
+[ -f "$THEME" ] || THEME="$HOME/.config/rofi/active-scripts.rasi"
 [ -f "$THEME" ] || THEME=""
 
 # --- Functions to get stats ---

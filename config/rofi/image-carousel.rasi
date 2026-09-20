@@ -1,6 +1,6 @@
 /* ──────────────────────────────────────────────
  *   Rofi Image Carousel – horizontal thumbnail picker
- *   Used by the wallpaper & theme pickers.
+ *   Used by the wallpaper picker.
  *   A centered, single-row carousel (arrow keys scroll it), matching the
  *   original look without the overlay chrome.
  *   Colors follow the active matugen palette.

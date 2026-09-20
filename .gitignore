@@ -22,21 +22,16 @@ config/gtk-3.0/gtk.css
 config/gtk-4.0/gtk.css
 config/gtk-4.0/gtk-dark.css
 
-# Symlinks that point to the active theme (managed by theme-selector)
-config/hypr/theme.conf
-config/hypr/theme.lua
+# Static single-style configs (tracked real files, not symlinks):
+# config/hypr/theme.lua, config/rofi/active-*.rasi — colors still come
+# from matugen at runtime.
+# Waybar style symlinks (managed by waybar-selector):
 config/waybar/config.jsonc
 config/waybar/style.css
-config/rofi/active-launcher.rasi
-config/rofi/active-scripts.rasi
-config/rofi/active-picker.rasi
 
 # Editor / IDE local state
 config/nvim/lazy-lock.json
 config/nvim/lazyvim.json
-
-# Active-theme marker (written by theme-selector)
-config/hypr/.active-theme
 
 # cliamp playlists (runtime-generated from ~/Music folders by install.sh)
 config/cliamp/playlists/
