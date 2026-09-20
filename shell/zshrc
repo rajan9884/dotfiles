@@ -10,6 +10,9 @@ alias grep='grep --color=auto'
 alias ff="fzf --preview 'bat --color=always {}'"
 alias nix-clean='nix-collect-garbage -d && nix store optimise && du -sh /nix'
 
+# Dual-GitHub helpers: git-work / git-personal / git-whoami
+[ -f "$HOME/dotfiles/shell/git-accounts.sh" ] && source "$HOME/dotfiles/shell/git-accounts.sh"
+
 # ── LS colours + completion colours ──
 # Palette codes (0-15) not 256-index: they follow the matugen-theed
 # terminal palette (ghostty/kitty map color4=primary, color6=tertiary_container).
