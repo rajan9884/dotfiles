@@ -8,7 +8,9 @@
 disabled = true
 
 [custom.nix-shell]
-command = "echo nix-shell"
-when = "test -n \"$IN_NIX_SHELL$NIX_TRY_SHELL\""
+# Detects legacy `nix-shell` / `nix develop` (via $IN_NIX_SHELL / $NIX_TRY_SHELL)
+# AND new `nix shell` (sets no marker var — only prepends /nix/store to PATH).
+command = "echo ❄️ nix-shell"
+when = 'test -n "$IN_NIX_SHELL$NIX_TRY_SHELL" || case ":$PATH:" in *:/nix/store/*) true;; *) false;; esac'
 format = "via [$output]($style) "
-style = "bold yellow"
+style = "bold cyan"

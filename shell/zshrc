@@ -8,6 +8,7 @@
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias ff="fzf --preview 'bat --color=always {}'"
+alias nix-clean='nix-collect-garbage -d && nix store optimise && du -sh /nix'
 
 # ── LS colours + completion colours ──
 # Palette codes (0-15) not 256-index: they follow the matugen-theed
@@ -16,7 +17,18 @@ export LS_COLORS="di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # ── Prompt (Optimized Pill Style) ──
-PROMPT=$'\n%{%F{magenta}%}%{%K{magenta}%}%{%F{black}%}  %{%F{white}%} %~ %{%k%}%{%F{magenta}%}%{%f%}\n%{%F{magenta}%}❯ %{%f%}'
+# nix indicator: legacy `nix-shell` / `nix develop` set $IN_NIX_SHELL /
+# $NIX_TRY_SHELL; new `nix shell` sets no marker var (only prepends
+# /nix/store to PATH), so check PATH too.
+nix_prompt_indicator() {
+  if [ -n "$IN_NIX_SHELL$NIX_TRY_SHELL" ]; then
+    echo "%F{cyan}❄️ nix-shell%f "
+  elif case ":$PATH:" in *:/nix/store/*) true;; *) false;; esac; then
+    echo "%F{cyan}❄️ nix-shell%f "
+  fi
+}
+setopt PROMPT_SUBST
+PROMPT=$'\n%{%F{magenta}%}%{%K{magenta}%}%{%F{black}%}  %{%F{white}%} %~ %{%k%}%{%F{magenta}%}%{%f%} $(nix_prompt_indicator)\n%{%F{magenta}%}❯ %{%f%}'
 RPROMPT=""
 
 

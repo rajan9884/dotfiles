@@ -9,8 +9,8 @@ local HOME = os.getenv("HOME")
 return {
 	HOME = HOME,
 	terminal = "kitty",
-	browser = "chromium",
-	browser_private = "chromium --incognito",
+	browser = HOME .. "/.local/bin/chromium",
+	browser_private = HOME .. "/.local/bin/chromium --incognito",
 	editor = "kitty -e nvim",
 	terminal_tmux = "kitty -e tmux",
 	menu = "rofi -show drun",
