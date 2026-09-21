@@ -18,8 +18,6 @@ I_WIFIOFF=$'\U000F05AA'  # md-wifi_off
 I_WIFIOUT=$'\U000F092F'  # md-wifi_strength_outline
 I_LOCK=$'\U000F033E'     # md-lock
 I_HIDDEN=$'\U000F0209'   # md-eye_off
-I_HOTSPOT=$'\U000F0003'  # md-access_point
-I_QR=$'\U000F01BC'       # md-qrcode
 I_DETAILS=$'\U000F02FD'  # md-information_outline
 I_EDIT=$'\U000F062E'     # md-tune
 I_LINKOFF=$'\U000F0338'  # md-link_off
@@ -29,8 +27,6 @@ I_CHECK=$'\U000F012C'    # md-check
 
 FOOTER=""
 ACTIVE_WIFI_NAME=""
-HOTSPOT=0
-HOTSPOT_NAME=""
 
 notify() {
     local dur=4000
@@ -86,9 +82,9 @@ for line in sys.stdin:
     if ssid not in best or sig > best[ssid][0]:
         best[ssid] = (sig, sec)
 a_ssid, a_sig = active if active else ("", "0")
-print("ACTIVE\t%s\t%d" % (a_ssid, a_sig))
+print("ACTIVE\x1f%s\x1f%s" % (a_ssid, a_sig))
 for ssid, (sig, sec) in sorted(best.items(), key=lambda kv: -kv[1][0]):
-    print("%d\t%s\t%s" % (sig, ssid, sec))
+    print("%d\x1f%s\x1f%s" % (sig, ssid, sec))
 '
 }
 
@@ -105,19 +101,6 @@ build_menu() {
 
     ACTIVE_WIFI_NAME="$(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null |
         awk -F: '$2=="802-11-wireless"{print $1; exit}')"
-    HOTSPOT=0
-    HOTSPOT_NAME=""
-    # `--active` only accepts summary fields, so read 802-11-wireless.mode
-    # per active wireless connection instead
-    while IFS= read -r name; do
-        [[ -n "$name" ]] || continue
-        if [[ "$(nmcli -g 802-11-wireless.mode connection show "$name" 2>/dev/null)" == "ap" ]]; then
-            HOTSPOT=1
-            HOTSPOT_NAME="$name"
-            break
-        fi
-    done < <(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null |
-        awk -F: '$2=="802-11-wireless"{print $1}')
 
     if [[ "$radio" == "disabled" ]]; then
         FOOTER="Wi-Fi is off — click “Turn Wi-Fi ON” to enable"
@@ -137,34 +120,57 @@ build_menu() {
     nmcli dev wifi rescan 2>/dev/null &
 
     local active_ssid="" active_sig="0" sig ssid sec line
+    declare -A _seen=()
     {
-        IFS=$'\t' read -r _ active_ssid active_sig
+        IFS=$'\x1f' read -r _ active_ssid active_sig
         while IFS= read -r line; do
             [[ -z "$line" ]] && continue
-            IFS=$'\t' read -r sig ssid sec <<< "$line"
+            IFS=$'\x1f' read -r sig ssid sec <<< "$line"
             [[ -z "$ssid" || "$ssid" == "$active_ssid" ]] && continue
+            _seen["$ssid"]=1
             local acc=""
             [[ "$sec" == *"WPA"* || "$sec" == *"WEP"* ]] && acc="$I_LOCK"
             row "$(signal_icon "$sig")" "$ssid" "$acc"
         done
     } < <(scan_networks)
 
-    if [[ -n "$active_ssid" ]]; then
-        FOOTER="$I_CHECK Connected: $active_ssid (${active_sig}%) — click a network to switch"
+    # Fallback: always show saved infrastructure profiles even if the
+    # scan cache was empty (driver mid-scan) so menu is never empty.
+    # Never re-list the currently active connection as available.
+    while IFS= read -r _name; do
+        [[ -z "$_name" ]] && continue
+        _ssid="$(nmcli -g 802-11-wireless.ssid connection show "$_name" 2>/dev/null)"
+        _mode="$(nmcli -g 802-11-wireless.mode connection show "$_name" 2>/dev/null)"
+        [[ -z "$_ssid" || "$_ssid" == "$active_ssid" || "$_ssid" == "$ACTIVE_WIFI_NAME" ]] && continue
+        [[ -n "${_seen[$_ssid]:-}" ]] && continue
+        [[ "$_mode" == "ap" ]] && continue
+        _seen["$_ssid"]=1
+        row "$I_WIFIOUT" "$_ssid" "$I_LOCK"
+    done < <(nmcli -t -f NAME,TYPE connection show 2>/dev/null | awk -F: '$2=="802-11-wireless"{print $1}')
+
+    # Scan can miss the active BSSID for a second (mid-scan). Fall back
+    # to NM's active profile so footer/disconnect never lie.
+    _display_active="$active_ssid"
+    _display_sig="$active_sig"
+    if [[ -z "$_display_active" && -n "$ACTIVE_WIFI_NAME" ]]; then
+        _display_active="$ACTIVE_WIFI_NAME"
+        _display_sig="?"
+    fi
+
+    if [[ -n "$_display_active" ]]; then
+        if [[ "$_display_sig" == "?" ]]; then
+            FOOTER="$I_CHECK Connected: $_display_active — click a network to switch"
+        else
+            FOOTER="$I_CHECK Connected: $_display_active (${_display_sig}%) — click a network to switch"
+        fi
     else
         FOOTER="No Wi-Fi connection — click a network to connect"
     fi
 
-    if [[ -n "$active_ssid" ]]; then
+    if [[ -n "$active_ssid" || -n "$ACTIVE_WIFI_NAME" ]]; then
         row "$I_LINKOFF" "Disconnect"
     fi
     row "$I_HIDDEN" "Hidden Network…" "$I_CHEVRON"
-    if (( HOTSPOT )); then
-        row "$I_QR" "Share Hotspot QR…" "$I_CHEVRON"
-        row "$I_HOTSPOT" "Disable Hotspot"
-    else
-        row "$I_HOTSPOT" "Enable Hotspot"
-    fi
     row "$I_DETAILS" "Connection Details…" "$I_CHEVRON"
     row "$I_EDIT" "Edit Connections…" "$I_CHEVRON"
     row "$I_WIFIOFF" "Turn Wi-Fi OFF"
@@ -177,10 +183,29 @@ build_menu() {
 
 connect_network() {
     local ssid="$1"
-    notify "Connecting…" "Connecting to $ssid"
-    if nmcli dev wifi connect "$ssid" 2>/dev/null; then
-        notify "Connected ✓" "Connected to $ssid"
-        return 0
+    # Prefer saved profile — required for WPA-EAP (srmap-byod).
+    # `nmcli dev wifi connect` creates a NEW PSK profile and will
+    # always fail / re-prompt password on enterprise networks.
+    if nmcli -t -f NAME connection show 2>/dev/null | grep -Fxq -- "$ssid"; then
+        notify "Connecting…" "Connecting to $ssid"
+        if nmcli connection up "$ssid" 2>&1 | grep -qiE "success|already"; then
+            notify "Connected ✓" "Connected to $ssid"
+            return 0
+        fi
+        # If saved profile failed, check why before prompting PSK.
+        local keymgmt
+        keymgmt="$(nmcli -g 802-11-wireless-security.key-mgmt connection show "$ssid" 2>/dev/null)"
+        if [[ "$keymgmt" == *wpa-eap* ]]; then
+            notify "Failed ✗" "Saved $ssid (802.1X) failed — check identity/password in Edit Connections"
+            return 1
+        fi
+        # PSK saved profile failed (wrong key?) — fall through to password prompt.
+    else
+        notify "Connecting…" "Connecting to $ssid"
+        if nmcli dev wifi connect "$ssid" 2>/dev/null; then
+            notify "Connected ✓" "Connected to $ssid"
+            return 0
+        fi
     fi
 
     local pw
@@ -269,48 +294,6 @@ handle_selection() {
             hidden_network
             sleep 1
             main ;;
-
-        "$I_HOTSPOT  Enable Hotspot")
-            local iface hname
-            iface="$(wifi_iface)"
-            nmcli radio wifi on 2>/dev/null
-            # "Hotspot" profile may linger from a previous session — reuse it
-            hname="$(nmcli -t -f NAME,TYPE connection show 2>/dev/null |
-                awk -F: '$2=="802-11-wireless" && $1 ~ /^Hotspot/{print $1; exit}')"
-            if [[ -n "$hname" ]]; then
-                nmcli connection up "$hname" ifname "$iface" 2>/dev/null
-            else
-                nmcli dev wifi hotspot ifname "${iface:-wifi}" 2>/dev/null
-            fi
-            notify "Hotspot" "Wi-Fi hotspot enabled"
-            sleep 1
-            main ;;
-
-        "$I_HOTSPOT  Disable Hotspot")
-            local iface
-            iface="$(wifi_iface)"
-            nmcli connection down "${HOTSPOT_NAME:-$ACTIVE_WIFI_NAME}" 2>/dev/null \
-                || nmcli device disconnect "$iface" 2>/dev/null
-            # Radio returns to client mode — hand NM the saved networks again.
-            # `device connect` auto-picks the best saved profile (e.g. srmap-byod).
-            nmcli radio wifi on 2>/dev/null
-            sleep 1
-            nmcli device connect "$iface" 2>/dev/null
-            notify "Hotspot" "Wi-Fi hotspot disabled — reconnecting…"
-            sleep 3
-            main ;;
-
-        "$I_QR  Share Hotspot QR…"*)
-            local iface share
-            iface="$(wifi_iface)"
-            # waybar's on-click env lacks ~/.local/bin in PATH — resolve by path
-            share="$HOME/.local/bin/wifi-share-prompt"
-            [[ -x "$share" ]] || share="$(command -v wifi-share-prompt 2>/dev/null || true)"
-            if [[ -n "$share" ]]; then
-                "$share" "$iface"
-            else
-                notify "Not installed" "wifi-share is missing"
-            fi ;;
 
         "$I_DETAILS  Connection Details…"*)
             connection_details ;;

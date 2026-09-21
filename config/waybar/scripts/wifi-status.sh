@@ -58,8 +58,16 @@ if [[ -n "$hs_ssid" ]]; then
     exit 0
 fi
 
-read -r ssid signal < <(nmcli -e no -t -f ACTIVE,SSID,SIGNAL dev wifi 2>/dev/null |
-    awk -F: '$1=="yes"{print $2, $3; exit}') || true
+# ACTIVE is first field, SIGNAL is last, SSID is everything in between
+# (SSID may contain spaces, e.g. "iQOO Neo 10R" — `read ssid signal` splits it).
+_line="$(nmcli -e no -t -f ACTIVE,SSID,SIGNAL dev wifi 2>/dev/null | grep '^yes:' | head -n1 || true)"
+ssid=""; signal="0"
+if [[ -n "$_line" ]]; then
+    _rest="${_line#yes:}"
+    signal="${_rest##*:}"
+    ssid="${_rest%:*}"
+    [[ "$signal" =~ ^[0-9]+$ ]] || signal="0"
+fi
 
 default_dev="$(ip -4 route show default 2>/dev/null | awk '$1=="default"{print $5; exit}')"
 
