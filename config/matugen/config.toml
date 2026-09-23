@@ -85,3 +85,7 @@ output_path = "~/.config/hypr/hyprlock-colors.conf"
 [templates.swaync]
 input_path = "~/.config/matugen/templates/swaync.css"
 output_path = "~/.config/swaync/style.css"
+
+[templates.starship]
+input_path = "~/.config/matugen/templates/starship.toml"
+output_path = "~/.config/starship.toml"

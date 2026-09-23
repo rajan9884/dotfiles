@@ -254,7 +254,8 @@ link_home zshrc
 link_home zprofile
 link_home bashrc
 link_home gitconfig
-link_config_file starship.toml starship.toml
+# NOTE: starship.toml is NOT linked — matugen generates ~/.config/starship.toml
+# from matugen/templates/starship.toml in step 8 (truecolor palette).
 
 # ── 4. Static look (no theme packs) ──────────
 echo
@@ -559,7 +560,7 @@ fi
 
 for link in "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/rofi" \
             "$HOME/.config/kitty" "$HOME/.config/matugen" "$HOME/.zshrc" \
-            "$HOME/.zprofile" "$HOME/.bashrc" "$HOME/.config/starship.toml" \
+            "$HOME/.zprofile" "$HOME/.bashrc" \
             "$HOME/.config/fastfetch/penguin.txt" \
             "$HYPR_CFG/theme.lua" \
             "$WAYBAR_CFG/config.jsonc" "$WAYBAR_CFG/style.css"; do
@@ -573,7 +574,8 @@ done
 
 # Matugen must have produced palettes
 for gen in "$HOME/.config/waybar/colors.css" "$HOME/.config/kitty/colors.conf" \
-           "$HOME/.config/rofi/colors.rasi" "$HOME/.config/hypr/colors.conf"; do
+           "$HOME/.config/rofi/colors.rasi" "$HOME/.config/hypr/colors.conf" \
+           "$HOME/.config/starship.toml"; do
     if [ -s "$gen" ]; then
         info "ok: generated $gen"
     else
