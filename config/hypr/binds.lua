@@ -90,7 +90,6 @@ hl.bind(mod .. " + CTRL + W", hl.dsp.exec_cmd("kitty -e nmtui"), { description =
 hl.bind(mod .. " + ESCAPE", hl.dsp.exec_cmd("~/.config/waybar/scripts/power-menu.sh"))
 hl.bind(mod .. " + CTRL + P", hl.dsp.exec_cmd("~/.config/waybar/scripts/power-menu.sh"), { description = "Power / logout menu" })
 hl.bind(mod .. " + CTRL + B", hl.dsp.exec_cmd("~/.config/waybar/scripts/bluetooth-menu.sh"), { description = "Bluetooth menu" })
-hl.bind(mod .. " + ALT + C", hl.dsp.exec_cmd(vars.HOME .. "/.config/waybar/scripts/control-center.sh"), { description = "Control center" })
 hl.bind(mod .. " + CTRL + N", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/night-light-toggle"), { description = "Toggle nightlight" })
 hl.bind(mod .. " + CTRL + I", hl.dsp.exec_cmd(scripts .. "/idle-toggle.sh"), { description = "Toggle idle lock" })
 hl.bind(mod .. " + CTRL + E", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-emoji"), { description = "Emojis" })

@@ -4,3 +4,7 @@
 # into playlists/<folder>.toml with a live [[dir]] source).
 initial_directory = "~/Music"
 theme = ""
+
+[ytmusic]
+enabled      = true
+cookies_from = "chromium"

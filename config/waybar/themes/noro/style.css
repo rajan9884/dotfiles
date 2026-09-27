@@ -171,7 +171,9 @@ window#waybar {
 #workspaces button {
     color: @on_surface_variant;
     background: transparent;
-    border: 1px solid transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
     opacity: 0.35;
     padding: 0 6px;
     border-radius: 8px;
@@ -181,10 +183,12 @@ window#waybar {
     opacity: 1;
 }
 #workspaces button.active {
-    color: @on_surface_variant;
+    color: @primary;
     background: transparent;
-    border-color: @primary;
-    opacity: 0.6;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    opacity: 1;
 }
 #workspaces button.urgent {
     color: @error;
