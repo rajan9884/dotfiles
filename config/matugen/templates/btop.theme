@@ -1,5 +1,5 @@
 # Matugen-generated btop theme
-# main_bg left empty to preserve terminal (kitty) transparency.
+# main_bg left empty to preserve terminal (foot) transparency.
 
 theme[main_bg]=""
 theme[main_fg]="{{colors.on_surface.default.hex}}"

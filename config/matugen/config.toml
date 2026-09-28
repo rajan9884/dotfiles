@@ -6,9 +6,9 @@ default_mode = "dark"
 input_path = "~/.config/matugen/templates/waybar.css"
 output_path = "~/.config/waybar/colors.css"
 
-[templates.kitty]
-input_path = "~/.config/matugen/templates/kitty.conf"
-output_path = "~/.config/kitty/colors.conf"
+[templates.foot]
+input_path = "~/.config/matugen/templates/foot.ini"
+output_path = "~/.config/foot/colors.ini"
 
 [templates.rofi]
 input_path = "~/.config/matugen/templates/rofi.rasi"

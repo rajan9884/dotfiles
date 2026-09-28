@@ -5,7 +5,7 @@
 # Arch + Hyprland Dotfiles
 
 A dynamic, wallpaper-driven Hyprland setup for Arch Linux. Change your wallpaper and the
-entire system re-themes itself — Waybar, Rofi, Kitty, Hyprland, GTK, Neovim, VS Code,
+entire system re-themes itself — Waybar, Rofi, Foot, Hyprland, GTK, Neovim, VS Code,
 the browser, notifications, everything — through a Material You color pipeline built on
 [matugen](https://github.com/InioX/matugen).
 
@@ -39,7 +39,7 @@ https://github.com/user-attachments/assets/18fc7426-f8b7-4349-ae4f-4c4e70d48b56
 | Compositor   | Hyprland (Lua config, 0.55+) |
 | Status bar   | Waybar (15 switchable styles, matugen colors) |
 | Launcher     | Rofi (drun / run / window + menus) |
-| Terminal     | Kitty |
+| Terminal     | Foot |
 | Notifications| Dunst |
 | Shell        | Zsh + Oh My Zsh + autosuggestions |
 | Editor       | Neovim (LazyVim) |
@@ -162,7 +162,7 @@ retro-left, simple). Toggle bar visibility with Super+Shift+Space.
 Core (pacman):
 
 ```
-hyprland hypridle hyprlock waybar rofi kitty swayosd
+hyprland hypridle hyprlock waybar rofi foot swayosd
 awww matugen fastfetch btop
 grim slurp wl-clipboard cliphist hyprpicker wf-recorder satty
 brightnessctl pamixer playerctl networkmanager
@@ -284,7 +284,7 @@ dotfiles/
 │   │   ├── theme.rasi           # dmenu-style picker (matugen colored)
 │   │   ├── power-menu.rasi etc. # dashboard menus
 │   │   ├── image-carousel.rasi  # thumbnail carousel for the wallpaper picker
-│   ├── kitty/kitty.conf         # fonts, padding, clipboard passthrough
+│   ├── foot/foot.ini            # fonts, padding, clipboard passthrough
 │   ├── matugen/
 │   │   ├── config.toml           # which apps get generated colors
 │   │   └── templates/            # 21 color templates (the theming engine)
@@ -305,11 +305,11 @@ dotfiles/
 
 | Bind | Action |
 |------|--------|
-| Super+Return | Kitty |
+| Super+Return | Foot |
 | Super+Space | Rofi launcher |
 | Super+Shift+B | Browser (helium) |
 | Super+Shift+Alt+B | Private browser window |
-| Super+Shift+N | Editor (kitty + nvim) |
+| Super+Shift+N | Editor (foot + nvim) |
 | Super+Alt+Return | Terminal with tmux |
 | Super+Shift+F | File manager (nautilus) |
 | Super+W | Close window (graceful) |
@@ -409,12 +409,12 @@ wallpaper -> awww (set) -> matugen (palette) -> 21 templates -> every app
 2. It sets the wallpaper with a "grow" transition from the cursor position.
 3. It runs `matugen image <image> -c ~/.config/matugen/config.toml` which renders the
    20 templates in `config/matugen/templates/` into live config files:
-   `~/.config/waybar/colors.css`, `~/.config/hypr/colors.lua`, `~/.config/kitty/colors.conf`,
+   `~/.config/waybar/colors.css`, `~/.config/hypr/colors.lua`, `~/.config/foot/colors.ini`,
    GTK css, `~/.config/fastfetch/config.jsonc`,
    `~/.config/nvim/lua/matugen-colors.lua`,
    `~/.config/ghostty/config.ghostty`, swayosd css, btop theme, VS Code colors, a
    Brave/Firefox browser theme, and more.
-4. It then pokes each app to reload: `killall -SIGUSR2 waybar`, `killall -SIGUSR1 kitty`
+4. It then pokes each app to reload: `killall -SIGUSR2 waybar`, `killall -SIGUSR1 foot`
    (and nvim), `hyprctl reload`, restart swayosd, refresh pywalfox.
 
 Because the *generated* files live on disk but are gitignored, a fresh install boots with
@@ -445,7 +445,7 @@ in about a second.
 |----------------|------|
 | Monitor, scale, refresh | `config/hypr/env.lua` — `hl.monitor(...)` |
 | Terminal/browser/file manager | `config/hypr/vars.lua` — "shared command strings" |
-| Fonts | `config/kitty/kitty.conf`, `config/waybar/style.css` |
+| Fonts | `config/foot/foot.ini`, `config/waybar/style.css` |
 | Idle timings | `config/hypr/hypridle.conf` |
 | Which apps get themed | `config/matugen/config.toml` |
 | Colors of a given app | matching template in `config/matugen/templates/` |

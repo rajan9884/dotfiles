@@ -40,4 +40,4 @@ if [[ -n "$pid" ]] && [[ "$pid" =~ ^[0-9]+$ ]]; then
 	fi
 fi
 
-exec kitty --directory "$dir"
+exec foot --working-directory "$dir"

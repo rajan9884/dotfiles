@@ -9,4 +9,4 @@ else
   CMD="$HOME/.local/bin/wifi-share $*"
 fi
 
-exec kitty --class wifi-share -e bash -c "$CMD; echo; echo 'Press Enter to close...'; read -r"
+exec foot --app-id wifi-share -e bash -c "$CMD; echo; echo 'Press Enter to close...'; read -r"

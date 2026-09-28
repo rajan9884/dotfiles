@@ -8,11 +8,11 @@ local HOME = os.getenv("HOME")
 
 return {
 	HOME = HOME,
-	terminal = "kitty",
+	terminal = "foot",
 	browser = HOME .. "/.local/bin/chromium",
 	browser_private = HOME .. "/.local/bin/chromium --incognito",
-	editor = "kitty -e nvim",
-	terminal_tmux = "kitty -e tmux",
+	editor = "foot -e nvim",
+	terminal_tmux = "foot -e tmux",
 	menu = "rofi -show drun",
 	file = HOME .. "/.local/bin/nautilus-gnome",
 	scripts = HOME .. "/.config/hypr/scripts",

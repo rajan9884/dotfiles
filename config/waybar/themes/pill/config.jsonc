@@ -38,7 +38,7 @@
    "cpu": {
     "format": "󰻠 {usage}%",
     "interval": 2,
-    "on-click": "kitty -e btop"
+    "on-click": "foot -e btop"
     },
 
     "memory": {
@@ -87,7 +87,7 @@
         "format-icons": {
             "default": ["󰕿", "󰖀", "󰕾"]
         },
-        "on-click": "kitty --class wiremix -e wiremix",
+        "on-click": "foot --app-id wiremix -e wiremix",
         "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+",
         "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-",
         "tooltip": true

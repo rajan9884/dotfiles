@@ -54,7 +54,7 @@ intel-media-driver
 intel-ucode
 iw
 jq
-kitty
+foot
 lazydocker
 lazygit
 libappindicator

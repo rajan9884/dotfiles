@@ -80,7 +80,9 @@ window#waybar {
 #custom-wifi {
     background: @surface;
     color: @on_surface;
-    padding: 4px 8px;
+    padding: 4px 0;
+    padding-left: 4px;
+    padding-right: 12px;
     margin: 6px 0;
 }
 #custom-wifi.wifi-on {

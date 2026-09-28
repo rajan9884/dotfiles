@@ -5,7 +5,7 @@
 #
 # Powerline layout themed with matugen roles (truecolor hexes, not ANSI
 # names): the prompt follows the wallpaper in every terminal — Ghostty,
-# Kitty, bash, and Zed, whose Aura theme palette no longer matters.
+# Foot, bash, and Zed, whose Aura theme palette no longer matters.
 # NOTE: this design needs a Nerd Font for the  separators and icons
 # (system terminals have one; Zed's Dank Mono does not — tofu expected
 # there until its terminal font is switched).

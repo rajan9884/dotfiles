@@ -9,7 +9,7 @@ local scripts = vars.scripts
 
 -- Default programs
 -- New terminal inherits the focused window's working directory; falls back
--- to vars.terminal (kitty) in $HOME when no focused cwd can be resolved.
+-- to vars.terminal (foot) in $HOME when no focused cwd can be resolved.
 hl.bind(mod .. " + Return", hl.dsp.exec_cmd(scripts .. "/terminal-launch.sh"))
 hl.bind(mod .. " + Space", hl.dsp.exec_cmd(vars.menu))
 hl.bind(mod .. " + SHIFT + B", hl.dsp.exec_cmd(vars.browser))
@@ -21,7 +21,7 @@ hl.bind(mod .. " + ALT + K", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-tmux
 hl.bind(mod .. " + SHIFT + ALT + M", hl.dsp.exec_cmd("cliamp"), { description = "Music player (cliamp)" })
 hl.bind(mod .. " + SHIFT + D", hl.dsp.exec_cmd("lazydocker"), { description = "Docker (lazydocker)" })
 hl.bind(mod .. " + SHIFT + O", hl.dsp.exec_cmd("obsidian"), { description = "Open Obsidian" })
-hl.bind(mod .. " + CTRL + T", hl.dsp.exec_cmd("kitty -e btop"), { description = "System monitor (btop)" })
+hl.bind(mod .. " + CTRL + T", hl.dsp.exec_cmd("foot -e btop"), { description = "System monitor (btop)" })
 
 hl.bind(mod .. " + W", hl.dsp.window.close()) -- was killactive (graceful close)
 hl.bind("SUPER + CTRL + L", hl.dsp.exec_cmd("hyprlock"))
@@ -86,7 +86,7 @@ hl.bind(mod .. " + SLASH", hl.dsp.exec_cmd(scripts .. "/monitor-scaling.sh up"),
 hl.bind(mod .. " + ALT + SLASH", hl.dsp.exec_cmd(scripts .. "/monitor-scaling.sh down"), { description = "Monitor scaling down" })
 hl.bind("CTRL + ALT + DELETE", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/window-close-all"), { locked = true, description = "Close all windows" })
 
-hl.bind(mod .. " + CTRL + W", hl.dsp.exec_cmd("kitty -e nmtui"), { description = "Network connections" })
+hl.bind(mod .. " + CTRL + W", hl.dsp.exec_cmd("foot -e nmtui"), { description = "Network connections" })
 hl.bind(mod .. " + ESCAPE", hl.dsp.exec_cmd("~/.config/waybar/scripts/power-menu.sh"))
 hl.bind(mod .. " + CTRL + P", hl.dsp.exec_cmd("~/.config/waybar/scripts/power-menu.sh"), { description = "Power / logout menu" })
 hl.bind(mod .. " + CTRL + B", hl.dsp.exec_cmd("~/.config/waybar/scripts/bluetooth-menu.sh"), { description = "Bluetooth menu" })
@@ -302,7 +302,7 @@ local function send_shortcut_once(mods, key)
 end
 
 local terminal_classes = {
-	"kitty", "alacritty", "foot", "wezterm", "ghostty", "rio", "ptyxis",
+	"foot", "alacritty", "wezterm", "ghostty", "rio", "ptyxis",
 	"konsole", "xfce4-terminal", "gnome-terminal", "gnome-console",
 	"urxvt", "urxvtc", "xterm", "st",
 }

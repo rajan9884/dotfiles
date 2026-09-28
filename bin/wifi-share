@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Share the active Wi-Fi network via QR code + password.
-# Renders with kitty icat (or chafa fallback).
+# Renders with chafa (sixel/block image preview for foot).
 #
 # Usage: wifi-share [interface] [--password] [--copy]
 #   no flags  -> show QR + details, copy password to clipboard
@@ -151,9 +151,7 @@ else
   [[ $security != "nopass" ]] && echo "Password: $password (copied to clipboard)"
 fi
 echo
-if [[ -n ${KITTY_WINDOW_ID:-} ]] && command -v kitty &>/dev/null; then
-  kitty +kitten icat --align center "$png"
-elif command -v chafa &>/dev/null; then
+if command -v chafa &>/dev/null; then
   chafa --symbols block "$png"
 else
   echo "QR saved to: $png (trap disabled — file kept)"

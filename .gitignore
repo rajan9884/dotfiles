@@ -9,7 +9,7 @@ Secrets/
 config/hypr/colors.conf
 config/hypr/colors.lua
 config/waybar/colors.css
-config/kitty/colors.conf
+config/foot/colors.ini
 config/rofi/colors.rasi
 config/ghostty/config.ghostty
 config/swayosd/style.css

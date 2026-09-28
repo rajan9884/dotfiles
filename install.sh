@@ -181,7 +181,7 @@ APPS=(
     hypr
     waybar
     rofi
-    kitty
+    foot
     btop
     cliamp
     matugen
@@ -505,7 +505,7 @@ need_cmd awww-daemon "sudo pacman -S --needed awww"
 need_cmd matugen "sudo pacman -S --needed matugen"
 need_cmd waybar "sudo pacman -S --needed waybar"
 need_cmd rofi "sudo pacman -S --needed rofi"
-need_cmd kitty "sudo pacman -S --needed kitty"
+need_cmd foot "sudo pacman -S --needed foot"
 need_cmd starship "sudo pacman -S --needed starship"
 need_cmd zsh "sudo pacman -S --needed zsh"
 need_cmd nvim "sudo pacman -S --needed neovim"
@@ -559,7 +559,7 @@ if [ -n "$(find "$WALL_DST" -mindepth 1 -type d -print -quit 2>/dev/null)" ]; th
 fi
 
 for link in "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/rofi" \
-            "$HOME/.config/kitty" "$HOME/.config/matugen" "$HOME/.zshrc" \
+            "$HOME/.config/foot" "$HOME/.config/matugen" "$HOME/.zshrc" \
             "$HOME/.zprofile" "$HOME/.bashrc" \
             "$HOME/.config/fastfetch/penguin.txt" \
             "$HYPR_CFG/theme.lua" \
@@ -573,7 +573,7 @@ for link in "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/rofi" \
 done
 
 # Matugen must have produced palettes
-for gen in "$HOME/.config/waybar/colors.css" "$HOME/.config/kitty/colors.conf" \
+for gen in "$HOME/.config/waybar/colors.css" "$HOME/.config/foot/colors.ini" \
            "$HOME/.config/rofi/colors.rasi" "$HOME/.config/hypr/colors.conf" \
            "$HOME/.config/starship.toml"; do
     if [ -s "$gen" ]; then

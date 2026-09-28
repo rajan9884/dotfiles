@@ -53,7 +53,7 @@
             "actions": [
                 {
                     "label": "󰖩 WiFi",
-                    "command": "kitty -e nmtui"
+                    "command": "foot -e nmtui"
                 },
                 {
                     "label": "󰂯 BT",

@@ -104,7 +104,7 @@
                 "󰕾"
             ]
         },
-        "on-click": "kitty --class wiremix -e wiremix",
+        "on-click": "foot --app-id wiremix -e wiremix",
         "tooltip": false
     },
     "battery": {
