@@ -16,22 +16,25 @@ window#waybar {
     border: 1px solid alpha(@outline, 0.15);
 }
 
-/* ── Launcher (Pixel "G" button) ── */
+/* ── Launcher (void logo, no background — color on glyph only) ── */
 #custom-launcher {
     font-size: 18px;
     color: @primary;
-    padding: 0 12px 0 14px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0 6px 0 10px;
     margin: 4px 2px 4px 4px;
-    border-radius: 12px;
-    background: alpha(@primary_container, 0.35);
     transition: all 200ms ease;
 }
 
 #custom-launcher:hover {
-    background: alpha(@primary_container, 0.6);
+    background: transparent;
+    box-shadow: none;
+    color: @on_surface;
 }
 
-/* ── Workspaces (Pixel dot indicators) ── */
+/* ── Workspaces (numbers; ● = current) ── */
 #workspaces {
     margin: 4px 4px;
     padding: 0 4px;
@@ -40,22 +43,32 @@ window#waybar {
 }
 
 #workspaces button {
-    padding: 0 6px;
-    color: alpha(@on_surface_variant, 0.35);
-    font-size: 8px;
-    border-radius: 50%;
-    min-width: 20px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    min-width: 22px;
     transition: all 200ms ease;
+    color: @primary;
+    font-size: 13px;
+    font-weight: 700;
+    background: transparent;
 }
 
 #workspaces button:hover {
     color: @primary;
-    background: alpha(@primary, 0.1);
+    background: alpha(@primary, 0.12);
 }
 
-#workspaces button.active {
+/* Current: solid dot, no background */
+#workspaces button.focused, #workspaces button.active {
+    background: transparent;
     color: @primary;
-    font-size: 10px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#workspaces button.urgent {
+    background: @error_container;
+    color: @on_error_container;
 }
 
 /* ── Clock (center, clean) ── */
@@ -67,7 +80,7 @@ window#waybar {
 }
 
 /* ── Separators ── */
-#custom-separator, #custom-separator2 {
+#custom-separator, #custom-separator2, #custom-separator3, #custom-separator4, #custom-separator5, #custom-separator6, #custom-separator7 {
     color: alpha(@outline, 0.2);
     padding: 0 2px;
     font-size: 14px;
@@ -83,15 +96,45 @@ window#waybar {
     -gtk-icon-effect: dim;
 }
 
-#pulseaudio, #battery, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #backlight, #bluetooth, #custom-wifi, #custom-notifications, #custom-record, #custom-voxtype {
     padding: 0 8px;
     margin: 4px 1px;
     border-radius: 10px;
     transition: all 200ms ease;
 }
 
-#pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
+#backlight:hover, #bluetooth:hover, #custom-wifi:hover, #custom-notifications:hover, #pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
     background: alpha(@primary, 0.12);
+}
+
+#backlight {
+    color: @primary;
+}
+
+#custom-wifi {
+    color: @tertiary;
+}
+
+#custom-wifi.wifi-off,
+#custom-wifi.wifi-disconnected {
+    opacity: 0.55;
+}
+
+#bluetooth {
+    color: @secondary;
+}
+
+#bluetooth.disabled,
+#bluetooth.off {
+    opacity: 0.55;
+}
+
+#custom-notifications {
+    color: @on_surface;
+}
+
+#custom-notifications.has-notifications {
+    color: @tertiary;
 }
 
 #pulseaudio {

@@ -1,4 +1,11 @@
 {
+    // floating-bar — ported from Void preset (void-config/waybar/themes/floating-bar),
+    // adapted for Hyprland on Arch:
+    //   sway/workspaces → hyprland/workspaces (Void's numeric style kept)
+    //   mako notifications → swaync-client (Arch uses SwayNC, not mako)
+    //   pulsemixer → wiremix (Arch default audio mixer)
+    //   battery adapter ADP0 → ACAD (this machine's actual adapter)
+    //   launcher keeps Arch glyph (equivalent of Void's )
     "include": [
         "~/.config/waybar/modules.jsonc"
     ],
@@ -12,29 +19,38 @@
     "margin-top": 6,
     "margin-left": 8,
     "margin-right": 8,
-    
+
     "modules-left": [
         "custom/launcher",
         "custom/record",
         "custom/voxtype",
         "hyprland/workspaces"
     ],
-    
+
     "modules-center": [
         "clock"
     ],
-    
+
     "modules-right": [
         "tray",
         "custom/separator",
-        "pulseaudio",
-        "battery",
+        "custom/wifi",
         "custom/separator2",
+        "bluetooth",
+        "custom/separator3",
+        "backlight",
+        "custom/separator4",
+        "custom/notifications",
+        "custom/separator5",
+        "pulseaudio",
+        "custom/separator6",
+        "battery",
+        "custom/separator7",
         "custom/power"
     ],
 
-    "custom/launcher": {
-        "format": "󰊠",
+    "custom/launcher": { 
+        "format": "",
         "on-click": "rofi -show drun -theme ~/.config/rofi/active-launcher.rasi",
         "tooltip": false
     },
@@ -49,19 +65,112 @@
         "tooltip": false
     },
 
+    "custom/separator3": {
+        "format": "│",
+        "tooltip": false
+    },
+
+    "custom/separator4": {
+        "format": "│",
+        "tooltip": false
+    },
+
+    "custom/separator5": {
+        "format": "│",
+        "tooltip": false
+    },
+
+    "custom/separator6": {
+        "format": "│",
+        "tooltip": false
+    },
+
+    "custom/separator7": {
+        "format": "│",
+        "tooltip": false
+    },
+
     "hyprland/workspaces": {
         "format": "{icon}",
         "format-icons": {
-            "1": "●",
-            "2": "●",
-            "3": "●",
-            "4": "●",
-            "5": "●",
-            "active": "◉",
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "urgent": "",
+            "active": "●",
             "default": "○"
         },
         "on-click": "activate",
         "all-outputs": true
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰖁 Muted",
+        "format-bluetooth": "{icon} {volume}%",
+        "format-bluetooth-muted": "󰖁 Muted",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "scroll-step": 5,
+        "on-click": "foot --app-id wiremix -e wiremix",
+        "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    },
+
+    "backlight": {
+        "device": "intel_backlight",
+        "format": "{icon} {percent}%",
+        "format-icons": ["󰃞", "󰃟", "󰃠"],
+        "on-scroll-up": "brightnessctl set 5%+ >/dev/null",
+        "on-scroll-down": "brightnessctl set 5%- >/dev/null",
+        "tooltip": false
+    },
+
+    "custom/wifi": {
+        "exec": "~/.config/waybar/scripts/wifi-status.sh",
+        "return-type": "json",
+        "interval": 5,
+        "on-click": "~/.config/waybar/scripts/wifi-menu.sh",
+        "signal": 14,
+        "tooltip": true
+    },
+
+    "bluetooth": {
+        "format": "󰂯",
+        "format-disabled": "󰂲",
+        "format-off": "󰂲",
+        "format-on": "󰂯",
+        "format-connected": "󰂱",
+        "on-click": "~/.config/waybar/scripts/bluetooth-menu.sh",
+        "on-click-right": "bluetoothctl power toggle",
+        "tooltip": true,
+        "tooltip-format": "{status}"
+    },
+
+    "custom/notifications": {
+        "exec": "~/.config/waybar/scripts/notifications.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "swaync-client -t -sw",
+        "tooltip": true
+    },
+
+    "battery": {
+        "bat": "BAT1",
+        "adapter": "ACAD",
+        "interval": 30,
+        "states": {
+            "good": 80,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{capacity}% {icon}",
+        "format-charging": "{capacity}% 󱐋",
+        "format-plugged": "{capacity}% 󱐋",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "on-click": "~/.local/bin/power-profiles menu"
     },
 
     "clock": {

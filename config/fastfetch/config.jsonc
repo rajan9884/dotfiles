@@ -1,62 +1,34 @@
 {
-    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
-    "logo": {
-        "type": "file",
-        "source": "~/.config/fastfetch/ascii.txt", // search for logos: fastfetch --list-logos or --print-logos
-        "padding": {
-        "top": 0,
-        "left": 0,
-        "right": 4
-        },
-    },
-    "display": {
-        "separator": "  "
-    },
-    "modules": [
-	"break",
-	"title",
-        {
-            "type": "os",
-            "key": "os    ",
-            "keyColor": "33",  // = color3
-        },
-        {
-            "type": "kernel",
-            "key": "kernel",
-            "keyColor": "33",
-        },
-        {
-            "type": "host",
-            "format": "{5} {1}",
-            "key": "host  ",
-            "keyColor": "33",
-        },
-        {
-            "type": "packages",
-            "key": "pkgs  ",
-            "keyColor": "33",
-        },
-        {
-            "type": "uptime",
-            "format": "{2}h {3}m",
-            "key": "uptime",
-            "keyColor": "33",
-        },
-        {
-            "type": "cpu",
-            "key": "cpu   ",
-            "keyColor": "33",
-        },
-        {
-            "type": "memory",
-            "key": "memory",
-            "keyColor": "33",
-        },
-        {
-            "type": "disk",
-            "key": "disk  ",
-            "keyColor": "33",
-        },
-        "break",
-    ]
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  "modules": [
+    "title",
+    "separator",
+    "os",
+    "host",
+    "kernel",
+    "uptime",
+    "packages",
+    "shell",
+    "display",
+    "de",
+    "wm",
+    "wmtheme",
+    "theme",
+    "icons",
+    "font",
+    "cursor",
+    "terminal",
+    "terminalfont",
+    "cpu",
+    "gpu",
+    "memory",
+    "swap",
+    "disk",
+    "localip",
+    "battery",
+    "poweradapter",
+    "locale",
+    "break",
+    "colors"
+  ]
 }
