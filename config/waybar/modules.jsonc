@@ -51,6 +51,16 @@
         "align": 0.5
     },
 
+    "custom/caffeine": {
+        "exec": "~/.config/waybar/scripts/caffeine.sh",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 8,
+        "on-click": "~/.config/waybar/scripts/caffeine.sh toggle",
+        "on-click-right": "~/.config/waybar/scripts/caffeine.sh toggle",
+        "tooltip": true
+    },
+
     "custom/group": {
         "exec": "~/.config/waybar/scripts/group-indicator.sh",
         "return-type": "json",

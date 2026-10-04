@@ -46,6 +46,8 @@
         "custom/separator6",
         "battery",
         "custom/separator7",
+        "custom/caffeine",
+        "custom/separator8",
         "custom/power"
     ],
 
@@ -86,6 +88,11 @@
     },
 
     "custom/separator7": {
+        "format": "│",
+        "tooltip": false
+    },
+
+    "custom/separator8": {
         "format": "│",
         "tooltip": false
     },

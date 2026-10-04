@@ -80,7 +80,7 @@ window#waybar {
 }
 
 /* ── Separators ── */
-#custom-separator, #custom-separator2, #custom-separator3, #custom-separator4, #custom-separator5, #custom-separator6, #custom-separator7 {
+#custom-separator, #custom-separator2, #custom-separator3, #custom-separator4, #custom-separator5, #custom-separator6, #custom-separator7, #custom-separator8 {
     color: alpha(@outline, 0.2);
     padding: 0 2px;
     font-size: 14px;
@@ -96,14 +96,14 @@ window#waybar {
     -gtk-icon-effect: dim;
 }
 
-#pulseaudio, #battery, #backlight, #bluetooth, #custom-wifi, #custom-notifications, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #backlight, #bluetooth, #custom-wifi, #custom-notifications, #custom-record, #custom-voxtype, #custom-caffeine {
     padding: 0 8px;
     margin: 4px 1px;
     border-radius: 10px;
     transition: all 200ms ease;
 }
 
-#backlight:hover, #bluetooth:hover, #custom-wifi:hover, #custom-notifications:hover, #pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
+#backlight:hover, #bluetooth:hover, #custom-wifi:hover, #custom-notifications:hover, #pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover, #custom-caffeine:hover {
     background: alpha(@primary, 0.12);
 }
 
@@ -148,6 +148,11 @@ window#waybar {
 #custom-record { color: @primary; }
 #custom-record.recording { color: @error; }
 #custom-voxtype { color: @secondary; }
+
+/* ── Caffeine (caffeine-like sleep inhibitor) ── */
+#custom-caffeine { color: @on_surface; opacity: 0.55; }
+#custom-caffeine.active { color: @primary; opacity: 1; }
+#custom-caffeine.inactive { color: @on_surface; opacity: 0.55; }
 
 #battery.warning {
     color: #f9a825;
