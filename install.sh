@@ -257,6 +257,7 @@ link_home zshrc
 link_home zprofile
 link_home bashrc
 link_home gitconfig
+link_config_file chromium-flags.conf chromium-flags.conf
 # NOTE: starship.toml is NOT linked — matugen generates ~/.config/starship.toml
 # from matugen/templates/starship.toml in step 8 (truecolor palette).
 
@@ -596,6 +597,7 @@ for link in "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/rofi" \
             "$HOME/.config/foot" "$HOME/.config/alacritty" "$HOME/.config/zathura" "$HOME/.config/Thunar" \
             "$HOME/.config/matugen" "$HOME/.zshrc" \
             "$HOME/.zprofile" "$HOME/.bashrc" \
+            "$HOME/.config/chromium-flags.conf" \
             "$HOME/.config/fastfetch/penguin.txt" \
             "$HYPR_CFG/theme.lua" \
             "$WAYBAR_CFG/config.jsonc" "$WAYBAR_CFG/style.css"; do
