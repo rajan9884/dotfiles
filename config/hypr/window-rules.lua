@@ -24,16 +24,24 @@ hl.window_rule({
 })
 
 hl.window_rule({
-	name = "nautilus-preview-float",
-	match = { class = "org.gnome.NautilusPreviewer" },
+	name = "doc-float",
+	match = { class = "^org.pwmt.zathura$" },
 	float = true,
 	center = true,
-	size = { 875, 600 },
+	size = { 900, 700 },
+})
+
+hl.window_rule({
+	name = "thunar-dialog-float",
+	match = { class = "^Thunar$", title = ".*(Properties|Rename|Preferences|Bulk Rename).*" },
+	float = true,
+	center = true,
+	size = { 700, 500 },
 })
 
 hl.window_rule({
 	name = "media-opaque",
-	match = { class = "^(zoom|vlc|mpv|org.kde.kdenlive|com.obsproject.Studio|com.github.PintaProject.Pinta|imv|org.gnome.NautilusPreviewer)$" },
+	match = { class = "^(zoom|vlc|mpv|org.kde.kdenlive|com.obsproject.Studio|com.github.PintaProject.Pinta|imv)$" },
 	opacity = "1 1",
 })
 
@@ -47,14 +55,8 @@ hl.window_rule({
 })
 
 hl.window_rule({
-	name = "previewer-no-default-opacity",
-	match = { class = "org.gnome.NautilusPreviewer" },
-	tag = "-default-opacity",
-})
-
-hl.window_rule({
 	name = "webapp-install-float",
-	match = { class = "(webapp-install|webapp-remove|wifi-share)" },
+	match = { class = "(webapp-install|webapp-remove)" },
 	float = true,
 	center = true,
 	size = { 650, 480 },

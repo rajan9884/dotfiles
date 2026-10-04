@@ -13,7 +13,6 @@
     
     "modules-left": [
         "custom/record",
-        "custom/voxtype",
         "hyprland/workspaces"
     ],
     
@@ -62,7 +61,7 @@
         "format-disabled": "󰂲",
         "format-connected": "󰂯",
         "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-        "on-click": "~/.config/waybar/scripts/bluetooth-menu.sh"
+        "on-click": "foot -e bluetoothctl"
     },
 
     "battery": {
@@ -96,11 +95,5 @@
         "return-type": "json",
         "interval": 2,
         "on-click": "~/.config/waybar/scripts/recorder.sh toggle"
-    },
-    "custom/voxtype": {
-        "exec": "~/.config/waybar/scripts/voxtype.sh",
-        "return-type": "json",
-        "interval": 2,
-        "on-click": "voxtype record stop"
     }
 }

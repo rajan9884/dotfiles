@@ -74,7 +74,7 @@ label() {
         *'exec_cmd(file)'*)                        desc="Open file manager" ;;
         *'nmtui'*)                                    desc="Network connections" ;;
         *'power-menu.sh'*)                         desc="Power / logout menu" ;;
-        *'bluetooth-menu.sh'*)                     desc="Bluetooth menu" ;;
+        *'bluetoothctl'*)                         desc="Bluetooth manager" ;;
         *'random-wall.sh'*)                        desc="Random wallpaper" ;;
         *'waybar-selector.sh'*)                    desc="Waybar style selector" ;;
         *'killall -q -SIGUSR1 waybar'*)            desc="Toggle top bar" ;;

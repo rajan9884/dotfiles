@@ -71,13 +71,13 @@ killall -SIGUSR1 foot 2>/dev/null || true
 # or we can use hyprctl reload
 hyprctl reload
 
-# 6. Reload Nautilus
-# GTK4 apps read ~/.config/gtk-4.0/gtk.css only at launch, so restart nautilus
-# to pick up the new palette. Only when a nautilus WINDOW is open, otherwise a
+# 6. Reload Thunar
+# GTK3 apps read ~/.config/gtk-3.0/gtk.css only at launch, so quit thunar
+# to pick up the new palette. Only when a thunar WINDOW is open, otherwise a
 # restart would silently pop a new window on the active workspace.
-if hyprctl clients -j | grep -Fq '"class": "org.gnome.Nautilus"'; then
-    pkill -x nautilus 2>/dev/null
-    nautilus --new-window >/dev/null 2>&1 &
+if hyprctl clients -j | grep -Fq '"class": "Thunar"'; then
+    pkill -x thunar 2>/dev/null
+    thunar >/dev/null 2>&1 &
 fi
 
 # 6.5 Neovim

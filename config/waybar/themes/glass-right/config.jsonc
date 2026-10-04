@@ -14,7 +14,6 @@
     "modules-left": [
         "custom/launcher",
         "custom/record",
-        "custom/voxtype",
         "clock"
     ],
     

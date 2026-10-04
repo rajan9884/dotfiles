@@ -43,14 +43,6 @@
         "align": 0.5
     },
 
-    "custom/voxtype": {
-        "exec": "~/.config/waybar/scripts/voxtype.sh",
-        "return-type": "json",
-        "interval": 2,
-        "on-click": "voxtype record stop",
-        "align": 0.5
-    },
-
     "custom/caffeine": {
         "exec": "~/.config/waybar/scripts/caffeine.sh",
         "return-type": "json",

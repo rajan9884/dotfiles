@@ -10,7 +10,7 @@ window#waybar {
     background: transparent;
 }
 
-#custom-launcher, #workspaces, #clock, #pulseaudio, #battery, #custom-power, #tray, #custom-record, #custom-voxtype {
+#custom-launcher, #workspaces, #clock, #pulseaudio, #battery, #custom-power, #tray, #custom-record {
     background: @surface;
     border-radius: 20px;
     margin: 5px;
@@ -28,7 +28,6 @@ window#waybar {
 
 #custom-record { color: @primary; }
 #custom-record.recording { color: @error; }
-#custom-voxtype { color: @secondary; }
 
 #custom-power {
     color: @error;

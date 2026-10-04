@@ -27,7 +27,7 @@ window#waybar {
     color: @primary;
 }
 
-#clock, #pulseaudio, #battery, #custom-power, #custom-launcher, #tray, #custom-record, #custom-voxtype {
+#clock, #pulseaudio, #battery, #custom-power, #custom-launcher, #tray, #custom-record {
     padding: 12px 0;
 }
 
@@ -38,4 +38,3 @@ window#waybar {
 #custom-power { color: @error; }
 #custom-record { color: @primary; }
 #custom-record.recording { color: @error; }
-#custom-voxtype { color: @secondary; }

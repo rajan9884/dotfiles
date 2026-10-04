@@ -34,10 +34,9 @@ window#waybar {
     font-size: 11px;
 }
 
-#pulseaudio, #battery, #custom-power, #custom-launcher, #tray, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #custom-power, #custom-launcher, #tray, #custom-record {
     padding: 10px 0;
 }
 
 #custom-record { color: @tertiary; }
 #custom-record.recording { color: @error; }
-#custom-voxtype { color: @secondary; }

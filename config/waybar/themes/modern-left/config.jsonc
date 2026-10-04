@@ -11,7 +11,6 @@
     "modules-left": [
         "custom/launcher",
         "custom/record",
-        "custom/voxtype",
         "hyprland/workspaces"
     ],
     
@@ -89,11 +88,5 @@
         "return-type": "json",
         "interval": 2,
         "on-click": "~/.config/waybar/scripts/recorder.sh toggle"
-    },
-    "custom/voxtype": {
-        "exec": "~/.config/waybar/scripts/voxtype.sh",
-        "return-type": "json",
-        "interval": 2,
-        "on-click": "voxtype record stop"
     }
 }

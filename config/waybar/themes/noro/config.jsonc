@@ -12,7 +12,6 @@
     "modules-left": [
         "custom/launcher",
         "custom/record",
-        "custom/voxtype",
         "clock",
         "custom/user"
     ],
@@ -42,12 +41,6 @@
         "return-type": "json",
         "interval": 2,
         "on-click": "~/.config/waybar/scripts/recorder.sh toggle"
-    },
-    "custom/voxtype": {
-        "exec": "~/.config/waybar/scripts/voxtype.sh",
-        "return-type": "json",
-        "interval": 2,
-        "on-click": "voxtype record stop"
     },
     "tray": {
         "icon-size": 18,
@@ -130,7 +123,7 @@
     },
     "bluetooth": {
         "format": "󰂯",
-        "on-click": "~/.config/waybar/scripts/bluetooth-menu.sh",
+        "on-click": "foot -e bluetoothctl",
         "tooltip": false
     },
     "custom/power-profile": {

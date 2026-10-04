@@ -70,14 +70,14 @@ window#waybar {
     padding: 0 8px;
 }
 
-#pulseaudio, #battery, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #custom-record {
     padding: 0 10px;
     margin: 5px 2px;
     border-radius: 12px;
     transition: all 200ms ease;
 }
 
-#pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
+#pulseaudio:hover, #battery:hover, #custom-record:hover {
     background: alpha(@primary, 0.15);
 }
 
@@ -85,7 +85,6 @@ window#waybar {
 #battery    { color: @secondary; }
 #custom-record { color: @primary; }
 #custom-record.recording { color: @error; }
-#custom-voxtype { color: @secondary; }
 
 #battery.warning { color: #f9a825; }
 #battery.critical {

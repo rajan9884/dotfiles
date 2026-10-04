@@ -10,6 +10,14 @@ output_path = "~/.config/waybar/colors.css"
 input_path = "~/.config/matugen/templates/foot.ini"
 output_path = "~/.config/foot/colors.ini"
 
+[templates.alacritty]
+input_path = "~/.config/matugen/templates/alacritty.toml"
+output_path = "~/.config/alacritty/colors.toml"
+
+[templates.zathura]
+input_path = "~/.config/matugen/templates/zathura"
+output_path = "~/.config/zathura/colors"
+
 [templates.rofi]
 input_path = "~/.config/matugen/templates/rofi.rasi"
 output_path = "~/.config/rofi/colors.rasi"

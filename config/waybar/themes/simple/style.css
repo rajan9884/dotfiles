@@ -41,7 +41,6 @@ window#waybar {
 #bluetooth,
 #battery,
 #custom-power,
-#custom-voxtype,
 #custom-record,
 #tray {
     padding: 0 10px;
@@ -83,6 +82,3 @@ window#waybar {
     color: @error;
 }
 
-#custom-voxtype {
-    color: @secondary;
-}

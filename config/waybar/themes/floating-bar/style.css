@@ -96,14 +96,14 @@ window#waybar {
     -gtk-icon-effect: dim;
 }
 
-#pulseaudio, #battery, #backlight, #bluetooth, #custom-wifi, #custom-notifications, #custom-record, #custom-voxtype, #custom-caffeine {
+#pulseaudio, #battery, #backlight, #bluetooth, #custom-wifi, #custom-notifications, #custom-record, #custom-caffeine {
     padding: 0 8px;
     margin: 4px 1px;
     border-radius: 10px;
     transition: all 200ms ease;
 }
 
-#backlight:hover, #bluetooth:hover, #custom-wifi:hover, #custom-notifications:hover, #pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover, #custom-caffeine:hover {
+#backlight:hover, #bluetooth:hover, #custom-wifi:hover, #custom-notifications:hover, #pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-caffeine:hover {
     background: alpha(@primary, 0.12);
 }
 
@@ -147,7 +147,6 @@ window#waybar {
 
 #custom-record { color: @primary; }
 #custom-record.recording { color: @error; }
-#custom-voxtype { color: @secondary; }
 
 /* ── Caffeine (caffeine-like sleep inhibitor) ── */
 #custom-caffeine { color: @on_surface; opacity: 0.55; }

@@ -77,7 +77,6 @@ tooltip label {
 #tray,
 #pulseaudio,
 #battery,
-#custom-voxtype,
 #custom-record {
     padding: 0 8px;
     color: @on_surface;
@@ -87,7 +86,6 @@ tooltip label {
     color: @primary;
 }
 
-#custom-voxtype { color: @secondary; }
 #custom-record { color: @primary; }
 #custom-record.recording { color: @error; }
 

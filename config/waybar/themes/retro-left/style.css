@@ -50,7 +50,7 @@ window#waybar {
 }
 
 /* ── System modules ── */
-#pulseaudio, #battery, #tray, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #tray, #custom-record {
     padding: 10px 0;
     border-bottom: 1px solid alpha(@outline, 0.15);
 }
@@ -65,7 +65,6 @@ window#waybar {
 
 #custom-record { color: @primary; }
 #custom-record.recording { color: @on_error; background: @error; }
-#custom-voxtype { color: @secondary; border-bottom: none; }
 
 #tray {
     border-bottom: none;

@@ -37,7 +37,7 @@ hl.bind(mod .. " + CTRL + Return", hl.dsp.workspace.toggle_special("terminal"), 
 hl.bind(mod .. " + CTRL + SHIFT + Return", hl.dsp.window.move({ workspace = "special:terminal", follow = false }), { description = "Move window to terminal scratchpad" })
 hl.bind(mod .. " + J", hl.dsp.layout("togglesplit"), { description = "Toggle window split" }) -- togglesplit (layoutmsg)
 hl.bind(mod .. " + SHIFT + F", hl.dsp.exec_cmd(vars.file))
-hl.bind(mod .. " + SHIFT + ALT + F", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/nautilus-cwd"), { description = "File manager (cwd)" })
+hl.bind(mod .. " + SHIFT + ALT + F", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/thunar-cwd"), { description = "File manager (cwd)" })
 hl.bind(mod .. " + CTRL + Space", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/arch-wallpaper-picker"), { description = "Wallpaper picker" })
 hl.bind(mod .. " + R", hl.dsp.exec_cmd(scripts .. "/random-wall.sh"), { description = "Random wallpaper" })
 
@@ -89,7 +89,7 @@ hl.bind("CTRL + ALT + DELETE", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/window-
 hl.bind(mod .. " + CTRL + W", hl.dsp.exec_cmd("foot -e nmtui"), { description = "Network connections" })
 hl.bind(mod .. " + ESCAPE", hl.dsp.exec_cmd("~/.config/waybar/scripts/power-menu.sh"))
 hl.bind(mod .. " + CTRL + P", hl.dsp.exec_cmd("~/.config/waybar/scripts/power-menu.sh"), { description = "Power / logout menu" })
-hl.bind(mod .. " + CTRL + B", hl.dsp.exec_cmd("~/.config/waybar/scripts/bluetooth-menu.sh"), { description = "Bluetooth menu" })
+hl.bind(mod .. " + CTRL + B", hl.dsp.exec_cmd("foot -e bluetoothctl"), { description = "Bluetooth manager" })
 hl.bind(mod .. " + CTRL + N", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/night-light-toggle"), { description = "Toggle nightlight" })
 hl.bind(mod .. " + CTRL + I", hl.dsp.exec_cmd(scripts .. "/idle-toggle.sh"), { description = "Toggle idle lock" })
 hl.bind(mod .. " + CTRL + E", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-emoji"), { description = "Emojis" })
@@ -98,37 +98,9 @@ hl.bind(mod .. " + CTRL + E", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-emo
 hl.bind(mod .. " + CTRL + Z", function() local z = hl.get_config("cursor.zoom_factor") or 1; hl.config({ cursor = { zoom_factor = z + 1 } }) end, { description = "Zoom in" })
 hl.bind(mod .. " + CTRL + ALT + Z", function() hl.config({ cursor = { zoom_factor = 1 } }) end, { description = "Reset zoom" })
 
--- Dictation (voxtype) — binds register automatically once installed
-local voxtype_ok = (function()
-	local p = io.popen("command -v voxtype 2>/dev/null")
-	if not p then return false end
-	local found = p:read("*l") ~= nil
-	p:close()
-	return found
-end)()
-if voxtype_ok then
-	hl.bind(mod .. " + CTRL + X", hl.dsp.exec_cmd("voxtype record toggle"), { description = "Toggle dictation" })
-	hl.bind("F9", hl.dsp.exec_cmd("voxtype record start"), { description = "Start dictation (push-to-talk)" })
-	hl.bind("F9", hl.dsp.exec_cmd("voxtype record stop"), { release = true, description = "Stop dictation (push-to-talk)" })
-
-	-- voxtype compositor integration (was conf.d/voxtype-submap.conf)
-	-- F12 cancels/suppresses when voxtype switches to these submaps
-	hl.define_submap("voxtype_recording", function()
-		hl.bind("F12", hl.dsp.exec_cmd("voxtype record cancel"), { description = "Cancel dictation" })
-		hl.bind("F12", hl.dsp.submap("reset"), { description = "Return to normal" })
-	end)
-	hl.define_submap("voxtype_suppress", function()
-		hl.bind("F12", hl.dsp.submap("reset"), { description = "Emergency escape" })
-		for _, mk in ipairs({ "SUPER_L", "SUPER_R", "Control_L", "Control_R", "Alt_L", "Alt_R", "Shift_L", "Shift_R" }) do
-			hl.bind(mk, hl.dsp.exec_cmd("true"))
-		end
-	end)
-end
-
 hl.bind(mod .. " + ALT + W", hl.dsp.exec_cmd("~/.config/hypr/scripts/waybar-selector.sh"), { description = "Waybar style selector" })
 hl.bind(mod .. " + ALT + SHIFT + W", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/webapp-install-prompt"), { description = "Install web app (paste link)" })
 hl.bind(mod .. " + ALT + SHIFT + X", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/webapp-remove-prompt"), { description = "Remove web app" })
-hl.bind(mod .. " + ALT + Q", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/wifi-share-prompt"), { description = "Share WiFi via QR" })
 
 hl.bind(mod .. " + SHIFT + Space", hl.dsp.exec_cmd("killall -q -SIGUSR1 waybar .waybar-wrapped"), { locked = true, description = "Toggle waybar visibility" })
 
@@ -344,9 +316,6 @@ hl.bind("SUPER + V", universal_clipboard_shortcut("CTRL", "V", "SHIFT", "Insert"
 hl.bind("SUPER + X", send_shortcut_once("CTRL", "X"), { description = "Universal cut" })
 
 -- ── Extra menus ──
-
--- Herdr keybindings cheatsheet (rofi)
-hl.bind(mod .. " + CTRL + K", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-herdr-keybindings"), { description = "Herdr keybindings" })
 
 local square_aspect = false
 hl.bind(mod .. " + CTRL + BACKSPACE", function()

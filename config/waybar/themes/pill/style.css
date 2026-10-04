@@ -27,7 +27,6 @@ window#waybar {
 #custom-launcher,
 #custom-power,
 #tray,
-#custom-voxtype,
 #custom-record {
     background: @surface;
     color: @on_surface;
@@ -128,9 +127,6 @@ window#waybar {
     border-color: @error;
 }
 
-#custom-voxtype {
-    color: @secondary;
-}
 
 /* ── Hover Effects ────────────────────────── */
 #clock:hover,
@@ -141,7 +137,6 @@ window#waybar {
 #memory:hover,
 #custom-launcher:hover,
 #custom-power:hover,
-#custom-voxtype:hover,
 #custom-record:hover {
     background: @surface_variant;
     border-color: @outline;

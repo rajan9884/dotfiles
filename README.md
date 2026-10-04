@@ -70,7 +70,6 @@ environment and defaults live in their own module and are easy to adjust.
   precise 1% steps, playerctl media controls.
 - **Screenshots & recording** — region snip to clipboard, annotate with satty, full-screen
   grab, color picker, OCR extract, wf-recorder capture with a Waybar indicator.
-- **Dictation ready** — optional voxtype push-to-talk (F9) with Waybar status.
 - **Idle automation** — lock at 300s, display off at 360s, lock-on-lid-close.
 
 ## Waybar
@@ -200,7 +199,6 @@ Shell and editors (all handled by `./install.sh` from `pkglist/` — no manual s
   (skipped silently if a tool is ever missing) and `shell/starship.toml` is linked
   to `~/.config/starship.toml`.
 - **Neovim**: `pacman -S neovim` (plugins bootstrap themselves on first run via lazy.nvim)
-- **dictation (optional)**: voxtype, adds F9 push-to-talk when present
 
 ### Optional extras the keybinds expect
 
@@ -212,7 +210,6 @@ Shell and editors (all handled by `./install.sh` from `pkglist/` — no manual s
   `~/.local/bin` and everything degrades gracefully if a script is missing (binds that
   call them just won't do anything).
 - `pywalfox` — live-recolored Firefox/Brave via the pywalfox extension
-- `voxtype` — dictation (see keybinds)
 
 ## Installation
 
@@ -388,14 +385,6 @@ dotfiles/
 |------|--------|
 | Super+C / Super+V | Copy / paste (works in terminals) |
 | Super+X | Cut |
-
-### Dictation (voxtype, if installed)
-
-| Bind | Action |
-|------|--------|
-| Super+CTRL+X | Toggle dictation |
-| F9 (hold) | Push to talk |
-| F12 | Cancel / escape submap |
 
 ## Theming system
 

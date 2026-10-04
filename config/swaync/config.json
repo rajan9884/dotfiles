@@ -57,7 +57,7 @@
                 },
                 {
                     "label": "󰂯 BT",
-                    "command": "~/.config/waybar/scripts/bluetooth-menu.sh"
+                    "command": "foot -e bluetoothctl"
                 },
                 {
                     "label": "󰒲 Lock",

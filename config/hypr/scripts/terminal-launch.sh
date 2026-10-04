@@ -40,4 +40,7 @@ if [[ -n "$pid" ]] && [[ "$pid" =~ ^[0-9]+$ ]]; then
 	fi
 fi
 
-exec foot --working-directory "$dir"
+# Primary terminal from vars.lua (foot = lightest, alacritty = GPU).
+# Both accept --working-directory. Override: TERMINAL=alacritty.
+TERM_BIN="${TERMINAL:-foot}"
+exec "$TERM_BIN" --working-directory "$dir"

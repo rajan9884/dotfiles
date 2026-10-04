@@ -45,7 +45,6 @@ window#waybar {
 #bluetooth,
 #battery,
 #custom-power,
-#custom-voxtype,
 #custom-record,
 #tray {
     padding: 0 10px;
@@ -56,9 +55,6 @@ window#waybar {
     padding-left: 10px;
 }
 
-#custom-voxtype {
-    color: rgba(255, 255, 255, 0.7);
-}
 
 #custom-record {
     color: #ffffff;

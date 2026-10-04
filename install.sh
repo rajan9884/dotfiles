@@ -182,6 +182,9 @@ APPS=(
     waybar
     rofi
     foot
+    alacritty
+    zathura
+    Thunar
     btop
     cliamp
     matugen
@@ -370,13 +373,16 @@ fi
 
 # Deploy systemd user service units
 mkdir -p "$HOME/.config/systemd/user"
-for unit in waybar.service swayosd.service polkit-gnome.service \
+for unit in waybar.service swayosd.service \
             power-profiles-autoswitch.service power-profiles-autoswitch.path; do
     if [ -f "$REPO_ROOT/scripts/systemd/$unit" ]; then
         cp -p "$REPO_ROOT/scripts/systemd/$unit" "$HOME/.config/systemd/user/$unit"
         info "deployed user unit: $unit"
     fi
 done
+# hyprpolkitagent ships its own user unit (no repo copy needed)
+systemctl --user enable --now hyprpolkitagent.service >/dev/null 2>&1 \
+    && info "hyprpolkitagent active" || true
 systemctl --user daemon-reload >/dev/null 2>&1 || true
 
 # ── 7. pactl shim (PipeWire-only machines) ───
@@ -488,6 +494,18 @@ if [ -f "$HOME/.config/mimeapps.list" ]; then
     info "image MIME types set to imv.desktop"
 fi
 
+# 9g. Set default PDF viewer to zathura
+if [ -f "$HOME/.config/mimeapps.list" ]; then
+    sed -i 's#=org\.gnome\.Evince\.desktop#=org.pwmt.zathura.desktop#g; s#=evince\.desktop#=org.pwmt.zathura.desktop#g' "$HOME/.config/mimeapps.list"
+    xdg-mime default org.pwmt.zathura.desktop application/pdf 2>/dev/null || true
+    info "PDF MIME type set to org.pwmt.zathura.desktop"
+    sed -i 's#=org\.gnome\.TextEditor\.desktop#=nvim.desktop#g' "$HOME/.config/mimeapps.list"
+    for m in application/json text/x-tex; do
+        xdg-mime default nvim.desktop "$m" 2>/dev/null || true
+    done
+    info "code/text MIME types set to nvim.desktop"
+fi
+
 # ── 10. Verify EVERYTHING ────────────────────
 echo
 echo "==> [10/10] Verifying install"
@@ -516,7 +534,7 @@ else
     PROBLEMS=$((PROBLEMS + 1))
 fi
 need_cmd wpctl "sudo pacman -S --needed wireplumber"
-need_cmd nm-applet "sudo pacman -S --needed network-manager-applet"
+need_cmd nm-connection-editor "sudo pacman -S --needed nm-connection-editor"
 need_cmd swayosd-client "sudo pacman -S --needed swayosd"
 need_cmd yazi "sudo pacman -S --needed yazi"
 need_cmd fzf "sudo pacman -S --needed fzf"
@@ -526,6 +544,15 @@ need_cmd gum "sudo pacman -S --needed gum"
 need_cmd chromium "sudo pacman -S --needed chromium"
 need_cmd fastfetch "sudo pacman -S --needed fastfetch"
 need_cmd btop "sudo pacman -S --needed btop"
+need_cmd thunar "sudo pacman -S --needed thunar tumbler thunar-archive-plugin"
+need_cmd alacritty "sudo pacman -S --needed alacritty"
+need_cmd zathura "sudo pacman -S --needed zathura zathura-pdf-mupdf"
+if [ -x /usr/lib/hyprpolkitagent/hyprpolkitagent ]; then
+    info "ok: hyprpolkitagent"
+else
+    fail "MISSING: hyprpolkitagent (sudo pacman -S --needed hyprpolkitagent)"
+    PROBLEMS=$((PROBLEMS + 1))
+fi
 
 # cliamp is AUR-only (manual step) — soft check, do not fail the install
 if command -v cliamp >/dev/null 2>&1; then
@@ -559,7 +586,8 @@ if [ -n "$(find "$WALL_DST" -mindepth 1 -type d -print -quit 2>/dev/null)" ]; th
 fi
 
 for link in "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/rofi" \
-            "$HOME/.config/foot" "$HOME/.config/matugen" "$HOME/.zshrc" \
+            "$HOME/.config/foot" "$HOME/.config/alacritty" "$HOME/.config/zathura" "$HOME/.config/Thunar" \
+            "$HOME/.config/matugen" "$HOME/.zshrc" \
             "$HOME/.zprofile" "$HOME/.bashrc" \
             "$HOME/.config/fastfetch/penguin.txt" \
             "$HYPR_CFG/theme.lua" \
@@ -574,6 +602,7 @@ done
 
 # Matugen must have produced palettes
 for gen in "$HOME/.config/waybar/colors.css" "$HOME/.config/foot/colors.ini" \
+           "$HOME/.config/alacritty/colors.toml" "$HOME/.config/zathura/colors" \
            "$HOME/.config/rofi/colors.rasi" "$HOME/.config/hypr/colors.conf" \
            "$HOME/.config/starship.toml"; do
     if [ -s "$gen" ]; then

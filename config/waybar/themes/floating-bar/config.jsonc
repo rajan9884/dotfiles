@@ -23,7 +23,6 @@
     "modules-left": [
         "custom/launcher",
         "custom/record",
-        "custom/voxtype",
         "hyprland/workspaces"
     ],
 
@@ -150,7 +149,7 @@
         "format-off": "󰂲",
         "format-on": "󰂯",
         "format-connected": "󰂱",
-        "on-click": "~/.config/waybar/scripts/bluetooth-menu.sh",
+        "on-click": "foot -e bluetoothctl",
         "on-click-right": "bluetoothctl power toggle",
         "tooltip": true,
         "tooltip-format": "{status}"
