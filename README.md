@@ -230,7 +230,7 @@ The script (one go on a minimal Arch install — packages first, then configs):
 4. Checks the single static look (one Hyprland/Waybar/Rofi style; colors come
    from the wallpaper via matugen)
 5. Installs the single flat wallpaper library into
-   `~/.local/share/wallpapers/Wallpaper` (from the `Wallpaper/` set of the
+   `~/.local/share/wallpapers` (from the `Wallpaper/` set of the
    separate [wallpapers repo](https://github.com/rajan9884/wallpapers))
 6. Links helper scripts from `bin/` into `~/.local/bin` and wires the rofimoji theme
 7. Installs a `pactl`→`wpctl` shim only on PipeWire machines without real
@@ -421,7 +421,7 @@ in about a second.
 
 ## Wallpapers
 
-- Live location: `~/.local/share/wallpapers/Wallpaper/` — one flat library, no
+- Live location: `~/.local/share/wallpapers/` — one flat library, no
   subfolders (XDG data dir — safe from home-dir cleanup; all scripts point here)
 - Source: the `Wallpaper/` set of the separate
   [wallpapers repo](https://github.com/rajan9884/wallpapers) — `install.sh` clones

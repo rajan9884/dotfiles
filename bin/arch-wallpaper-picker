@@ -2,11 +2,11 @@
 # ──────────────────────────────────────────────
 #   arch-wallpaper-picker — quattro-style wallpaper picker.
 #   Horizontal thumbnail carousel over the single flat collection in
-#   ~/.local/share/wallpapers/Wallpaper/; the chosen image is applied
+#   ~/.local/share/wallpapers/; the chosen image is applied
 #   through swww-all.sh (set + matugen palette + reloads).
 # ──────────────────────────────────────────────
 
-WALL_DIR="$HOME/.local/share/wallpapers/Wallpaper"
+WALL_DIR="$HOME/.local/share/wallpapers"
 SWWW_SCRIPT="$HOME/.config/hypr/scripts/swww-all.sh"
 
 [ -d "$WALL_DIR" ] || { echo "Wallpaper directory not found: $WALL_DIR" >&2; exit 1; }

@@ -21,9 +21,10 @@ awww img "$WALLPAPER" --transition-type grow --transition-pos "$(hyprctl cursorp
 printf '%s' "$WALLPAPER" > ~/.cache/current-wallpaper
 (magick "$WALLPAPER" ~/.cache/hyprlock-bg.jpg 2>/dev/null) & disown 2>/dev/null
 
-# 2. Extract colors with Matugen
+# 2. Extract colors with Matugen (tonal-spot: faithful wallpaper hues;
+# content/expressive shift or mute saturation and wash out terminals)
 # This updates colors for Waybar, Rofi, Foot, Hyprland, etc.
-matugen image "$WALLPAPER" --type scheme-content -c ~/.config/matugen/config.toml --source-color-index 0
+matugen image "$WALLPAPER" --type scheme-tonal-spot -c ~/.config/matugen/config.toml --source-color-index 0
 
 # 2.5 Update Chromium/Helium theme
 # matugen rewrites ~/.config/helium-theme/manifest.json but keeps

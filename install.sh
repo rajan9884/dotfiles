@@ -11,7 +11,7 @@
 #     4. Check the single static look (one hypr/waybar/rofi style; colors come
 #        from the wallpaper via matugen — no theme packs).
 #     5. Install the single flat wallpaper library
-#        (~/.local/share/wallpapers/Wallpaper, with offline asset fallback).
+#        (~/.local/share/wallpapers, with offline asset fallback).
 #     6. Symlink ~/.local/bin helpers, rofimoji theme, and systemd user units.
 #     7. pactl shim (PipeWire-only machines, volume OSD backend).
 #     8. Generate the matugen palette from a wallpaper in the library.
@@ -294,12 +294,12 @@ if [ -z "$(ls -A "$WAYBAR_CFG/themes" 2>/dev/null)" ]; then
 fi
 info "waybar presets ok ($(ls "$WAYBAR_CFG/themes" | wc -l) styles)"
 
-# ── 5. Wallpapers → ~/.local/share/wallpapers/Wallpaper ─
+# ── 5. Wallpapers → ~/.local/share/wallpapers ─
 echo
 echo "==> [5/10] Installing single flat wallpaper library"
 WALL_SRC="${WALLPAPER_SOURCE:-$HOME/.local/share/wallpapers-upstream}"
 WALL_REPO="https://github.com/rajan9884/wallpapers.git"
-WALL_DST="$HOME/.local/share/wallpapers/Wallpaper"
+WALL_DST="$HOME/.local/share/wallpapers"
 mkdir -p "$WALL_DST"
 
 if [ -d "$WALL_SRC/.git" ]; then
@@ -574,7 +574,7 @@ for plugin in \
 done
 
 if [ -n "$(ls -A "$WALL_DST" 2>/dev/null)" ]; then
-    info "ok: wallpapers/Wallpaper ($(ls "$WALL_DST" | wc -l) files, flat)"
+    info "ok: wallpapers ($(ls "$WALL_DST" | wc -l) files, flat)"
 else
     fail "EMPTY: $WALL_DST (re-run step 5 or set WALLPAPER_SOURCE)"
     PROBLEMS=$((PROBLEMS + 1))

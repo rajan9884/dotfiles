@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────
 #   Ensure wallpaper is displayed on Hyprland start
-#   (single flat library: ~/.local/share/wallpapers/Wallpaper)
+#   (single flat library: ~/.local/share/wallpapers)
 # ──────────────────────────────────────────────
 
-WALL_DIR="$HOME/.local/share/wallpapers/Wallpaper"
+WALL_DIR="$HOME/.local/share/wallpapers"
 
 # Wait for awww-daemon socket to be ready (up to 3s)
 for i in {1..30}; do

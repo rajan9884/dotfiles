@@ -1,7 +1,7 @@
 -- ── Static decoration (wallpaper-driven) ──
 -- Single fixed look: gaps, rounding, blur, shadow.
 -- Border colors come from matugen (colors.lua), regenerated from
--- the active wallpaper in ~/.local/share/wallpapers/Wallpaper/.
+-- the active wallpaper in ~/.local/share/wallpapers/.
 
 local colors = nil
 pcall(function()

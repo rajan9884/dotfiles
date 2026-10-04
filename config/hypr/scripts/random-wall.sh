@@ -3,10 +3,9 @@
 # ──────────────────────────────────────────────
 #   Random Wallpaper Switcher
 #   Picks from the single flat library
-#   (~/.local/share/wallpapers/Wallpaper).
-# ──────────────────────────────────────────────
+#   (~/.local/share/wallpapers).
 
-WALL_DIR="$HOME/.local/share/wallpapers/Wallpaper"
+WALL_DIR="$HOME/.local/share/wallpapers"
 SCRIPT="$HOME/.config/hypr/scripts/swww-all.sh"
 
 # Select a random image from the wallpaper directory
