@@ -189,7 +189,6 @@ APPS=(
     cliamp
     matugen
     nvim
-    swaync
     gtk-3.0
     gtk-4.0
     fastfetch
@@ -198,7 +197,7 @@ APPS=(
 GENERATED_APPS=(
     ghostty
     helium-theme
-    swaync
+    mako
 )
 
 echo

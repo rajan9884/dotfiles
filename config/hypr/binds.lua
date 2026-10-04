@@ -152,16 +152,10 @@ hl.bind(
 	})
 )
 
--- Notifications (SwayNC) ---------------------------------------------------
-hl.bind("SUPER + comma", hl.dsp.exec_cmd("swaync-client --close-latest"), { locked = true })
-hl.bind("SUPER + SHIFT + comma", hl.dsp.exec_cmd("swaync-client --close-all"), { locked = true })
-hl.bind("SUPER + CTRL + comma", hl.dsp.exec_cmd("swaync-client --toggle-dnd"), { locked = true, description = "Toggle notification silencing" })
-hl.bind("SUPER + ALT + comma", hl.dsp.exec_cmd("swaync-client --toggle-panel"), { locked = true, description = "Notification center" })
-hl.bind(
-	"SUPER + SHIFT + ALT + comma",
-	hl.dsp.exec_cmd(vars.HOME .. "/.config/hypr/scripts/notification-history.sh"),
-	{ locked = true, description = "Notification history" }
-)
+-- Notifications (mako — minimal, no center) ----------------------------------
+hl.bind("SUPER + comma", hl.dsp.exec_cmd("makoctl dismiss"), { locked = true, description = "Dismiss notification" })
+hl.bind("SUPER + SHIFT + comma", hl.dsp.exec_cmd("makoctl dismiss --all"), { locked = true, description = "Dismiss all notifications" })
+hl.bind("SUPER + CTRL + comma", hl.dsp.exec_cmd("makoctl mode -t do-not-disturb"), { locked = true, description = "Toggle notification silencing" })
 
 -- Emoji picker & keybindings cheat sheet (rofi pulls matugen colors)
 hl.bind(mod .. " + period", hl.dsp.exec_cmd(vars.HOME .. "/.local/bin/menu-emoji"))

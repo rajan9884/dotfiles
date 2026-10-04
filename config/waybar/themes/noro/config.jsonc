@@ -23,12 +23,10 @@
     ],
     "modules-right": [
         "tray",
-        "custom/notifications",
         "custom/clipboard",
         "custom/power-profile",
         "battery",
         "custom/wifi",
-        "bluetooth",
         "custom/power"
     ],
     "custom/launcher": {
@@ -121,11 +119,6 @@
         "tooltip": false,
         "interval": 30
     },
-    "bluetooth": {
-        "format": "󰂯",
-        "on-click": "foot -e bluetoothctl",
-        "tooltip": false
-    },
     "custom/power-profile": {
         "exec": "~/.config/waybar/scripts/power-profile.sh",
         "return-type": "text",
@@ -150,13 +143,6 @@
         "interval": 5,
         "on-click": "~/.config/waybar/scripts/wifi-menu.sh",
         "signal": 14,
-        "tooltip": true
-    },
-    "custom/notifications": {
-        "exec": "~/.config/waybar/scripts/notifications.sh",
-        "return-type": "json",
-        "interval": 2,
-        "on-click": "swaync-client -t -sw",
         "tooltip": true
     },
     "custom/power": {

@@ -68,6 +68,7 @@ linux
 linux-firmware
 man-db
 matugen
+mako
 mesa
 meson
 mise
@@ -97,6 +98,7 @@ powertop
 procps-ng
 psmisc
 python
+python-gobject
 qt6-multimedia-ffmpeg
 qt6-virtualkeyboard
 qt6-wayland
@@ -113,7 +115,6 @@ socat
 sof-firmware
 starship
 sudo
-swaync
 swayosd
 tesseract
 tesseract-data-eng

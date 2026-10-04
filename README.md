@@ -40,7 +40,7 @@ https://github.com/user-attachments/assets/18fc7426-f8b7-4349-ae4f-4c4e70d48b56
 | Status bar   | Waybar (15 switchable styles, matugen colors) |
 | Launcher     | Rofi (drun / run / window + menus) |
 | Terminal     | Foot |
-| Notifications| Dunst |
+| Notifications| Mako (minimal, matugen colors, no center) |
 | Shell        | Zsh + Oh My Zsh + autosuggestions |
 | Editor       | Neovim (LazyVim) |
 | Wallpaper    | awww + matugen |
@@ -373,11 +373,9 @@ dotfiles/
 
 | Bind | Action |
 |------|--------|
-| Super+comma | Close last notification |
-| Super+Shift+comma | Close all |
-| Super+CTRL+comma | Pause/resume |
-| Super+ALT+comma | Replay last |
-| Super+Shift+Alt+comma | History in Rofi |
+| Super+comma | Dismiss notification |
+| Super+Shift+comma | Dismiss all |
+| Super+CTRL+comma | Toggle do-not-disturb |
 
 ### Universal clipboard
 

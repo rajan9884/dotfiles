@@ -4,6 +4,7 @@
 #   matugen: config/matugen/templates/alacritty.toml
 #   → ~/.config/alacritty/colors.toml
 # ──────────────────────────────────────────────
+[general]
 import = ["~/.config/alacritty/colors.toml"]
 
 [terminal]

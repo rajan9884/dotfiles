@@ -42,7 +42,6 @@ window#waybar {
 
 #clock,
 #pulseaudio,
-#bluetooth,
 #battery,
 #custom-power,
 #custom-record,
@@ -54,7 +53,6 @@ window#waybar {
 #clock {
     padding-left: 10px;
 }
-
 
 #custom-record {
     color: #ffffff;

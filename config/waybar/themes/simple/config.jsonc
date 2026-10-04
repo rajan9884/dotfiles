@@ -23,7 +23,6 @@
     "modules-right": [
         "tray",
         "pulseaudio",
-        "bluetooth",
         "battery",
         "custom/power"
     ],
@@ -56,13 +55,6 @@
         "on-click": "foot --app-id wiremix -e wiremix"
     },
 
-    "bluetooth": {
-        "format": "󰂯",
-        "format-disabled": "󰂲",
-        "format-connected": "󰂯",
-        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-        "on-click": "foot -e bluetoothctl"
-    },
 
     "battery": {
         "bat": "BAT0",

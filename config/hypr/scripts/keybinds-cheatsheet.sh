@@ -78,11 +78,9 @@ label() {
         *'random-wall.sh'*)                        desc="Random wallpaper" ;;
         *'waybar-selector.sh'*)                    desc="Waybar style selector" ;;
         *'killall -q -SIGUSR1 waybar'*)            desc="Toggle top bar" ;;
-        *'swaync-client --close-latest'*)        desc="Dismiss notification" ;;
-        *'swaync-client --close-all'*)            desc="Dismiss all notifications" ;;
-        *'swaync-client --toggle-dnd'*)           desc="Toggle notification silencing" ;;
-        *'swaync-client --toggle-panel'*)         desc="Notification center" ;;
-        *'notification-history.sh'*)               desc="Notification history" ;;
+        *'makoctl dismiss --all'*)               desc="Dismiss all notifications" ;;
+        *'makoctl dismiss'*)                     desc="Dismiss notification" ;;
+        *'makoctl mode -t do-not-disturb'*)      desc="Toggle notification silencing" ;;
         *'--output-volume raise'*)                 desc="Volume up" ;;
         *'--output-volume lower'*)                 desc="Volume down" ;;
         *'--output-volume mute-toggle'*)           desc="Toggle mute" ;;

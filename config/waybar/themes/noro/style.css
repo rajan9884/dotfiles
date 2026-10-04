@@ -23,7 +23,7 @@ window#waybar {
 /* ── Grouping Strategy ── */
 #clock, #custom-user,
 #workspaces, #custom-launcher,
-#battery, #bluetooth, #custom-power {
+#battery, #custom-power {
     background: @surface; /* DYNAMIC: Based on wallpaper */
     color: @on_surface;    /* DYNAMIC: Based on wallpaper */
     padding: 4px 12px;
@@ -67,7 +67,7 @@ window#waybar {
     animation: pulse 1s infinite;
 }
 /* --- Utility icons (backgroundless, float between the three capsules) --- */
-#custom-notifications, #custom-clipboard,
+#custom-clipboard,
 #custom-power-profile {
     background: transparent;
     color: @on_surface;
@@ -150,12 +150,6 @@ window#waybar {
     padding: 4px 8px;
     margin: 6px 0 6px 30px;
 }
-#bluetooth {
-    background: @primary; /* DYNAMIC */
-    padding-left: 8px;
-    color: @on_primary;    /* DYNAMIC */
-
-}
 #custom-power {
     border-radius: 0 12px 12px 0;
     padding-left: 10px;
@@ -203,9 +197,6 @@ window#waybar {
     animation: pulse 1.5s infinite;
 }
 
-#custom-notifications.has-notifications {
-    color: @tertiary;
-}
 #custom-vpn.vpn-on {
     color: @tertiary;
 }

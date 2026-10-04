@@ -14,7 +14,6 @@
     "modules-center": [
         "clock",
         "hyprland/workspaces",
-        "bluetooth",
         "pulseaudio",
         "battery",
         "custom/power"
@@ -50,12 +49,6 @@
         "on-click": "foot --app-id wiremix -e wiremix"
     },
 
-    "bluetooth": {
-        "format": "󰂯",
-        "format-disabled": "󰂲",
-        "format-connected": "󰂯",
-        "on-click": "foot -e bluetoothctl"
-    },
 
     "battery": {
         "bat": "BAT0",

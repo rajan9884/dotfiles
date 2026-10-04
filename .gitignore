@@ -17,7 +17,7 @@ config/btop/themes/matugen.theme
 config/nvim/lua/matugen-colors.lua
 config/helium-theme/manifest.json
 config/hypr/hyprlock-colors.conf
-config/swaync/style.css
+config/mako/config
 config/gtk-3.0/gtk.css
 config/gtk-4.0/gtk.css
 config/gtk-4.0/gtk-dark.css

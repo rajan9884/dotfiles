@@ -86,7 +86,6 @@ window#waybar {
     
 }
 
-
 #tray {
     padding: 6px 0;
     border-top: 1px solid alpha(@outline, 0.1);
