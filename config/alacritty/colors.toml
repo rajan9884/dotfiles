@@ -3,35 +3,35 @@
 #   Do NOT edit: source is config/matugen/templates/alacritty.toml
 # ──────────────────────────────────────────────
 [colors.primary]
-background = "#131318"
-foreground = "#e4e1e9"
-dim_foreground = "#c7c5d0"
-bright_foreground = "#e4e1e9"
+background = "#0e1513"
+foreground = "#dde4e1"
+dim_foreground = "#bec9c5"
+bright_foreground = "#dde4e1"
 
 [colors.cursor]
-text = "#262b61"
-cursor = "#bdc2ff"
+text = "#003731"
+cursor = "#82d5c7"
 
 [colors.selection]
-text = "#e1e0f9"
-background = "#444559"
+text = "#cce8e2"
+background = "#334b47"
 
 [colors.normal]
-black = "#131318"
+black = "#0e1513"
 red = "#ffb4ab"
-green = "#e7b9d5"
-yellow = "#c4c4dd"
-blue = "#bdc2ff"
-magenta = "#ffd7ef"
-cyan = "#e0e0ff"
-white = "#e4e1e9"
+green = "#adcae5"
+yellow = "#b1ccc6"
+blue = "#82d5c7"
+magenta = "#cce5ff"
+cyan = "#9ef2e3"
+white = "#dde4e1"
 
 [colors.bright]
-black = "#91909a"
+black = "#899390"
 red = "#ffb4ab"
-green = "#e7b9d5"
-yellow = "#c4c4dd"
-blue = "#bdc2ff"
-magenta = "#ffd7ef"
-cyan = "#e0e0ff"
-white = "#c7c5d0"
+green = "#adcae5"
+yellow = "#b1ccc6"
+blue = "#82d5c7"
+magenta = "#cce5ff"
+cyan = "#9ef2e3"
+white = "#bec9c5"

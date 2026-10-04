@@ -192,6 +192,7 @@ APPS=(
     gtk-3.0
     gtk-4.0
     fastfetch
+    xfce4
 )
 
 GENERATED_APPS=(
@@ -498,11 +499,18 @@ if [ -f "$HOME/.config/mimeapps.list" ]; then
     sed -i 's#=org\.gnome\.Evince\.desktop#=org.pwmt.zathura.desktop#g; s#=evince\.desktop#=org.pwmt.zathura.desktop#g' "$HOME/.config/mimeapps.list"
     xdg-mime default org.pwmt.zathura.desktop application/pdf 2>/dev/null || true
     info "PDF MIME type set to org.pwmt.zathura.desktop"
-    sed -i 's#=org\.gnome\.TextEditor\.desktop#=nvim.desktop#g' "$HOME/.config/mimeapps.list"
-    for m in application/json text/x-tex; do
-        xdg-mime default nvim.desktop "$m" 2>/dev/null || true
+    sed -i 's#=org\.gnome\.TextEditor\.desktop#=nvim-foot.desktop#g; s#=nvim\.desktop#=nvim-foot.desktop#g' "$HOME/.config/mimeapps.list"
+    # Neovim needs a terminal: nvim.desktop ships Terminal=true, but GLib only
+    # knows gnome-terminal/mate-terminal/xfce4-terminal/konsole (or
+    # xdg-terminal-exec, not installed) — so Thunar fails with "Unable to find
+    # terminal required". Ship nvim-foot.desktop (Terminal=false, Exec=foot).
+    mkdir -p "$HOME/.local/share/applications"
+    cp -p "$REPO_ROOT/assets/applications/nvim-foot.desktop" "$HOME/.local/share/applications/nvim-foot.desktop"
+    update-desktop-database "$HOME/.local/share/applications" >/dev/null 2>&1 || true
+    for m in application/json text/x-tex text/plain text/markdown; do
+        xdg-mime default nvim-foot.desktop "$m" 2>/dev/null || true
     done
-    info "code/text MIME types set to nvim.desktop"
+    info "code/text MIME types set to nvim-foot.desktop (foot + nvim)"
 fi
 
 # ── 10. Verify EVERYTHING ────────────────────
