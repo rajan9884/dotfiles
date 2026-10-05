@@ -224,8 +224,10 @@ bindsym $mod+Shift+Right exec $swayscripts/swap-directional.sh right
 bindsym $mod+Shift+Up exec $swayscripts/swap-directional.sh up
 # > Swap window down (true position swap, layout-preserving)
 bindsym $mod+Shift+Down exec $swayscripts/swap-directional.sh down
-# > Toggle window floating/tiling
-bindsym $mod+t floating toggle
+# > Toggle window floating/tiling (small centered float; autotiling frozen
+# > during the switch so re-tiling keeps the split orientation instead of
+# > flipping vertical stacks horizontal)
+bindsym $mod+t exec $swayscripts/float-toggle.sh
 # > Pop window out (float + pin)
 bindsym $mod+o exec $swayscripts/popout.sh
 # > Fullscreen
