@@ -2,10 +2,10 @@
 
 ---
 
-# Arch + Hyprland Dotfiles
+# Arch + Sway/SwayFX Dotfiles
 
-A dynamic, wallpaper-driven Hyprland setup for Arch Linux. Change your wallpaper and the
-entire system re-themes itself — Waybar, Rofi, Foot, Hyprland, GTK, Neovim, VS Code,
+A dynamic, wallpaper-driven Sway setup for Arch Linux. Change your wallpaper and the
+entire system re-themes itself — Waybar, Rofi, Foot, Sway, GTK, Neovim, VS Code,
 the browser, notifications, everything — through a Material You color pipeline built on
 [matugen](https://github.com/InioX/matugen).
 
@@ -36,8 +36,8 @@ https://github.com/user-attachments/assets/18fc7426-f8b7-4349-ae4f-4c4e70d48b56
 | Component    | Tool |
 |--------------|------|
 | OS           | Arch Linux (rolling) |
-| Compositor   | Hyprland (Lua config, 0.55+) |
-| Status bar   | Waybar (15 switchable styles, matugen colors) |
+| Compositor   | Sway (SwayFX config — official `sway` works, `swayfx` from AUR enables corner_radius/blur/shadows) |
+| Status bar   | Waybar (2 styles: noro / floating-bar, matugen colors) |
 | Launcher     | Rofi (drun / run / window + menus) |
 | Terminal     | Foot |
 | Notifications| Mako (minimal, matugen colors, no center) |
@@ -45,20 +45,20 @@ https://github.com/user-attachments/assets/18fc7426-f8b7-4349-ae4f-4c4e70d48b56
 | Editor       | Neovim (LazyVim) |
 | Wallpaper    | awww + matugen |
 | OSD          | SwayOSD |
-| Idle/Lock    | hypridle + hyprlock |
+| Idle/Lock    | swayidle + swaylock |
 | System monitor| btop / fastfetch |
 
 The repo is written for a laptop profile (Intel i5-13500H, Iris Xe, 2880x1800@90, 2x scale).
-`config/hypr/hyprland.lua` is modular — it just stitches together `.lua` modules
-(`env`, `input`, `look`, `binds`, etc.), each isolated by `require()`. Monitors,
-environment and defaults live in their own module and are easy to adjust.
+`config/sway/config` is a single documented file (ported from the Void SwayFX setup) —
+monitors, autostart, look & feel, binds and window rules live in clearly marked
+sections, and every `# > <text>` comment feeds the Super+K cheatsheet.
 
 ## Features
 
 - **True dynamic theming** — one keybind (Super+R) changes the wallpaper and regenerates a
   Material You palette that propagates to every app that supports colors, live.
-- **One static look, wallpaper-driven** — a single Hyprland decoration and set of
-  Rofi menus, plus 15 switchable Waybar styles (Super+ALT+W); colors always follow
+- **One static look, wallpaper-driven** — a single Sway decoration and set of
+  Rofi menus, plus 2 Waybar styles (noro / floating-bar, Super+ALT+W); colors always follow
   the active wallpaper via matugen. No system theme packs.
 - **Horizontal thumbnail carousel** — the wallpaper picker (Super+Ctrl+Space) opens an
   instant, centered Rofi carousel of image thumbnails (`image-carousel.rasi`) that you
@@ -76,10 +76,8 @@ environment and defaults live in their own module and are easy to adjust.
 
 Single top bar by default (`config/waybar/config.jsonc` + `style.css`, symlinked
 into one of the presets); its colors come from the wallpaper via matugen
-(`colors.css`). Switch between the 15 styles in `config/waybar/themes/` with
-Super+ALT+W (bottom-dock, cyber-left, dynamic-island, floating-bar, glass-left,
-glass-right, gnome-left, island, mac, minimal-left, modern-left, noro, pill,
-retro-left, simple). Toggle bar visibility with Super+Shift+Space.
+(`colors.css`). Switch between the 2 styles in `config/waybar/themes/` with
+Super+ALT+W (noro, floating-bar). Toggle bar visibility with Super+Shift+Space.
 
 ---
 
@@ -147,26 +145,26 @@ retro-left, simple). Toggle bar visibility with Super+Shift+Space.
 > | File | Shows |
 > |------|-------|
 > | ![LazyVim](screenshots/nvim.webp) | Neovim (LazyVim, matugen colors) |
-> | ![Screenlock](screenshots/lockscreen.webp) | hyprlock screen |
+> | ![Screenlock](screenshots/lockscreen.webp) | swaylock screen |
 
 ## Requirements
 
 ### Base system
 
 - A working Arch Linux install (any arch-based distro works, scripts assume `pacman`/`yay`)
-- Hyprland 0.55+ (the config uses the new Lua API)
+- Sway (official repo; `swayfx` from AUR unlocks the corner_radius/blur/shadows directives)
 
 ### Packages
 
 Core (pacman):
 
 ```
-hyprland hypridle hyprlock waybar rofi foot swayosd
+sway swaybg swayidle swaylock autotiling waybar rofi foot swayosd
 awww matugen fastfetch btop
 grim slurp wl-clipboard cliphist hyprpicker wf-recorder satty
 brightnessctl pamixer playerctl networkmanager
-polkit-gnome xdg-desktop-portal-hyprland
-nautilus wiremix tmux fzf starship
+polkit-gnome xdg-desktop-portal-wlr xdg-desktop-portal-gtk
+thunar wiremix tmux fzf starship
 zsh-autosuggestions zsh-syntax-highlighting zsh-completions
 ```
 
@@ -182,7 +180,7 @@ qt5ct
 From AUR (yay) — *only* these are required on top of `install.sh`:
 
 ```
-yay -S yay-bin cloudflare-warp-bin cliamp-bin   # AUR helper + personal VPN + music player
+yay -S yay-bin cloudflare-warp-bin cliamp-bin swayfx   # AUR helper + personal VPN + music player + SwayFX compositor
 ```
 
 > Note: `install.sh` deliberately installs official-repo packages only.
@@ -222,12 +220,12 @@ cd ~/dotfiles
 The script (one go on a minimal Arch install — packages first, then configs):
 
 1. Installs packages: bootstraps `archlinux-keyring`/`git`/`base-devel`, then every
-   missing package from `pkglist/native.txt` (official pacman repos, incl. hyprland, waybar, matugen)
+   missing package from `pkglist/native.txt` (official pacman repos, incl. sway, waybar, matugen)
 2. Backs up any existing config dirs it replaces (into `~/.config-backup-<timestamp>`)
    and symlinks every app config from `config/` into `~/.config/`
 3. Symlinks shell files (`zshrc`, `bashrc`, `gitconfig`) into `$HOME` and
    `starship.toml` into `~/.config/starship.toml`
-4. Checks the single static look (one Hyprland/Waybar/Rofi style; colors come
+4. Checks the single static look (one Sway/Waybar/Rofi style; colors come
    from the wallpaper via matugen)
 5. Installs the single flat wallpaper library into
    `~/.local/share/wallpapers` (from the `Wallpaper/` set of the
@@ -244,7 +242,7 @@ Re-running is safe: symlinks are refreshed, real files are backed up, nothing is
 
 ## Post-install
 
-1. Log out and log back in selecting the **Hyprland** session.
+1. Log out and log back in selecting the **Sway** session (or run `start-sway` on TTY1).
 2. Press `Super+K` any time for a keybind cheatsheet.
 3. First Neovim launch will install plugins (LazyVim extras: Go, Markdown, JSON).
 4. Set your browser theme via the pywalfox extension if you use Firefox/Brave.
@@ -260,22 +258,18 @@ dotfiles/
 ├── scripts/
 │   └── systemd/                # optional system services (powertop)
 ├── config/
-│   ├── hypr/
-│   │   ├── hyprland.lua        # entry: requires the modules below
-│   │   ├── vars.lua            # shared command strings (terminal, browser, mod, ...)
-│   │   ├── env.lua             # monitors + environment variables
-│   │   ├── input.lua           # keyboard / mouse / touchpad
-│   │   ├── autostart.lua       # startup applications
-│   │   ├── look.lua            # animations, layouts, misc / render / debug
-│   │   ├── binds.lua           # keybindings
-│   │   ├── window-rules.lua    # window rules
-│   │   ├── hypridle.conf       # idle: lock 300s, display off 360s
-│   │   ├── hyprlock.conf       # lock screen (clock + date + input)
-│   │   ├── scripts/            # helper scripts (wallpaper, windows, media)
+│   ├── sway/
+│   │   ├── config              # sway/swayfx entry (monitors, autostart, look, binds, rules)
+│   │   ├── colors              # matugen-generated palette (do not edit)
+│   │   ├── swayidle.conf       # idle: dim 150s, lock 180s, off 240s, suspend 600s
+│   │   ├── swaylock-config     # lock screen (matugen-generated)
+│   │   ├── scripts/            # helper scripts (wallpaper, windows, media, portals)
+│   ├── mako/                   # notification daemon (static config + matugen colors)
+│   ├── xdg-desktop-portal/     # portal routing (wlr screencast/screenshot, gtk files, gnome-keyring secret)
 │   ├── waybar/
 │   │   ├── modules.jsonc        # shared module definitions
 │   │   ├── scripts/             # wifi/bt/power menus, recorder, vpn...
-│   │   └── themes/              # 15 waybar styles (switch with Super+ALT+W)
+│   │   └── themes/              # 2 waybar styles (noro, floating-bar — Super+ALT+W)
 │   ├── rofi/
 │   │   ├── config.rasi          # drun/run/window launcher
 │   │   ├── theme.rasi           # dmenu-style picker (matugen colored)
@@ -308,9 +302,9 @@ dotfiles/
 | Super+Shift+Alt+B | Private browser window |
 | Super+Shift+N | Editor (foot + nvim) |
 | Super+Alt+Return | Terminal with tmux |
-| Super+Shift+F | File manager (nautilus) |
-| Super+W | Close window (graceful) |
-| Super+CTRL+L | Lock (hyprlock) |
+| Super+Shift+F / Super+E | File manager (Thunar) |
+| Super+W / Super+Q | Close window (graceful) |
+| Super+CTRL+L | Lock (swaylock) |
 | Super+Escape | Power menu |
 | Super+K | Keybind cheatsheet |
 
@@ -320,7 +314,7 @@ dotfiles/
 |------|--------|
 | Super+R | Random wallpaper (full re-theme) |
 | Super+CTRL+Space | Wallpaper picker |
-| Super+ALT+W | Waybar style selector (15 styles) |
+| Super+ALT+W | Waybar style toggle (noro / floating-bar) |
 | Super+period | Emoji picker |
 | Super+CTRL+E | Emoji/symbol alt |
 | Super+CTRL+Q | Calculator |
@@ -336,10 +330,10 @@ dotfiles/
 | Super+F / Super+ALT+F | Fullscreen / maximized |
 | Super+S | Toggle scratchpad |
 | Super+ALT+S | Send to scratchpad |
-| Super+G | Toggle group |
-| Super+ALT+G | Move out of group |
-| Super+ALT+arrows | Move into group |
-| Super+J | Toggle split layout (dwindle/master) |
+| Super+G | Toggle tabbed group |
+| Super+ALT+G | Move window out of group |
+| Super+ALT+arrows | Split horizontal/vertical |
+| Super+J | Toggle split layout |
 | Super+TAB / Super+Shift+TAB | Next / previous workspace |
 | Super+1..0 | Workspace 1-10 |
 | Super+Shift+1..0 | Move window to workspace |
@@ -348,8 +342,8 @@ dotfiles/
 | Super+Shift+BACKSPACE | Toggle gaps |
 | Super+Home | Restore saved window size |
 | Super+ALT+Home | Save window size |
-| Super+SLASH / Super+ALT+SLASH | Monitor scale up / down |
-| Super+CTRL+Z / reset | Cursor zoom in / reset |
+| Super+SLASH | Keybind cheatsheet (also Super+K) |
+| Super+CTRL+ALT+Up/Down | Monitor scale up / down |
 
 ### Screenshots & media
 
@@ -392,17 +386,17 @@ The pipeline, in one line:
 wallpaper -> awww (set) -> matugen (palette) -> 21 templates -> every app
 ```
 
-1. **`swww-all.sh <image>`** is the entrypoint (used by every wallpaper script).
-2. It sets the wallpaper with a "grow" transition from the cursor position.
-3. It runs `matugen image <image> -c ~/.config/matugen/config.toml` which renders the
-   20 templates in `config/matugen/templates/` into live config files:
-   `~/.config/waybar/colors.css`, `~/.config/hypr/colors.lua`, `~/.config/foot/colors.ini`,
+1. **`sway-wall.sh <image>`** is the entrypoint (used by every wallpaper script).
+2. It sets the wallpaper via awww and runs `matugen image <image> -c ~/.config/matugen/config.toml` which renders the
+   templates in `config/matugen/templates/` into live config files:
+   `~/.config/waybar/colors.css`, `~/.config/sway/colors`, `~/.config/sway/swaylock-config`,
+   `~/.config/foot/colors.ini`, `~/.config/mako/colors`,
    GTK css, `~/.config/fastfetch/config.jsonc`,
    `~/.config/nvim/lua/matugen-colors.lua`,
-   `~/.config/ghostty/config.ghostty`, swayosd css, btop theme, VS Code colors, a
+   `~/.config/ghostty/config`, swayosd css, btop theme, VS Code colors, a
    Brave/Firefox browser theme, and more.
-4. It then pokes each app to reload: `killall -SIGUSR2 waybar`, `killall -SIGUSR1 foot`
-   (and nvim), `hyprctl reload`, restart swayosd, refresh pywalfox.
+3. It then pokes each app to reload: `killall -SIGUSR2 waybar`, swaymsg reload,
+   makoctl reload, restart swayosd, refresh pywalfox.
 
 Because the *generated* files live on disk but are gitignored, a fresh install boots with
 the palette the install script generated — and any wallpaper change re-themes everything
@@ -410,9 +404,9 @@ in about a second.
 
 ### Static look + wallpaper colors
 
-- The **static look** is fixed: `config/hypr/theme.lua` (decoration, gaps, borders)
+- The **static look** is fixed: `config/sway/config` (gaps, borders, swayfx effects)
   and the Rofi styles (`config/rofi/active-*.rasi`, `image-carousel.rasi`, ...).
-- **Waybar has 15 switchable styles** (`config/waybar/themes/<name>`, Super+ALT+W);
+- **Waybar has 2 switchable styles** (`config/waybar/themes/<name>`, Super+ALT+W);
   whichever is active gets its colors from the wallpaper the same way.
 - **Colors always follow the wallpaper**: any wallpaper change runs matugen and
   re-tints every app. There are no theme packs or style switchers.
@@ -430,10 +424,10 @@ in about a second.
 
 | Want to change | Edit |
 |----------------|------|
-| Monitor, scale, refresh | `config/hypr/env.lua` — `hl.monitor(...)` |
-| Terminal/browser/file manager | `config/hypr/vars.lua` — "shared command strings" |
+| Monitor, scale, refresh | `config/sway/config` — `output ...` section |
+| Terminal/browser/file manager | `config/sway/config` — `$term`, `$browser`, `$file` variables |
 | Fonts | `config/foot/foot.ini`, `config/waybar/style.css` |
-| Idle timings | `config/hypr/hypridle.conf` |
+| Idle timings | `config/sway/swayidle.conf` |
 | Which apps get themed | `config/matugen/config.toml` |
 | Colors of a given app | matching template in `config/matugen/templates/` |
 
@@ -444,8 +438,7 @@ in about a second.
 - **Waybar didn't reload** — `killall -SIGUSR2 waybar` or just restart waybar.
 - **Rofi shows wrong colors** — the `active-*.rasi` files live in `~/.config/rofi/`;
   re-run `./install.sh` to re-check them (they are tracked real files now).
-- **GTK apps don't recolor** — GTK4 apps read css at launch; restart the app (nautilus is
-  auto-restarted by the script when open).
+- **GTK apps don't recolor** — GTK4 apps read css at launch; restart the app.
 - **Keys like XF86TouchpadToggle don't work** — check your laptop's Fn-lock; binds are on
   the raw XF86 symbols.
 - **Everything is broken after install** — your old configs are in
@@ -453,7 +446,7 @@ in about a second.
 
 ## Credits
 
-- [Hyprland](https://hyprland.org) — the compositor
+- [Sway](https://swaywm.org) / [SwayFX](https://github.com/WillPower3309/swayfx) — the compositor
 - [matugen](https://github.com/InioX/matugen) — Material You color generation
 - [LazyVim](https://www.lazyvim.org) — Neovim distribution
 - [Oh My Zsh](https://ohmyz.sh) + zsh-autosuggestions

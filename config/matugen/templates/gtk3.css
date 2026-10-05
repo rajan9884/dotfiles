@@ -14,7 +14,7 @@
 }
 
 .thunar headerbar {
-    background-color: {{colors.surface_container.default.hex}};
+    background-color: {{colors.surface.default.hex}};
     border-bottom: 1px solid {{colors.outline_variant.default.hex}};
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
@@ -48,9 +48,10 @@
     color: {{colors.on_primary_container.default.hex}};
 }
 
-/* Floating rounded sidebar rows (Nautilus-style) */
+/* Floating rounded sidebar rows (Nautilus-style) — same surface as the
+   file view so sidebar, address bar and content read as one canvas */
 .thunar placessidebar, .thunar .sidebar {
-    background-color: {{colors.surface_container_low.default.hex}};
+    background-color: {{colors.surface.default.hex}};
     padding: 8px 6px;
 }
 
@@ -61,12 +62,12 @@
 }
 
 .thunar placessidebar row:selected {
-    background-color: alpha({{colors.primary.default.hex}}, 0.22);
-    color: {{colors.on_surface.default.hex}};
+    background-color: {{colors.primary_container.default.hex}};
+    color: {{colors.on_primary_container.default.hex}};
 }
 
 .thunar placessidebar row:selected image {
-    color: {{colors.primary.default.hex}};
+    color: {{colors.on_primary_container.default.hex}};
 }
 
 /* Roomy file view */
@@ -201,11 +202,372 @@ menu separator, popover separator {
     margin: 6px 8px;
 }
 
-/* Buttons */
+/* ── Popups, menus, dialogs (Thunar properties, Open-With, …) ──
+   Dialogs are their own toplevel windows: without an explicit window
+   background plus raised buttons they keep the theme's light gray.
+   Class variants included (.menu/.menuitem/window.popup) since popup
+   nodes don't always carry the plain element names. */
+
+/* Toplevel window + dialog canvas */
+window, dialog, messagedialog, .background {
+    background-color: {{colors.surface.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    border-color: {{colors.outline_variant.default.hex}};
+}
+
+window.popup {
+    background-color: {{colors.surface_container.default.hex}};
+    background-image: none;
+    border: 1px solid {{colors.outline_variant.default.hex}};
+    border-radius: 12px;
+}
+
+/* Raised buttons (dialog action areas, choosers) — flat toolbar
+   buttons in Thunar keep their transparent rules above */
 button {
+    background-color: {{colors.surface_container_high.default.hex}};
+    background-image: none;
+    border: 1px solid {{colors.outline_variant.default.hex}};
+    border-radius: 10px;
+    padding: 5px 12px;
     color: {{colors.on_surface.default.hex}};
 }
 
 button:hover {
     background-color: alpha({{colors.primary.default.hex}}, 0.12);
+    background-image: none;
+    border-color: {{colors.primary.default.hex}};
+}
+
+button:checked {
+    background-color: {{colors.primary_container.default.hex}};
+    background-image: none;
+    color: {{colors.on_primary_container.default.hex}};
+    border-color: transparent;
+}
+
+button:disabled {
+    background-color: {{colors.surface_container.default.hex}};
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+/* Context menus, menu bars, combo popups */
+menu, .menu, context-menu, menubar,
+window.popup menu, combobox window.popup {
+    background-color: {{colors.surface_container.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    border: 1px solid {{colors.outline_variant.default.hex}};
+    border-radius: 12px;
+    padding: 6px;
+}
+
+menuitem, .menuitem, menu menuitem, menubar menuitem,
+popover modelbutton {
+    background-color: transparent;
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+}
+
+menuitem:hover, .menuitem:hover, menu menuitem:hover,
+menubar menuitem:hover, popover modelbutton:hover {
+    background-color: {{colors.primary.default.hex}};
+    background-image: none;
+    color: {{colors.on_primary.default.hex}};
+}
+
+menuitem:disabled, .menuitem:disabled {
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+menuitem arrow, .menuitem arrow {
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+menuitem:hover arrow {
+    color: {{colors.on_primary.default.hex}};
+}
+
+menu separator, .menu separator {
+    background-color: {{colors.outline_variant.default.hex}};
+    background-image: none;
+    min-height: 1px;
+    margin: 6px 8px;
+}
+
+/* Tooltips */
+tooltip, tooltip.background, .tooltip {
+    background-color: {{colors.surface_container.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    border: 1px solid {{colors.outline_variant.default.hex}};
+    border-radius: 8px;
+}
+
+/* Notebooks (properties dialog tabs) — generic, all apps */
+notebook, notebook header {
+    background-color: {{colors.surface.default.hex}};
+    background-image: none;
+    border: none;
+}
+
+/* Notebook pages: the stack holding tab content keeps the theme's
+   light fill unless pinned (white Properties body) */
+notebook stack, notebook viewport,
+.thunar notebook stack, dialog notebook stack {
+    background-color: {{colors.surface.default.hex}};
+    background-image: none;
+    border: none;
+}
+
+notebook tab {
+    background-color: transparent;
+    background-image: none;
+    color: {{colors.on_surface_variant.default.hex}};
+    border: none;
+    border-radius: 10px 10px 0 0;
+    padding: 6px 12px;
+}
+
+notebook tab:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.08);
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+}
+
+notebook tab:checked {
+    background-color: {{colors.surface_container_high.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    border-radius: 10px 10px 0 0;
+}
+
+/* Lists (Open-With app list, places) */
+list {
+    background-color: {{colors.surface.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+}
+
+list row {
+    background-color: transparent;
+    background-image: none;
+    padding: 4px 8px;
+}
+
+list row:selected {
+    background-color: {{colors.primary_container.default.hex}};
+    background-image: none;
+    color: {{colors.on_primary_container.default.hex}};
+    border-radius: 8px;
+}
+
+/* Column headers + frames/scales inside dialogs */
+treeview header button, column-header button {
+    background-color: {{colors.surface_container.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    border: none;
+}
+
+frame, .frame {
+    background-color: transparent;
+    background-image: none;
+    border-color: {{colors.outline_variant.default.hex}};
+}
+
+progressbar trough {
+    background-color: {{colors.surface_container_high.default.hex}};
+    background-image: none;
+    border-radius: 999px;
+}
+
+progressbar progress {
+    background-color: {{colors.primary.default.hex}};
+    background-image: none;
+    border-radius: 999px;
+}
+
+/* ── Thunar hard overrides (beat adw-gtk3-dark) ──────────────
+   adw-gtk3-dark paints its own background-image gradients on entries,
+   sidebars, pathbar and buttons — a bare background-color hides UNDER
+   them, which is why the location entry stays white and the sidebar
+   stays theme-gray. Every rule below clears background-image and pins
+   matugen colors, .thunar-prefixed so it outranks theme selectors. */
+
+/* Location entry (Ctrl+L), rename entry, search — same surface as the
+   file view; the primary focus ring + crumb pill carry the accent.
+   Unprefixed mirrors cover every GTK3 app consistently. */
+.thunar entry, window.thunar entry, entry {
+    background-color: {{colors.surface.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    caret-color: {{colors.primary.default.hex}};
+    border: 1px solid {{colors.outline_variant.default.hex}};
+    border-radius: 10px;
+    padding: 6px 10px;
+}
+
+.thunar entry:focus, entry:focus {
+    border-color: {{colors.primary.default.hex}};
+}
+
+.thunar entry selection, entry selection {
+    background-color: {{colors.primary.default.hex}};
+    color: {{colors.on_primary.default.hex}};
+}
+
+.thunar entry image, entry image {
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+.thunar entry image:hover, entry image:hover {
+    color: {{colors.primary.default.hex}};
+}
+
+.thunar entry:disabled, entry:disabled {
+    background-color: {{colors.surface_container.default.hex}};
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+/* Pathbar breadcrumbs + scroll arrows — every state explicit */
+.thunar .path-bar button, .thunar .linked button,
+.thunar .path-bar .slider-button {
+    background-color: transparent;
+    background-image: none;
+    border-color: transparent;
+    color: {{colors.on_surface.default.hex}};
+}
+
+.thunar .path-bar button:hover, .thunar .linked button:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.12);
+    background-image: none;
+}
+
+.thunar .path-bar button:checked, .thunar .linked button:checked {
+    background-color: {{colors.primary_container.default.hex}};
+    background-image: none;
+    color: {{colors.on_primary_container.default.hex}};
+}
+
+/* Sidebar — every layer, same surface as the file view (one canvas).
+   Unprefixed mirrors included: they guarantee coverage even where the
+   window/widget path doesn't carry the .thunar class. */
+.thunar placessidebar, .thunar placessidebar viewport,
+.thunar placessidebar scrolledwindow, .thunar placessidebar list,
+.thunar .sidebar, .thunar .sidebar viewport,
+placessidebar, placessidebar viewport,
+placessidebar scrolledwindow, placessidebar list,
+.sidebar, .sidebar viewport {
+    background-color: {{colors.surface.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    border: none;
+}
+
+/* Catch-all for anything nested inside the sidebar (inner boxes, stacks,
+   separators) so no theme-gray floats above the canvas. Specific row,
+   hover and scrollbar rules below outrank this and repaint on top. */
+.thunar placessidebar viewport *,
+.thunar .sidebar *,
+placessidebar viewport *,
+.sidebar * {
+    background-color: {{colors.surface.default.hex}};
+    background-image: none;
+    border-color: {{colors.outline_variant.default.hex}};
+}
+
+.thunar placessidebar scrollbar slider,
+placessidebar scrollbar slider {
+    background-color: {{colors.outline.default.hex}};
+    background-image: none;
+    border-radius: 10px;
+}
+
+.thunar placessidebar row, .thunar .sidebar row,
+placessidebar row, .sidebar row {
+    background-color: transparent;
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin: 1px 4px;
+}
+
+.thunar placessidebar row:hover, .thunar .sidebar row:hover,
+placessidebar row:hover, .sidebar row:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.08);
+    background-image: none;
+}
+
+.thunar placessidebar row:selected, .thunar .sidebar row:selected {
+    background-color: {{colors.primary_container.default.hex}};
+    background-image: none;
+    color: {{colors.on_primary_container.default.hex}};
+}
+
+.thunar placessidebar row:selected image {
+    color: {{colors.primary.default.hex}};
+}
+
+.thunar placessidebar row image {
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+/* Details-view column headers */
+.thunar treeview header button, .thunar column-header button {
+    background-color: {{colors.surface_container.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+    border: none;
+}
+
+.thunar treeview header button:hover {
+    background-color: {{colors.surface_container_high.default.hex}};
+    background-image: none;
+}
+
+/* Tabs */
+.thunar notebook, .thunar notebook header {
+    background-color: {{colors.surface.default.hex}};
+    background-image: none;
+    border: none;
+}
+
+.thunar notebook tab {
+    background-color: transparent;
+    background-image: none;
+    color: {{colors.on_surface_variant.default.hex}};
+    border: none;
+    border-radius: 10px 10px 0 0;
+    padding: 6px 12px;
+}
+
+.thunar notebook tab:checked {
+    background-color: {{colors.surface_container_high.default.hex}};
+    background-image: none;
+    color: {{colors.on_surface.default.hex}};
+}
+
+/* Toolbar / headerbar buttons — flat, no theme gradient */
+.thunar toolbar button, .thunar headerbar button {
+    background-color: transparent;
+    background-image: none;
+    border-color: transparent;
+    color: {{colors.on_surface.default.hex}};
+}
+
+.thunar toolbar button:hover, .thunar headerbar button:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.12);
+    background-image: none;
+}
+
+.thunar toolbar, window.thunar toolbar, .thunar headerbar,
+.thunar statusbar {
+    background-image: none;
 }

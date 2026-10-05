@@ -9,4 +9,8 @@ else
   CMD="$HOME/.local/bin/webapp-remove $*"
 fi
 
-exec foot --app-id webapp-install -e bash -c "$CMD; echo; echo 'Press Enter to close...'; read -r"
+if command -v alacritty &>/dev/null; then
+  exec alacritty --class=webapp-remove -e bash -c "$CMD; echo; echo 'Press Enter to close...'; read -r"
+else
+  exec foot --app-id=webapp-remove -e bash -c "$CMD; echo; echo 'Press Enter to close...'; read -r"
+fi

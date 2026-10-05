@@ -2,9 +2,13 @@
 # repositories setup). Install these manually after a fresh setup to match a
 # fully-configured machine:
 #
-#   sudo pacman -S --needed yay && yay -S yay-bin cloudflare-warp-bin cliamp-bin
+#   sudo pacman -S --needed yay && yay -S yay-bin cloudflare-warp-bin cliamp-bin swayfx
 #
 # yay-bin              AUR helper used by optional scripts/tooling
 # cloudflare-warp-bin  Cloudflare WARP VPN (personal use)
 # cliamp-bin           Terminal music player (config via config/cliamp/, folder
 #                      playlists auto-generated from ~/Music by install.sh)
+# swayfx               SwayFX compositor (sway fork with corner_radius/blur/
+#                      shadows/dim_inactive — config/sway/config targets it;
+#                      official `sway` from native.txt works as fallback but
+#                      errors on the fx directives)

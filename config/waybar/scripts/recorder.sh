@@ -3,7 +3,7 @@
 set -euo pipefail
 
 if [[ "${1:-}" == "toggle" ]]; then
-	exec ~/.config/hypr/scripts/screen-record.sh
+	exec ~/.config/sway/scripts/screen-record.sh
 fi
 
 if pgrep -x wf-recorder >/dev/null; then

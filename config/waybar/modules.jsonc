@@ -5,7 +5,7 @@
         "format-icons": {
             "default": ["󰕿", "󰖀", "󰕾"]
         },
-        "on-click": "foot --app-id wiremix -e wiremix"
+        "on-click": "alacritty --class=pulsemixer -e pulsemixer"
     },
 
     "battery": {
@@ -43,14 +43,12 @@
         "align": 0.5
     },
 
-    "custom/caffeine": {
-        "exec": "~/.config/waybar/scripts/caffeine.sh",
+    "custom/voxtype": {
+        "exec": "~/.config/waybar/scripts/voxtype.sh",
         "return-type": "json",
-        "interval": 5,
-        "signal": 8,
-        "on-click": "~/.config/waybar/scripts/caffeine.sh toggle",
-        "on-click-right": "~/.config/waybar/scripts/caffeine.sh toggle",
-        "tooltip": true
+        "interval": 2,
+        "on-click": "voxtype record stop",
+        "align": 0.5
     },
 
     "custom/group": {
@@ -74,6 +72,24 @@
         "tooltip": true
     },
 
+    "custom/notifications": {
+        "exec": "~/.config/waybar/scripts/notifications.sh",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 15,
+        "on-click": "~/.config/sway/scripts/mako-dnd.sh toggle",
+        "on-click-right": "makoctl dismiss -a",
+        "tooltip": true
+    },
+
+    "custom/idle": {
+        "exec": "~/.config/waybar/scripts/idle-inhibit.sh",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 13,
+        "on-click": "~/.config/sway/scripts/idle-toggle.sh",
+        "tooltip": true
+    },
 
     "mpris": {
         "format": "{player_icon} {dynamic}",

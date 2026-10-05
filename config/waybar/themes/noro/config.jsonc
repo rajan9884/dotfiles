@@ -12,25 +12,29 @@
     "modules-left": [
         "custom/launcher",
         "custom/record",
+        "custom/voxtype",
         "clock",
         "custom/user"
     ],
     "modules-center": [
-        "hyprland/workspaces",
+        "sway/workspaces",
         "backlight",
         "pulseaudio",
         "custom/group"
     ],
     "modules-right": [
         "tray",
+        "custom/notifications",
+        "custom/idle",
         "custom/clipboard",
         "custom/power-profile",
         "battery",
         "custom/wifi",
+        "bluetooth",
         "custom/power"
     ],
     "custom/launcher": {
-        "format": "",
+        "format": "",
         "on-click": "rofi -show drun",
         "tooltip": false
     },
@@ -39,6 +43,12 @@
         "return-type": "json",
         "interval": 2,
         "on-click": "~/.config/waybar/scripts/recorder.sh toggle"
+    },
+    "custom/voxtype": {
+        "exec": "~/.config/waybar/scripts/voxtype.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "voxtype record stop"
     },
     "tray": {
         "icon-size": 18,
@@ -56,12 +66,12 @@
         "tooltip": false
     },
     // ── Workspaces ────────────────────────────────
-    "hyprland/workspaces": {
+    "sway/workspaces": {
         "format": "{icon}",
         "on-click": "activate",
 "format-icons": {
         "1": "󰖟",
-        "2": "󰆍",
+        "2": "󰍍",
         "3": "󰉋",
         "4": "󰨞",
         "5": "5",
@@ -69,25 +79,32 @@
         "7": "7",
         "8": "8",
         "9": "9",
-        "10": "10",
-        "default": "󰊠",
-        "empty": "󰊠"
+        "10": "10"
     },
         "persistent-workspaces": {
-            "*": 4
+            "1": ["eDP-1"],
+            "2": ["eDP-1"],
+            "3": ["eDP-1"],
+            "4": ["eDP-1"]
         }
     },
     "backlight": {
+        "device": "intel_backlight",
         "format": "{icon} {percent}%",
         "format-icons": [
             "󰃞",
             "󰃟",
             "󰃠"
         ],
+        "on-scroll-up": "brightnessctl set 5%+ >/dev/null",
+        "on-scroll-down": "brightnessctl set 5%- >/dev/null",
         "tooltip": false
     },
     "pulseaudio": {
         "format": "{icon} {volume}%",
+        "format-muted": "󰖁 Muted",
+        "format-bluetooth": "{icon} {volume}%",
+        "format-bluetooth-muted": "󰖁 Muted",
         "format-icons": {
             "default": [
                 "󰕿",
@@ -95,7 +112,9 @@
                 "󰕾"
             ]
         },
-        "on-click": "foot --app-id wiremix -e wiremix",
+        "scroll-step": 5,
+        "on-click": "alacritty --class=pulsemixer -e pulsemixer",
+        "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
         "tooltip": false
     },
     "battery": {
@@ -118,6 +137,17 @@
         ],
         "tooltip": false,
         "interval": 30
+    },
+    "bluetooth": {
+        "format": "󰂯",
+        "format-disabled": "󰂲",
+        "format-off": "󰂲",
+        "format-on": "󰂯",
+        "format-connected": "󰂱",
+        "on-click": "~/.config/waybar/scripts/bluetooth-menu.sh",
+        "on-click-right": "bluetoothctl power toggle",
+        "tooltip": true,
+        "tooltip-format": "{status}"
     },
     "custom/power-profile": {
         "exec": "~/.config/waybar/scripts/power-profile.sh",
@@ -143,6 +173,23 @@
         "interval": 5,
         "on-click": "~/.config/waybar/scripts/wifi-menu.sh",
         "signal": 14,
+        "tooltip": true
+    },
+    "custom/notifications": {
+        "exec": "~/.config/waybar/scripts/notifications.sh",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 15,
+        "on-click": "~/.config/sway/scripts/mako-dnd.sh toggle",
+        "on-click-right": "makoctl dismiss -a",
+        "tooltip": true
+    },
+    "custom/idle": {
+        "exec": "~/.config/waybar/scripts/idle-inhibit.sh",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 13,
+        "on-click": "~/.config/sway/scripts/idle-toggle.sh",
         "tooltip": true
     },
     "custom/power": {

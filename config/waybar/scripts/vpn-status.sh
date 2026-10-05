@@ -5,7 +5,7 @@
 # ──────────────────────────────────────────────
 set -euo pipefail
 
-active="$(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null | grep -iE ':(vpn|wireguard)$' | cut -d: -f1 | head -n 1 || true)"
+active="$(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null | grep -iE ':(vpn|wireguard|tun)$' | cut -d: -f1 | head -n 1 || true)"
 
 if [ -n "${active:-}" ]; then
     jq -cn --arg name "$active" '{text: ("󰖂 " + $name), tooltip: ("VPN connected: " + $name), class: "vpn-on"}'

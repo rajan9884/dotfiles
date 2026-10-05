@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Night light via hyprsunset (Hyprland-native gamma control).
-# Bound to SUPER+CTRL+N. Toggle: warm 4000K on, identity off.
+# Night light toggle — hyprsunset on Hyprland, wlsunset on sway.
 set -euo pipefail
+if [ -n "${SWAYSOCK:-}" ] || ! command -v hyprsunset >/dev/null 2>&1; then
+  exec "$HOME/.config/sway/scripts/night-light.sh"
+fi
 if pgrep -x hyprsunset >/dev/null; then
   pkill -x hyprsunset
   notify-send "Night Light" "Disabled"

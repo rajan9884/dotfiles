@@ -2,7 +2,12 @@
 #
 # Executed by zsh for login shells.
 
-# Autostart Hyprland on tty1 login
+# ~/.local/bin carries start-sway + repo helpers. The login PATH from
+# agetty/login does NOT include it, and .zshrc (which adds it) never runs
+# when we exec below — so set it here first, and exec by absolute path.
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
+
+# Autostart Sway on tty1 login
 if [ -z "$WAYLAND_DISPLAY" ] && { [ "$XDG_VTNR" = 1 ] || [ "$(tty 2>/dev/null)" = "/dev/tty1" ]; }; then
-    exec start-hyprland
+    exec "$HOME/.local/bin/start-sway"
 fi

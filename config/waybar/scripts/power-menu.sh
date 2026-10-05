@@ -67,24 +67,24 @@ handle_selection() {
 
     case "$choice" in
         "$I_LOCK  Lock")
-            hyprlock & ;;
+            swaylock & ;;
 
         "$I_LOGOUT  Logout")
             if confirm_action "logout"; then
-                hyprctl dispatch "hl.dsp.exit()"
+                swaymsg exit
             fi ;;
 
         "$I_SLEEP  Sleep (suspend)")
             if confirm_action "suspend"; then
-                systemctl suspend
+                loginctl suspend
             fi ;;
 
         "$I_REBOOT  Reboot")
-            systemctl reboot ;;
+            loginctl reboot ;;
 
         "$I_SHUTDOWN  Shutdown")
             if confirm_action "shutdown"; then
-                systemctl poweroff
+                loginctl poweroff
             fi ;;
 
         *) notify "Nothing selected" "Pick a power action" ;;

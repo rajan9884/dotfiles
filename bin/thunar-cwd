@@ -2,51 +2,21 @@
 # Open Thunar in the active terminal's current working directory.
 set -euo pipefail
 
-terminal_pid=$(hyprctl activewindow | awk '/pid:/ {print $2}')
+terminal_pid=$(swaymsg -t get_tree 2>/dev/null | jq -r '.. | objects | select(.focused == true) | .pid // empty' 2>/dev/null | head -n 1 || true)
+# Foot has no remote-control socket, so cwd comes from the /proc PID tree below.
 cwd=""
 
-if [[ -n ${terminal_pid:-} ]]; then
-  # Walk the focused window's process tree (foot/alacritty → shell) and use the
-  # deepest shell child's cwd — /proc/<window>/cwd only reflects where
-  # the terminal was launched, not where its shell has cd'd.
-  declare -A seen=()
-  queue=("$terminal_pid")
-  while ((${#queue[@]})); do
-    cur=${queue[0]}
-    queue=("${queue[@]:1}")
-    [[ -n "${seen[$cur]:-}" ]] && continue
-    seen[$cur]=1
-    for c in $(pgrep -P "$cur" 2>/dev/null || true); do
-      queue+=("$c")
-      comm=$(ps -o comm= -p "$c" 2>/dev/null || true)
-      case "$comm" in
-        zsh | bash | fish)
-          tmp=$(readlink -f "/proc/$c/cwd" 2>/dev/null || true)
-          if [[ -n "$tmp" && -d "$tmp" ]]; then
-            cwd="$tmp"
-          fi
-          ;;
-      esac
-    done
-  done
-
-  if [[ -z $cwd ]]; then
-    shell_pid=$(pgrep -P "$terminal_pid" 2>/dev/null | tail -n1)
-    if [[ -n $shell_pid ]]; then
-      cwd=$(readlink -f "/proc/$shell_pid/cwd" 2>/dev/null)
-      shell=$(readlink -f "/proc/$shell_pid/exe" 2>/dev/null)
-      if ! grep -Fqsx "$shell" /etc/shells; then
-        cwd=""
-      fi
+if [[ -z $cwd && -n ${terminal_pid:-} ]]; then
+  shell_pid=$(pgrep -P "$terminal_pid" 2>/dev/null | tail -n1 || true)
+  if [[ -n $shell_pid ]]; then
+    cwd=$(readlink -f "/proc/$shell_pid/cwd" 2>/dev/null)
+    shell=$(readlink -f "/proc/$shell_pid/exe" 2>/dev/null)
+    if ! grep -Fqsx "$shell" /etc/shells; then
+      cwd=""
     fi
-  fi
-
-  if [[ -z $cwd ]]; then
-    tmp=$(readlink -f "/proc/$terminal_pid/cwd" 2>/dev/null || true)
-    [[ -n "$tmp" && -d "$tmp" ]] && cwd="$tmp"
   fi
 fi
 
 [[ -d ${cwd:-} ]] || cwd="$HOME"
 
-exec setsid thunar "$cwd"
+exec setsid thunar -w "$cwd"

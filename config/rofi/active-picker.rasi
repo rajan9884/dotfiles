@@ -1,4 +1,4 @@
-/* Picker menus (keybinds, notification history, herdr/tmux binds) —
+/* Picker menus (keybinds cheatsheet) —
  * applet base, centered and wider to read long rows.
  */
 @import "~/.config/rofi/applet.rasi"

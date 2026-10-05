@@ -1,0 +1,10 @@
+/* Bluetooth menu — shared applet base */
+@import "applet.rasi"
+
+entry {
+    placeholder: "Filter devices…";
+}
+
+listview {
+    lines: 10;
+}

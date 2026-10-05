@@ -1,0 +1,43 @@
+# ── matugen-generated alacritty colors — DO NOT EDIT ──
+# Generated from the active wallpaper on every switch (sway-wall.sh).
+# Mirrors matugen/templates/foot-colors.ini palette mapping.
+
+[colors.primary]
+background = "{{colors.surface.default.hex}}"
+foreground = "{{colors.on_surface.default.hex}}"
+
+[colors.cursor]
+text = "{{colors.on_primary.default.hex}}"
+cursor = "{{colors.primary.default.hex}}"
+
+[colors.selection]
+text = "{{colors.on_secondary_container.default.hex}}"
+background = "{{colors.secondary_container.default.hex}}"
+
+[colors.normal]
+black = "{{colors.surface.default.hex}}"
+red = "{{colors.error.default.hex}}"
+green = "{{colors.tertiary.default.hex}}"
+yellow = "{{colors.secondary.default.hex}}"
+blue = "{{colors.primary.default.hex}}"
+magenta = "{{colors.primary_container.default.hex}}"
+cyan = "{{colors.tertiary_container.default.hex}}"
+white = "{{colors.on_surface.default.hex}}"
+
+[colors.bright]
+black = "{{colors.surface_variant.default.hex}}"
+red = "{{colors.error.default.hex}}"
+green = "{{colors.tertiary.default.hex}}"
+yellow = "{{colors.secondary.default.hex}}"
+blue = "{{colors.primary.default.hex}}"
+magenta = "{{colors.primary_container.default.hex}}"
+cyan = "{{colors.tertiary_container.default.hex}}"
+white = "{{colors.on_surface_variant.default.hex}}"
+
+[colors.hints.start]
+foreground = "{{colors.on_secondary_container.default.hex}}"
+background = "{{colors.secondary_container.default.hex}}"
+
+[colors.hints.end]
+foreground = "{{colors.on_secondary_container.default.hex}}"
+background = "{{colors.secondary_container.default.hex}}"

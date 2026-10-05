@@ -1,0 +1,25 @@
+# ── matugen-generated sway colors (Void port) — DO NOT EDIT ──
+# Generated from the active wallpaper on every switch (sway-wall.sh).
+set $m_primary #9fcde4
+set $m_on_primary #003546
+set $m_primary_container #709db3
+set $m_secondary #b8c9d3
+set $m_tertiary #ddbbe8
+set $m_error #ffb4ab
+set $m_background #111415
+set $m_on_background #e2e2e4
+set $m_surface #111415
+set $m_on_surface #e2e2e4
+set $m_surface_variant #41484c
+set $m_on_surface_variant #c1c7cc
+set $m_surface_container #1e2021
+set $m_surface_container_high #282a2c
+set $m_outline #8b9296
+
+# Window decorations follow the wallpaper palette
+client.focused          $m_primary $m_surface $m_on_surface $m_primary $m_primary
+client.focused_inactive $m_surface_variant $m_surface $m_on_surface_variant $m_surface_variant $m_surface_variant
+client.unfocused        $m_surface_variant $m_background $m_on_surface_variant $m_surface_variant $m_surface_variant
+client.urgent           $m_error $m_background $m_on_surface $m_error $m_error
+client.placeholder      $m_background $m_background $m_on_surface $m_background $m_background
+client.background       $m_background

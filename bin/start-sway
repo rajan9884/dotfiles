@@ -1,0 +1,80 @@
+#!/bin/sh
+# start-sway — Wayland/sway session environment for Arch (systemd-logind).
+# (Ported from the Void setup; the seatd override was dropped — see below.)
+
+# seat backend: leave LIBSEAT_BACKEND unset so libseat auto-selects logind.
+# (Void forces seatd; on Arch systemd-logind is active and seatd is
+#  inactive, so forcing seatd makes sway exit immediately.)
+# Local prebuilt stack: swayfx + scenefx live in ~/.local (built from
+# upstream, no root needed). Must precede the exec below so the loader
+# finds libscenefx-0.5.so.0 without ldconfig.
+export LD_LIBRARY_PATH="$HOME/.local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export CLUTTER_BACKEND=wayland
+export DESKTOP_SESSION=sway
+export ELM_DISPLAY=wl
+export GDK_BACKEND=wayland,x11
+export MOZ_ENABLE_WAYLAND=1
+export QT_QPA_PLATFORM="wayland;xcb"
+export QT_QPA_PLATFORMTHEME="qt6ct;qt5ct"
+export SDL_VIDEODRIVER=wayland
+export XDG_CURRENT_DESKTOP=sway
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=sway
+export ELECTRON_OZONE_PLATFORM_HINT=wayland
+
+# intel gpu specific (this machine: 13th Gen Raptor Lake Iris Xe, iHD driver)
+export LIBVA_DRIVER_NAME=iHD #i965 for old hw
+unset VDPAU_DRIVER
+#export VDPAU_DRIVER=va_gl
+
+# amd gpu specific (NOT this machine — uncomment only on AMD hardware)
+#export LIBVA_DRIVER_NAME=radeonsi
+#export VDPAU_DRIVER=radeonsi #r300 for old hw
+
+# nvidia gpu specific
+#export LIBVA_DRIVER_NAME=nvidia #nouveau for foss type
+#export VDPAU_DRIVER=nvidia #nouveau
+#export GBM_BACKEND=nvidia-drm
+#export __GLX_VENDOR_LIBRARY_NAME=nvidia
+#export __GL_VRR_ALLOWED=0
+
+# themes
+export QT_SELECT=Rosepine-Dark
+export QT_STYLE_OVERRIDE=Rosepine-Dark
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+
+# cursor (Bibata-Modern-Ice @ 24px — must be set before sway starts)
+export XCURSOR_THEME=Bibata-Modern-Ice
+export XCURSOR_SIZE=24
+
+# xdg base dirs
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:-/etc/xdg}"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# xdg user dirs (standard locations, matching ~/.config/user-dirs.dirs)
+export XDG_DESKTOP_DIR="$HOME/Desktop"
+export XDG_DOCUMENTS_DIR="$HOME/Documents"
+export XDG_DOWNLOAD_DIR="$HOME/Downloads"
+export XDG_MUSIC_DIR="$HOME/Music"
+export XDG_PICTURES_DIR="$HOME/Pictures"
+export XDG_PUBLICSHARE_DIR="$HOME/Public"
+export XDG_TEMPLATES_DIR="$HOME/Templates"
+export XDG_VIDEOS_DIR="$HOME/Videos"
+
+# start swayfx (single session bus: pipewire is spawned by sway itself,
+# so everything shares one bus — never nest dbus-run-session twice)
+if [ "$(tty)" = "/dev/tty1" ]; then
+  # Boot-debug log: sway prints to the tty, which is lost on crash-loops.
+  # Tee it so the next failure leaves evidence in ~/.local/state/.
+  # Bound the file: rotate past 2 MiB.
+  _swaylog="${XDG_STATE_HOME:-$HOME/.local/state}/sway-boot.log"
+  if [ -f "$_swaylog" ] && [ "$(stat -c %s "$_swaylog" 2>/dev/null || echo 0)" -gt 2097152 ]; then
+    mv -f "$_swaylog" "$_swaylog.old"
+  fi
+  unset _swaylog
+  exec dbus-run-session -- sway -d >>"${XDG_STATE_HOME:-$HOME/.local/state}/sway-boot.log" 2>&1
+fi

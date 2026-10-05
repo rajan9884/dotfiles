@@ -1,0 +1,5 @@
+# ── matugen-generated mako colors (Void port) — DO NOT EDIT ──
+background-color={{colors.surface_container.default.hex}}F2
+text-color={{colors.on_surface.default.hex}}
+border-color={{colors.primary.default.hex}}
+progress-color=over {{colors.primary.default.hex}}

@@ -28,7 +28,7 @@
 	<name>Set as Wallpaper</name>
 	<submenu></submenu>
 	<unique-id>set-as-wallpaper</unique-id>
-	<command>sh -c '~/.config/hypr/scripts/swww-all.sh %f'</command>
+	<command>sh -c '~/.config/sway/scripts/sway-wall.sh %f'</command>
 	<description>Set image as wallpaper and re-theme the desktop</description>
 	<patterns>*.jpg;*.jpeg;*.png;*.webp</patterns>
 	<image-files/>

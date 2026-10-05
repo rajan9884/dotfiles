@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=imv
+GenericName=Image viewer
+GenericName[en_US]=Image viewer
+Comment=Fast Image Viewer
+Exec=imv -W 900 -H 650 %F
+NoDisplay=true
+Terminal=false
+Type=Application
+Categories=Graphics;2DGraphics;Viewer;
+MimeType=image/x-farbfeld;image/tiff;image/tiff-fx;image/png;image/x-png;image/jpeg;image/jpg;image/pjpeg;image/svg+xml;image/gif;image/bmp;image/x-bmp;image/heif;image/avif;image/webp
+Name[en_US]=imv
+Icon=multimedia-photo-viewer
+Keywords=photo;picture;

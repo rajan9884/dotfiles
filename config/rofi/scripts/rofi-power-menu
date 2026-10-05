@@ -18,18 +18,13 @@ case ${chosen} in
         systemctl reboot
         ;;
     $lock)
-        # Check if hyprlock or swaylock is installed
-        if command -v hyprlock >/dev/null; then
-            hyprlock
-        elif command -v swaylock >/dev/null; then
-            swaylock
-        fi
+        swaylock
         ;;
     $suspend)
-        systemctl suspend
+        loginctl suspend
         ;;
     $logout)
-        hyprctl dispatch "hl.dsp.exit()"
+        swaymsg exit
         ;;
     *)
         echo "$lock"

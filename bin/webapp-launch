@@ -1,17 +1,50 @@
 #!/usr/bin/env bash
-# Launch a URL as a minimal web app window (Chromium --app SSB).
-# Always uses chromium from PATH, forcing Wayland via chromium-flags.conf.
-# Usage: webapp-launch <url> [extra flags...]
+# Launch a URL as a minimal web app window (Chromium-family --app SSB).
+# Browser-agnostic: honors $WEBAPP_BROWSER, else first available of
+# helium-browser, chromium, google-chrome, brave, vivaldi.
+# Usage: webapp-launch <url> [extra-browser-flags...]
 set -e
 
 if (($# == 0)); then
-  echo "Usage: webapp-launch <url> [extra-chromium-flags...]" >&2
+  echo "Usage: webapp-launch <url> [extra-browser-flags...]" >&2
   exit 1
 fi
 
+resolve_browser() {
+  if [[ -n ${WEBAPP_BROWSER:-} ]] && command -v "$WEBAPP_BROWSER" &>/dev/null; then
+    printf '%s' "$WEBAPP_BROWSER"
+    return 0
+  fi
+  local c
+  for c in helium-browser chromium chromium-browser google-chrome google-chrome-stable brave brave-browser vivaldi; do
+    if command -v "$c" &>/dev/null; then
+      printf '%s' "$c"
+      return 0
+    fi
+  done
+  return 1
+}
+
+BROWSER="$(resolve_browser)" || {
+  echo "webapp-launch: no Chromium-based browser found (tried \$WEBAPP_BROWSER, helium-browser, chromium, google-chrome, brave, vivaldi)." >&2
+  exit 1
+}
+
+# Chromium-family browsers only apply the matugen unpacked theme while it
+# is loaded, and --load-extension only takes effect on the initial launch
+# (a webapp can cold-start the whole browser singleton). Every candidate
+# below is Chromium-based, so inject the theme flag whenever the dir exists.
+THEME_ARGS=()
+case "$(basename "$BROWSER")" in
+  helium-browser|chromium|chromium-browser|google-chrome|google-chrome-stable|brave|brave-browser|vivaldi)
+    [ -f "$HOME/.config/helium-theme/manifest.json" ] && \
+      THEME_ARGS=("--load-extension=$HOME/.config/helium-theme")
+    ;;
+esac
+
 # Prefer uwsm-app when available (uwsm session handling), else plain setsid.
 if command -v uwsm-app &>/dev/null; then
-  exec setsid uwsm-app -- chromium --app="$1" "${@:2}"
+  exec setsid uwsm-app -- "$BROWSER" "${THEME_ARGS[@]}" --app="$1" "${@:2}"
 else
-  exec setsid chromium --app="$1" "${@:2}"
+  exec setsid "$BROWSER" "${THEME_ARGS[@]}" --app="$1" "${@:2}"
 fi

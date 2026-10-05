@@ -5,12 +5,13 @@
 #   power-profiles get                  current active profile
 #   power-profiles set <profile>        switch and remember for the current power source
 #   power-profiles autodetect           apply remembered/fallback profile for AC or battery
+#   power-profiles watch                autodetect once, then re-apply on AC plug/unplug
 #   power-profiles menu                 rofi switcher menu (power profile switcher)
 
 STATE_DIR="${POWER_PROFILES_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/power-profiles}"
 
 usage() {
-  echo "Usage: power-profiles [list|get|set <profile>|autodetect|menu]" >&2
+  echo "Usage: power-profiles [list|get|set <profile>|autodetect|watch|menu]" >&2
   exit 1
 }
 
@@ -49,6 +50,93 @@ apply_profile() {
   fi
 }
 
+do_autodetect() {
+  local key stored="" profile
+  if on_battery; then key=battery; else key=ac; fi
+  [[ -r $STATE_DIR/$key ]] && stored=$(<"$STATE_DIR/$key")
+  if [[ -n $stored ]] && profile_available "$stored"; then
+    profile=$stored
+  elif [[ $key == ac ]] && profile_available performance; then
+    profile=performance
+  else
+    profile=balanced
+  fi
+  apply_profile "$profile"
+}
+
+# Long-running watcher: apply once, then re-apply whenever the power
+# source flips. Triggered by kernel power_supply uevents (ACAD plug/
+# unplug); a periodic re-check covers missed events (sleep/resume,
+# UPower hiccups, monitor restart). Single-instance via flock.
+cmd_watch() {
+  local lock="${XDG_RUNTIME_DIR:-/tmp}/power-profiles-watch.lock"
+  if [[ ${POWER_PROFILES_WATCH_LOCKED:-} != 1 ]]; then
+    # Single instance: bail out quietly if another watcher holds the
+    # lock. Probe first so the common duplicate case exits 0; the
+    # exec'd flock below is still non-blocking (a lost race exits 1,
+    # which sway just logs on reload).
+    flock -n "$lock" true 2>/dev/null || exit 0
+    exec flock -n "$lock" env POWER_PROFILES_WATCH_LOCKED=1 "$0" watch
+  fi
+
+  # If we die, take the udev monitor with us: it inherits the lock fd
+  # through the process substitution below, and a lingering orphan
+  # would keep the lock held so a replacement watcher refuses to start.
+  # (No EXIT trap: it would also fire in every $(...) subshell, where
+  # $$ still equals the parent PID, and kill our own monitor. The
+  # BASHPID guard below protects the signal traps the same way.)
+  trap '[[ ${BASHPID:-$$} == $$ ]] && pkill -P $$ udevadm 2>/dev/null; exit 0' HUP INT TERM
+
+  # Wait for power-profiles-daemon before the initial apply (boot race).
+  local i
+  for i in $(seq 1 30); do
+    powerprofilesctl get >/dev/null 2>&1 && break
+    sleep 1
+  done
+  do_autodetect || true
+
+  local last cur line rc
+  if on_battery; then last=battery; else last=ac; fi
+
+  check_and_apply() {
+    if on_battery; then cur=battery; else cur=ac; fi
+    if [[ $cur != "$last" ]]; then
+      last=$cur
+      do_autodetect || true
+    fi
+  }
+
+  # Outer loop restarts udevadm if it ever dies; inner read timeout
+  # (10s) gives the periodic safety re-check.
+  while true; do
+    while true; do
+      if IFS= read -r -t 10 line; then
+        rc=0
+      else
+        rc=$?
+      fi
+      if [[ $rc -gt 128 ]]; then
+        check_and_apply # read timeout: periodic re-check
+        continue
+      fi
+      [[ $rc -ne 0 ]] && break # EOF: restart udevadm below
+      case "$line" in
+        *POWER_SUPPLY*|*power_supply*)
+          # Debounce the burst of lines one plug event produces.
+          sleep 1
+          # Drain anything already queued so one event == one check.
+          while IFS= read -r -t 0.2 line 2>/dev/null; do :; done
+          check_and_apply
+          ;;
+      esac
+    done < <(udevadm monitor --subsystem-match=power_supply --property 2>/dev/null)
+    # udevadm exited (or never started): fall back to polling so a
+    # plug event is still picked up, then retry the monitor.
+    sleep 5
+    check_and_apply
+  done
+}
+
 case "${1:-autodetect}" in
   list|list-active)
     list_profiles
@@ -67,17 +155,10 @@ case "${1:-autodetect}" in
     apply_profile "$requested"
     ;;
   autodetect)
-    if on_battery; then key=battery; else key=ac; fi
-    stored=""
-    [[ -r $STATE_DIR/$key ]] && stored=$(<"$STATE_DIR/$key")
-    if [[ -n $stored ]] && profile_available "$stored"; then
-      profile=$stored
-    elif [[ $key == ac ]] && profile_available performance; then
-      profile=performance
-    else
-      profile=balanced
-    fi
-    apply_profile "$profile"
+    do_autodetect
+    ;;
+  watch)
+    cmd_watch
     ;;
   menu)
     THEME="$HOME/.config/rofi/active-scripts.rasi"

@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────
-#   install.sh — one-shot setup: minimal Arch → working Hyprland desktop.
+#   install.sh — one-shot setup: minimal Arch → working Sway/SwayFX desktop.
 #
 #   Order matters (do NOT reorder):
 #     0. Preflight: Arch check, root guard, sudo verification (rofi askpass) & keepalive.
 #     1. Packages FIRST: bootstrap archlinux-keyring/git/base-devel, then official
-#        repo packages (including matugen) from pkglist/native.txt. Foreign/AUR pkgs skipped.
+#        repo packages (including matugen) from pkglist/native.txt. Foreign/AUR pkgs skipped
+#        (swayfx lives in foreign.txt — official `sway` works as fallback).
 #     2. Symlink every app config from <repo>/config/ into ~/.config/.
 #     3. Symlink shell files (zshrc, bashrc, gitconfig, starship.toml).
-#     4. Check the single static look (one hypr/waybar/rofi style; colors come
+#     4. Check the single static look (one sway/waybar/rofi style; colors come
 #        from the wallpaper via matugen — no theme packs).
 #     5. Install the single flat wallpaper library
 #        (~/.local/share/wallpapers, with offline asset fallback).
@@ -178,7 +179,7 @@ link_config() {
 }
 
 APPS=(
-    hypr
+    sway
     waybar
     rofi
     foot
@@ -188,6 +189,8 @@ APPS=(
     btop
     cliamp
     matugen
+    mako
+    xdg-desktop-portal
     nvim
     gtk-3.0
     gtk-4.0
@@ -198,7 +201,6 @@ APPS=(
 GENERATED_APPS=(
     ghostty
     helium-theme
-    mako
 )
 
 echo
@@ -264,11 +266,13 @@ link_config_file chromium-flags.conf chromium-flags.conf
 # ── 4. Static look (no theme packs) ──────────
 echo
 echo "==> [4/10] Checking single wallpaper-driven look"
-HYPR_CFG="$HOME/.config/hypr"
+SWAY_CFG="$HOME/.config/sway"
 WAYBAR_CFG="$HOME/.config/waybar"
 ROFI_CFG="$HOME/.config/rofi"
 
-for static in "$HYPR_CFG/theme.lua" \
+for static in "$SWAY_CFG/config" \
+              "$SWAY_CFG/swayidle.conf" \
+              "$SWAY_CFG/swaylock-config" \
               "$ROFI_CFG/active-launcher.rasi" "$ROFI_CFG/active-scripts.rasi" \
               "$ROFI_CFG/active-picker.rasi"; do
     if [ -s "$static" ] && [ ! -L "$static" ]; then
@@ -346,7 +350,7 @@ fi
 echo
 echo "==> [6/10] Linking user helper scripts into ~/.local/bin"
 mkdir -p "$HOME/.local/bin"
-find "$REPO_ROOT/config/hypr/scripts"   -type f -exec chmod +x {} \; 2>/dev/null || true
+find "$REPO_ROOT/config/sway/scripts"   -type f -exec chmod +x {} \; 2>/dev/null || true
 find "$REPO_ROOT/config/waybar/scripts" -type f -exec chmod +x {} \; 2>/dev/null || true
 find "$REPO_ROOT/config/rofi/scripts"   -type f -exec chmod +x {} \; 2>/dev/null || true
 
@@ -357,11 +361,18 @@ for helper in "$REPO_ROOT/bin"/*; do
     info "helper: $(basename "$helper")"
 done
 
-# Drop helpers removed from the repo (theme selectors) so old links dangle no more.
-for stale in arch-theme-apply arch-theme-switcher waybar-selector; do
+# Drop helpers removed from the repo so old links dangle no more.
+for stale in arch-theme-apply arch-theme-switcher waybar-selector nautilus-cwd nautilus-gnome; do
     if [ -L "$HOME/.local/bin/$stale" ] && [ ! -e "$HOME/.local/bin/$stale" ]; then
         rm -f "$HOME/.local/bin/$stale"
         info "removed stale helper link: $stale"
+    fi
+done
+# Explicitly drop GNOME file-manager helpers (Thunar is the lighter default).
+for stale in nautilus-cwd nautilus-gnome; do
+    if [ -e "$HOME/.local/bin/$stale" ] || [ -L "$HOME/.local/bin/$stale" ]; then
+        rm -f "$HOME/.local/bin/$stale"
+        info "removed GNOME helper: $stale (Thunar only now)"
     fi
 done
 
@@ -381,9 +392,8 @@ for unit in waybar.service swayosd.service \
         info "deployed user unit: $unit"
     fi
 done
-# hyprpolkitagent ships its own user unit (no repo copy needed)
-systemctl --user enable --now hyprpolkitagent.service >/dev/null 2>&1 \
-    && info "hyprpolkitagent active" || true
+# polkit-gnome ships no user unit — sway autostarts
+# /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 via sway/config.
 systemctl --user daemon-reload >/dev/null 2>&1 || true
 
 # ── 7. pactl shim (PipeWire-only machines) ───
@@ -421,7 +431,7 @@ fi
 echo
 echo "==> [8/10] Generating initial color palette"
 command -v matugen >/dev/null 2>&1 || { fail "matugen missing after step 1 — re-run ./install.sh"; exit 1; }
-WALL="$(find "$WALL_DST" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null | sort | head -n 1)"
+WALL="$(find "$WALL_DST" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null | sort | head -n 1 || true)"
 [ -n "$WALL" ] || { fail "no wallpaper found in $WALL_DST"; exit 1; }
 matugen image "$WALL" -c "$HOME/.config/matugen/config.toml" --source-color-index 0 \
     && { info "palette generated from $WALL"; printf '%s' "$WALL" > "$HOME/.cache/current-wallpaper"; } \
@@ -526,7 +536,12 @@ need_cmd() {
         PROBLEMS=$((PROBLEMS + 1))
     fi
 }
-need_cmd hyprland "sudo pacman -S --needed hyprland"
+need_cmd sway "sudo pacman -S --needed sway (or yay -S swayfx for corner_radius/blur/shadows)"
+need_cmd swaybg "sudo pacman -S --needed swaybg"
+need_cmd swayidle "sudo pacman -S --needed swayidle"
+need_cmd swaylock "sudo pacman -S --needed swaylock"
+need_cmd autotiling "sudo pacman -S --needed autotiling"
+need_cmd wlsunset "sudo pacman -S --needed wlsunset"
 need_cmd awww-daemon "sudo pacman -S --needed awww"
 need_cmd matugen "sudo pacman -S --needed matugen"
 need_cmd waybar "sudo pacman -S --needed waybar"
@@ -552,13 +567,13 @@ need_cmd gum "sudo pacman -S --needed gum"
 need_cmd chromium "sudo pacman -S --needed chromium"
 need_cmd fastfetch "sudo pacman -S --needed fastfetch"
 need_cmd btop "sudo pacman -S --needed btop"
-need_cmd thunar "sudo pacman -S --needed thunar tumbler thunar-archive-plugin"
+need_cmd thunar "sudo pacman -S --needed thunar tumbler thunar-archive-plugin thunar-volman"
 need_cmd alacritty "sudo pacman -S --needed alacritty"
 need_cmd zathura "sudo pacman -S --needed zathura zathura-pdf-mupdf"
-if [ -x /usr/lib/hyprpolkitagent/hyprpolkitagent ]; then
-    info "ok: hyprpolkitagent"
+if [ -x /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 ]; then
+    info "ok: polkit-gnome"
 else
-    fail "MISSING: hyprpolkitagent (sudo pacman -S --needed hyprpolkitagent)"
+    fail "MISSING: polkit-gnome (sudo pacman -S --needed polkit-gnome)"
     PROBLEMS=$((PROBLEMS + 1))
 fi
 
@@ -593,13 +608,14 @@ if [ -n "$(find "$WALL_DST" -mindepth 1 -type d -print -quit 2>/dev/null)" ]; th
     PROBLEMS=$((PROBLEMS + 1))
 fi
 
-for link in "$HOME/.config/hypr" "$HOME/.config/waybar" "$HOME/.config/rofi" \
+for link in "$HOME/.config/sway" "$HOME/.config/waybar" "$HOME/.config/rofi" \
             "$HOME/.config/foot" "$HOME/.config/alacritty" "$HOME/.config/zathura" "$HOME/.config/Thunar" \
+            "$HOME/.config/mako" "$HOME/.config/xdg-desktop-portal" \
             "$HOME/.config/matugen" "$HOME/.zshrc" \
             "$HOME/.zprofile" "$HOME/.bashrc" \
             "$HOME/.config/chromium-flags.conf" \
             "$HOME/.config/fastfetch/penguin.txt" \
-            "$HYPR_CFG/theme.lua" \
+            "$SWAY_CFG/config" "$SWAY_CFG/swayidle.conf" "$SWAY_CFG/swaylock-config" \
             "$WAYBAR_CFG/config.jsonc" "$WAYBAR_CFG/style.css"; do
     if [ -e "$link" ] || [ -L "$link" ]; then
         info "ok: $link"
@@ -612,7 +628,8 @@ done
 # Matugen must have produced palettes
 for gen in "$HOME/.config/waybar/colors.css" "$HOME/.config/foot/colors.ini" \
            "$HOME/.config/alacritty/colors.toml" "$HOME/.config/zathura/colors" \
-           "$HOME/.config/rofi/colors.rasi" "$HOME/.config/hypr/colors.conf" \
+           "$HOME/.config/rofi/colors.rasi" "$HOME/.config/sway/colors" \
+           "$HOME/.config/sway/swaylock-config" "$HOME/.config/mako/colors" \
            "$HOME/.config/starship.toml"; do
     if [ -s "$gen" ]; then
         info "ok: generated $gen"
@@ -637,7 +654,7 @@ if [ "$PROBLEMS" -gt 0 ]; then
     exit 1
 fi
 echo "Done! The desktop is fully installed and configured."
-echo "Log out and select Hyprland (or launch via uwsm / Hyprland) to begin."
+echo "Log out and select Sway (or launch via start-sway / sway on a TTY) to begin."
 if [ -d "$BACKUP_DIR" ]; then
     echo "Backups of replaced files are in: $BACKUP_DIR"
 fi

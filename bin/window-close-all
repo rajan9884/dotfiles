@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
-hyprctl clients -j | jq -r '.[].pid' | xargs -r kill -9
+# Close all windows (sway).
+if [ -n "${SWAYSOCK:-}" ]; then
+  exec "$HOME/.config/sway/scripts/window-close-all.sh"
+fi
+swaymsg '[app_id=".*"] kill' 2>/dev/null || true
 notify-send "Windows" "All windows closed"

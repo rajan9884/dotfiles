@@ -2,6 +2,10 @@
  *   Waybar – Noro Theme (Dynamic Colors)
  * ────────────────────────────────────────────── */
 
+/* NOTE: resolved relative to ~/.config/waybar/style.css (a symlink to this
+ * file), so this picks up the matugen-generated ~/.config/waybar/colors.css.
+ * Always launch via the symlinked paths (see sway/scripts/waybar-launch.sh
+ * and waybar-theme-toggle.sh) — a direct -s <theme>/style.css breaks this. */
 @import "colors.css";
 @keyframes pulse {
     0% { opacity: 1; }
@@ -23,7 +27,7 @@ window#waybar {
 /* ── Grouping Strategy ── */
 #clock, #custom-user,
 #workspaces, #custom-launcher,
-#battery, #custom-power {
+#battery, #custom-wifi, #bluetooth, #custom-power {
     background: @surface; /* DYNAMIC: Based on wallpaper */
     color: @on_surface;    /* DYNAMIC: Based on wallpaper */
     padding: 4px 12px;
@@ -52,8 +56,8 @@ window#waybar {
     border-radius: 12px 0 0 12px;
     padding-right: 10px;
 }
-/* --- Shortcut Tools [Record] --- */
-#custom-record {
+/* --- Shortcut Tools [Record | Dictate] --- */
+#custom-record, #custom-voxtype {
     background: @surface;
     color: @on_surface;
     padding: 4px 12px;
@@ -66,38 +70,41 @@ window#waybar {
     color: @error;
     animation: pulse 1s infinite;
 }
+#custom-voxtype {
+    color: @primary;
+}
 /* --- Utility icons (backgroundless, float between the three capsules) --- */
-#custom-clipboard,
-#custom-power-profile {
+#custom-notifications, #custom-clipboard,
+#custom-power-profile, #custom-idle {
     background: transparent;
     color: @on_surface;
     padding: 4px 8px;
     margin: 6px 0;
 }
+#custom-idle.inhibited {
+    color: @tertiary;
+}
 #custom-wifi {
-    background: @surface;
-    color: @on_surface;
-    padding: 4px 0;
-    padding-left: 4px;
-    padding-right: 12px;
+    background: @primary; /* part of right pill */
+    color: @on_primary;
+    padding: 4px 8px;
     margin: 6px 0;
 }
 #custom-wifi.wifi-on {
-    color: @primary;
+    color: @on_primary;
 }
-#custom-wifi.wifi-wired {
-    color: @tertiary;
+#custom-wifi.wifi-wired,
+#custom-wifi.wifi-hotspot {
+    color: @on_primary;
 }
 #custom-wifi.wifi-tether {
-    color: @on_surface_variant;
-}
-#custom-wifi.wifi-hotspot {
-    color: @tertiary;
+    color: @on_primary;
+    opacity: 0.85;
 }
 #custom-wifi.wifi-off,
 #custom-wifi.wifi-disconnected {
-    color: @on_surface_variant;
-    opacity: 0.6;
+    color: @on_primary;
+    opacity: 0.55;
 }
 /* --- Center Group [Workspaces | Bright | Vol] --- */
 #workspaces {
@@ -138,17 +145,33 @@ window#waybar {
     color: @on_primary;    /* DYNAMIC */
 }
 
-/* --- Right Group [Bat | Tray | BT | Power] --- */
+/* --- Right Group [Bat | Wifi | BT | Power] — one continuous pill, two-tone like left/center --- */
 #battery {
     border-radius: 12px 0 0 12px;
     margin-left: 30px;
     padding-left: 15px;
+    background: @surface; /* DYNAMIC — matches #clock / #workspaces half */
+    color: @on_surface;    /* DYNAMIC */
 }
 #tray {
     background: transparent;
     color: @on_surface;
     padding: 4px 8px;
     margin: 6px 0 6px 30px;
+}
+#custom-wifi {
+    border-radius: 0;
+}
+#bluetooth {
+    background: @primary; /* DYNAMIC */
+    color: @on_primary;    /* DYNAMIC */
+    padding: 4px 8px;
+    margin: 6px 0;
+    border-radius: 0;
+}
+#bluetooth.disabled,
+#bluetooth.off {
+    opacity: 0.55;
 }
 #custom-power {
     border-radius: 0 12px 12px 0;
@@ -161,35 +184,50 @@ window#waybar {
 }
 
 /* --- Hover & Active --- */
+/* Idle/empty workspaces: dim so they recede */
 #workspaces button {
     color: @on_surface_variant;
     background: transparent;
-    border: none;
-    box-shadow: none;
-    outline: none;
-    opacity: 0.35;
+    border: 1px solid transparent;
+    opacity: 0.3;
     padding: 0 6px;
     border-radius: 8px;
 }
-#workspaces button:not(.empty):not(.active) {
-    color: @primary;
-    opacity: 1;
-}
-#workspaces button.active {
+/* Occupied (apps open) + focused (current): same intensity, glyph-only */
+#workspaces button:not(.empty):not(.active):not(.focused),
+#workspaces button.active,
+#workspaces button.focused,
+#workspaces button.visible {
     color: @primary;
     background: transparent;
-    border: none;
-    box-shadow: none;
-    outline: none;
+    background-image: none;
+    border-color: transparent;
     opacity: 1;
+    box-shadow: none;
+    text-shadow: none;
 }
 #workspaces button.urgent {
     color: @error;
+    background: transparent;
+    background-image: none;
+    border-color: transparent;
+    box-shadow: none;
+    text-shadow: none;
     opacity: 1;
 }
 #workspaces button:hover {
-    color: @primary;
+    color: @on_surface;
+    background: transparent;
+    background-image: none;
+    box-shadow: none;
     opacity: 1;
+}
+#workspaces button.active:hover,
+#workspaces button.focused:hover {
+    color: @primary;
+    background: transparent;
+    background-image: none;
+    box-shadow: none;
 }
 
 #battery.charging {
@@ -197,6 +235,9 @@ window#waybar {
     animation: pulse 1.5s infinite;
 }
 
+#custom-notifications.has-notifications {
+    color: @tertiary;
+}
 #custom-vpn.vpn-on {
     color: @tertiary;
 }

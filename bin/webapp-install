@@ -109,7 +109,7 @@ download_icon() {
   normalize_downloaded_icon "$tmp" "$dest" && chmod 644 "$dest"
 }
 
-# Chromium --app= treats javascript:, file:, and data: as a document to
+# Chromium-family --app= treats javascript:, file:, and data: as a document to
 # run. Prefix schemeless input with https as before, then refuse anything
 # that is not http(s).
 normalize_webapp_url() {

@@ -1,10 +1,4 @@
 {
-    // floating-bar — ported from Void preset (void-config/waybar/themes/floating-bar),
-    // adapted for Hyprland on Arch:
-    //   sway/workspaces → hyprland/workspaces (Void's numeric style kept)
-    //   pulsemixer → wiremix (Arch default audio mixer)
-    //   battery adapter ADP0 → ACAD (this machine's actual adapter)
-    //   launcher keeps Arch glyph (equivalent of Void's )
     "include": [
         "~/.config/waybar/modules.jsonc"
     ],
@@ -22,7 +16,8 @@
     "modules-left": [
         "custom/launcher",
         "custom/record",
-        "hyprland/workspaces"
+        "custom/voxtype",
+        "sway/workspaces"
     ],
 
     "modules-center": [
@@ -34,21 +29,23 @@
         "custom/separator",
         "custom/wifi",
         "custom/separator2",
+        "bluetooth",
         "custom/separator3",
         "backlight",
         "custom/separator4",
+        "custom/notifications",
         "custom/separator5",
         "pulseaudio",
         "custom/separator6",
         "battery",
         "custom/separator7",
-        "custom/caffeine",
+        "custom/idle",
         "custom/separator8",
         "custom/power"
     ],
 
-    "custom/launcher": { 
-        "format": "",
+    "custom/launcher": {
+        "format": "",
         "on-click": "rofi -show drun -theme ~/.config/rofi/active-launcher.rasi",
         "tooltip": false
     },
@@ -93,7 +90,7 @@
         "tooltip": false
     },
 
-    "hyprland/workspaces": {
+    "sway/workspaces": {
         "format": "{icon}",
         "format-icons": {
             "1": "1",
@@ -102,8 +99,7 @@
             "4": "4",
             "5": "5",
             "urgent": "",
-            "active": "●",
-            "default": "○"
+            "focused": "●"
         },
         "on-click": "activate",
         "all-outputs": true
@@ -118,7 +114,7 @@
             "default": ["󰕿", "󰖀", "󰕾"]
         },
         "scroll-step": 5,
-        "on-click": "foot --app-id wiremix -e wiremix",
+        "on-click": "alacritty --class=pulsemixer -e pulsemixer",
         "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
     },
 
@@ -140,11 +136,31 @@
         "tooltip": true
     },
 
+    "bluetooth": {
+        "format": "󰂯",
+        "format-disabled": "󰂲",
+        "format-off": "󰂲",
+        "format-on": "󰂯",
+        "format-connected": "󰂱",
+        "on-click": "~/.config/waybar/scripts/bluetooth-menu.sh",
+        "on-click-right": "bluetoothctl power toggle",
+        "tooltip": true,
+        "tooltip-format": "{status}"
+    },
 
+    "custom/notifications": {
+        "exec": "~/.config/waybar/scripts/notifications.sh",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 15,
+        "on-click": "~/.config/sway/scripts/mako-dnd.sh toggle",
+        "on-click-right": "makoctl dismiss -a",
+        "tooltip": true
+    },
 
     "battery": {
         "bat": "BAT1",
-        "adapter": "ACAD",
+        "adapter": "ADP0",
         "interval": 30,
         "states": {
             "good": 80,

@@ -31,12 +31,12 @@ case "$MODE" in
         echo -e "$OPTIONS" | rofi -dmenu -p "Power" -theme "$THEME" | {
             read -r choice
             case "$choice" in
-                Lock)     hyprlock ;;
-                Logout)   hyprctl dispatch "hl.dsp.exit()" ;;
-                Reboot)   systemctl reboot ;;
-                Shutdown) systemctl poweroff ;;
-                Suspend)  systemctl suspend ;;
-                Hibernate) systemctl hibernate ;;
+                Lock)     swaylock ;;
+                Logout)   swaymsg exit ;;
+                Reboot)   loginctl reboot ;;
+                Shutdown) loginctl poweroff ;;
+                Suspend)  loginctl suspend ;;
+                Hibernate) loginctl hibernate ;;
             esac
         }
         ;;
@@ -77,8 +77,8 @@ case "$MODE" in
         [ "$confirm" = "Yes, wipe history" ] && cliphist wipe
         ;;
     keybinds|keybinds_menu|menu-keybinds)
-        # Live keybindings cheatsheet parsed from hyprland.lua
-        "$HOME/.config/hypr/scripts/keybinds-cheatsheet.sh"
+        # Live keybindings cheatsheet parsed from the sway config
+        "$HOME/.config/sway/scripts/keybinds-cheatsheet.sh"
         ;;
     *)
         echo "Unknown mode: $MODE" >&2

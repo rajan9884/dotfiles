@@ -7,28 +7,16 @@ input_path = "~/.config/matugen/templates/waybar.css"
 output_path = "~/.config/waybar/colors.css"
 
 [templates.foot]
-input_path = "~/.config/matugen/templates/foot.ini"
+input_path = "~/.config/matugen/templates/foot-colors.ini"
 output_path = "~/.config/foot/colors.ini"
 
 [templates.alacritty]
-input_path = "~/.config/matugen/templates/alacritty.toml"
+input_path = "~/.config/matugen/templates/alacritty-colors.toml"
 output_path = "~/.config/alacritty/colors.toml"
-
-[templates.zathura]
-input_path = "~/.config/matugen/templates/zathura"
-output_path = "~/.config/zathura/colors"
 
 [templates.rofi]
 input_path = "~/.config/matugen/templates/rofi.rasi"
 output_path = "~/.config/rofi/colors.rasi"
-
-[templates.hyprland]
-input_path = "~/.config/matugen/templates/hyprland.conf"
-output_path = "~/.config/hypr/colors.conf"
-
-[templates.hyprland_lua]
-input_path = "~/.config/matugen/templates/hyprland.lua"
-output_path = "~/.config/hypr/colors.lua"
 
 [templates.pywalfox]
 input_path = "~/.config/matugen/templates/pywalfox.json"
@@ -66,6 +54,10 @@ output_path = "~/.config/gtk-4.0/gtk-dark.css"
 input_path = "~/.config/matugen/templates/sourceview.xml"
 output_path = "~/.local/share/gtksourceview-5/styles/Matugen.xml"
 
+[templates.sushi_builder_dark]
+input_path = "~/.config/matugen/templates/sushi-builder-dark.xml"
+output_path = "~/.local/share/gtksourceview-4/styles/builder-dark.style-scheme.xml"
+
 [templates.swayosd]
 input_path = "~/.config/matugen/templates/swayosd.css"
 output_path = "~/.config/swayosd/style.css"
@@ -86,13 +78,9 @@ output_path = "~/.config/ghostty/config"
 input_path = "~/.config/matugen/templates/btop.theme"
 output_path = "~/.config/btop/themes/matugen.theme"
 
-[templates.hyprlock]
-input_path = "~/.config/matugen/templates/hyprlock.conf"
-output_path = "~/.config/hypr/hyprlock-colors.conf"
-
 [templates.mako]
-input_path = "~/.config/matugen/templates/mako.conf"
-output_path = "~/.config/mako/config"
+input_path = "~/.config/matugen/templates/mako-colors"
+output_path = "~/.config/mako/colors"
 
 [templates.starship]
 input_path = "~/.config/matugen/templates/starship.toml"
@@ -101,3 +89,11 @@ output_path = "~/.config/starship.toml"
 [templates.fastfetch]
 input_path = "~/.config/matugen/templates/fastfetch.jsonc"
 output_path = "~/.config/fastfetch/config.jsonc"
+
+[templates.sway]
+input_path = "~/.config/matugen/templates/sway-colors"
+output_path = "~/.config/sway/colors"
+
+[templates.swaylock]
+input_path = "~/.config/matugen/templates/swaylock-config"
+output_path = "~/.config/sway/swaylock-config"

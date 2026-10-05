@@ -8,18 +8,59 @@
 
 set -euo pipefail
 
+# Sway keybinds run with a minimal PATH (no ~/.local/bin): `tesseract` only
+# exists as a ~/.local/bin shim (real binaries are named tesseract-ocr).
+export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$PATH"
+# Resolve the OCR binary once; fall back to the real name if the shim is gone.
+TESSERACT="$(command -v tesseract 2>/dev/null || command -v tesseract-ocr 2>/dev/null || echo tesseract)"
+
 TMP_PNG="$(mktemp -t ocr-XXXXXX.png)"
-trap 'rm -f "$TMP_PNG"' EXIT
+TMP_PROC="$(mktemp -t ocr-proc-XXXXXX.png)"
+trap 'rm -f "$TMP_PNG" "$TMP_PROC"' EXIT
 
 if ! grim -g "$(slurp -d)" "$TMP_PNG" 2>/dev/null; then
     notify-send "OCR" "Screenshot cancelled" -u low
     exit 1
 fi
 
-TEXT="$(tesseract "$TMP_PNG" - -l eng 2>/dev/null || true)"
-TEXT="$(printf '%s' "$TEXT" | sed -e 's/[[:space:]]\+$//' -e '/^$/d')"
+# Preprocess for tesseract: grayscale + upscale small regions so tiny UI
+# text reaches a readable DPI. Mode: upscale | upscale-invert (dark UIs).
+preprocess() {
+    python3 - "$1" "$2" "$3" <<'EOF' 2>/dev/null
+import sys
+from PIL import Image, ImageOps
+mode, src, dst = sys.argv[1], sys.argv[2], sys.argv[3]
+img = Image.open(src).convert('L')
+w, h = img.size
+if min(w, h) < 1200:
+    s = max(2, 1200 // max(1, min(w, h)))
+    img = img.resize((w * s, h * s), Image.LANCZOS)
+if mode == 'upscale-invert':
+    img = ImageOps.invert(img)
+img.save(dst)
+EOF
+}
+
+run_ocr() {
+    "$TESSERACT" "$1" stdout -l eng 2>/dev/null | sed -e 's/[[:space:]]\+$//' -e '/^$/d' || true
+}
+
+TEXT="$(run_ocr "$TMP_PNG")"
+if [[ -z "$TEXT" ]] && preprocess upscale "$TMP_PNG" "$TMP_PROC"; then
+    TEXT="$(run_ocr "$TMP_PROC")"
+fi
+if [[ -z "$TEXT" ]] && preprocess upscale-invert "$TMP_PNG" "$TMP_PROC"; then
+    TEXT="$(run_ocr "$TMP_PROC")"
+fi
+
+# Debug trace for the next failure report (geometry, sizes, result length).
+{
+    echo "ts=$(date '+%F %T') png_bytes=$(stat -c%s "$TMP_PNG" 2>/dev/null || echo 0)"
+    echo "text_chars=${#TEXT}"
+} > /tmp/ocr-last.log 2>/dev/null || true
 
 if [[ -z "$TEXT" ]]; then
+    wl-copy --clear 2>/dev/null || true
     notify-send "OCR" "No text detected" -u low
     exit 0
 fi
@@ -28,5 +69,6 @@ printf '%s' "$TEXT" | wl-copy
 
 PREVIEW="$(printf '%s' "$TEXT" | head -c 200)"
 [[ ${#TEXT} -gt 200 ]] && PREVIEW="${PREVIEW}…"
+[[ -z "$PREVIEW" ]] && PREVIEW="(${#TEXT} chars)"
 
-notify-send "OCR — copied to clipboard" "$PREVIEW" -u low
+notify-send -u low "OCR — copied to clipboard" -- "$PREVIEW"
