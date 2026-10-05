@@ -20,7 +20,7 @@ window#waybar {
     border: 1px solid alpha(@outline, 0.15);
 }
 
-/* ── Launcher (void logo, no background — color on glyph only) ── */
+/* ── Launcher (arch logo, no background — color on glyph only) ── */
 #custom-launcher {
     font-size: 18px;
     color: @primary;
@@ -55,11 +55,16 @@ window#waybar {
     font-size: 13px;
     font-weight: 700;
     background: transparent;
+    box-shadow: none;
+    text-shadow: none;
+    outline: none;
 }
 
 #workspaces button:hover {
     color: @primary;
     background: alpha(@primary, 0.12);
+    box-shadow: none;
+    text-shadow: none;
 }
 
 /* Current: solid dot, no background */
