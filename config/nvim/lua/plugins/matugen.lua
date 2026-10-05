@@ -27,6 +27,21 @@ return {
       local tertiary = c.tertiary
       local tertiary_fixed = c.tertiary_fixed or c.tertiary
       local error = c.error
+      local function lighten(hex, amt)
+        if type(hex) ~= "string" then
+          return hex
+        end
+        local r = tonumber(hex:sub(2, 3), 16)
+        local g = tonumber(hex:sub(4, 5), 16)
+        local b = tonumber(hex:sub(6, 7), 16)
+        if not (r and g and b) then
+          return hex
+        end
+        local function up(v)
+          return math.floor(v + (255 - v) * amt + 0.5)
+        end
+        return string.format("#%02x%02x%02x", up(r), up(g), up(b))
+      end
       opts.on_colors = function(colors)
         -- base
         if c.bg then
@@ -60,7 +75,7 @@ return {
         if primary then
           colors.blue = primary
           colors.blue0 = primary
-          colors.blue1 = c.on_primary or primary
+          colors.blue1 = primary_fixed or primary
           colors.blue2 = c.inverse_surface or primary
           colors.blue5 = primary
           colors.blue6 = primary
@@ -123,6 +138,18 @@ return {
             colors.diff.delete = error
           end
           colors.diff.text = primary_fixed or primary
+        end
+      end
+      opts.on_highlights = function(hl)
+        -- Stylesheet keys brighter than values: with near-monochrome
+        -- wallpapers Type (keys) and Constant (values) land on almost
+        -- identical grays, so lift the key groups toward white. cssProp
+        -- covers every css*Prop link; @property covers treesitter CSS
+        -- if a parser is ever installed.
+        if primary then
+          local key = lighten(primary, 0.45)
+          hl.cssProp = { fg = key }
+          hl["@property"] = { fg = key }
         end
       end
     end,

@@ -72,8 +72,7 @@ exec ~/.config/sway/scripts/waybar-launch.sh
 exec sh -c "pgrep -x swayosd-server >/dev/null || exec swayosd-server"
 exec mako
 exec thunar --daemon 2>/dev/null # volume automount (replaces udiskie) + faster windows
-# Removed: nm-applet / blueman-applet (floating-bar uses native
-# custom/wifi + bluetooth modules; the tray applets duplicated them)
+# Removed: nm-applet (floating-bar uses native custom/wifi; the tray applet duplicated it)
 exec autotiling
 exec sh -c "gsettings set org.gnome.desktop.interface color-scheme prefer-dark 2>/dev/null || true"
 exec sh -c "wl-paste --watch cliphist store"
@@ -180,8 +179,6 @@ bindsym $mod+Alt+w exec $swayscripts/waybar-theme-toggle.sh
 bindsym $mod+Alt+Shift+w exec ~/.local/bin/webapp-install-prompt
 # > Remove web app
 bindsym $mod+Alt+Shift+x exec ~/.local/bin/webapp-remove-prompt
-# > Share WiFi via QR
-bindsym $mod+Alt+q exec ~/.local/bin/wifi-share-prompt
 # > Emoji picker
 bindsym $mod+period exec ~/.local/bin/menu-emoji
 # > Emoji picker (alt)
@@ -192,8 +189,6 @@ bindsym $mod+Ctrl+q exec rofi -show calc -modi calc -theme ~/.config/rofi/active
 bindsym $mod+Ctrl+w exec $term -e nmtui
 # > Power / logout menu
 bindsym $mod+Ctrl+p exec ~/.config/waybar/scripts/power-menu.sh
-# > Bluetooth menu
-bindsym $mod+Ctrl+b exec ~/.config/waybar/scripts/bluetooth-menu.sh
 # > Control center
 bindsym $mod+Alt+c exec ~/.config/waybar/scripts/control-center.sh
 # > Toggle night light (wlsunset)

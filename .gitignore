@@ -21,6 +21,9 @@ config/nvim/lua/matugen-colors.lua
 config/helium-theme/manifest.json
 config/hypr/hyprlock-colors.conf
 config/mako/config
+config/mako/colors
+config/sway/colors
+config/sway/swaylock-config
 config/gtk-3.0/gtk.css
 config/gtk-4.0/gtk.css
 config/gtk-4.0/gtk-dark.css

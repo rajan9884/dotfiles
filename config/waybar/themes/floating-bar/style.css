@@ -105,14 +105,14 @@ window#waybar {
     -gtk-icon-effect: dim;
 }
 
-#pulseaudio, #battery, #backlight, #bluetooth, #custom-wifi, #custom-notifications, #custom-idle, #custom-record, #custom-voxtype {
+#pulseaudio, #battery, #backlight, #custom-wifi, #custom-idle, #custom-record, #custom-voxtype {
     padding: 0 8px;
     margin: 4px 1px;
     border-radius: 10px;
     transition: all 200ms ease;
 }
 
-#backlight:hover, #bluetooth:hover, #custom-wifi:hover, #custom-notifications:hover, #custom-idle:hover, #pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
+#backlight:hover, #custom-wifi:hover, #custom-idle:hover, #pulseaudio:hover, #battery:hover, #custom-record:hover, #custom-voxtype:hover {
     background: alpha(@primary, 0.12);
 }
 
@@ -129,28 +129,11 @@ window#waybar {
     opacity: 0.55;
 }
 
-#bluetooth {
-    color: @secondary;
-}
-
-#bluetooth.disabled,
-#bluetooth.off {
-    opacity: 0.55;
-}
-
-#custom-notifications {
-    color: @on_surface;
-}
-
 #custom-idle {
     color: @on_surface;
 }
 
 #custom-idle.inhibited {
-    color: @tertiary;
-}
-
-#custom-notifications.has-notifications {
     color: @tertiary;
 }
 

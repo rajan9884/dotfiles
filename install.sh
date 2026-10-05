@@ -17,7 +17,7 @@
 #     7. pactl shim (PipeWire-only machines, volume OSD backend).
 #     8. Generate the matugen palette from a wallpaper in the library.
 #     8b. Bind cliamp to ~/Music: one live [[dir]] playlist per Music folder.
-#     9. Configure system & user services (audio, network, bluetooth, power,
+#     9. Configure system & user services (audio, network, power,
 #        groups, xdg-user-dirs, MIME types).
 #    10. Verify EVERYTHING and fail loudly if anything is missing.
 #
@@ -57,12 +57,12 @@ fi
 # so expose it as SUDO_ASKPASS and validate with `sudo -A` — the whole run
 # then re-prompts visibly if the timestamp lapses. (First run on minimal Arch
 # may not have rofi yet; it gets installed in step 1 and the askpass kicks in
-# on re-runs. If askpass.rasi's matugen colors are missing, plain rofi is used.)
+# on re-runs. If active-scripts.rasi's matugen colors are missing, plain rofi is used.)
 SUDO_ASKPASS_TMP=""
 if ! sudo -n -v 2>/dev/null && [ -z "${SUDO_ASKPASS:-}" ] && command -v rofi >/dev/null 2>&1; then
     SUDO_ASKPASS_TMP="$(mktemp)"
     {
-        printf '%s\n' '#!/usr/bin/env bash' "ROFI_THEME=\"$REPO_ROOT/config/rofi/askpass.rasi\""
+        printf '%s\n' '#!/usr/bin/env bash' "ROFI_THEME=\"$REPO_ROOT/config/rofi/active-scripts.rasi\""
         printf '%s\n' 'if [ -f "${ROFI_THEME%/*}/colors.rasi" ]; then' '    exec timeout 120 rofi -dmenu -password -p "sudo password" -theme "$ROFI_THEME"' 'else' '    exec timeout 120 rofi -dmenu -password -p "sudo password"' 'fi'
     } > "$SUDO_ASKPASS_TMP"
     chmod +x "$SUDO_ASKPASS_TMP"
@@ -474,10 +474,9 @@ sudo usermod -aG video,input "$USER" 2>/dev/null && info "added $USER to video a
 systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service >/dev/null 2>&1 \
     && info "PipeWire audio services enabled" || true
 
-# 9d. NetworkManager & Bluetooth system services
+# 9d. NetworkManager system service
 if command -v systemctl >/dev/null 2>&1; then
     sudo systemctl enable NetworkManager.service >/dev/null 2>&1 && info "NetworkManager enabled" || true
-    sudo systemctl enable bluetooth.service >/dev/null 2>&1 && info "bluetooth service enabled" || true
     if command -v powerprofilesctl >/dev/null 2>&1; then
         sudo systemctl enable --now power-profiles-daemon.service >/dev/null 2>&1 && info "power-profiles-daemon active" || true
     fi
