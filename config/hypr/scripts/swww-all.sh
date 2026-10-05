@@ -23,8 +23,10 @@ printf '%s' "$WALLPAPER" > ~/.cache/current-wallpaper
 
 # 2. Extract colors with Matugen (tonal-spot: faithful wallpaper hues;
 # content/expressive shift or mute saturation and wash out terminals)
-# This updates colors for Waybar, Rofi, Foot, Hyprland, etc.
-matugen image "$WALLPAPER" --type scheme-tonal-spot -c ~/.config/matugen/config.toml --source-color-index 0
+# This updates colors for Waybar, Rofi, Foot, Hyprland, Neovim, etc.
+# --prefer keeps matugen 4.2.0 non-interactive (no TTY prompt);
+# --source-color-index kept for older matugen compat (ignored on 4.2.0).
+matugen image "$WALLPAPER" --type scheme-tonal-spot -c ~/.config/matugen/config.toml --prefer darkness --source-color-index 0
 
 # 2.5 Update Chromium/Helium theme
 # matugen rewrites ~/.config/helium-theme/manifest.json but keeps
@@ -72,13 +74,21 @@ killall -SIGUSR1 foot 2>/dev/null || true
 # or we can use hyprctl reload
 hyprctl reload
 
-# 6. Reload Thunar
-# GTK3 apps read ~/.config/gtk-3.0/gtk.css only at launch, so quit thunar
-# to pick up the new palette. Only when a thunar WINDOW is open, otherwise a
-# restart would silently pop a new window on the active workspace.
-if hyprctl clients -j | grep -Fq '"class": "Thunar"'; then
-    pkill -x thunar 2>/dev/null
-    thunar >/dev/null 2>&1 &
+# 6. Reload Thunar / GTK
+# GTK3 apps read ~/.config/gtk-3.0/gtk.css once at process start, and every
+# Thunar window is owned by the `thunar --daemon` background process — so the
+# daemon must be bounced on EVERY switch (even with no window open),
+# otherwise the next window inherits the previous wallpaper's theme.
+# Tray context menus are GTK menus too (see Waybar note above).
+THUNAR_WAS_OPEN=false
+hyprctl clients -j 2>/dev/null | grep -Fq '"class": "Thunar"' && THUNAR_WAS_OPEN=true
+pkill -x thunar 2>/dev/null || true
+pkill -x Thunar 2>/dev/null || true
+sleep 0.3
+setsid thunar --daemon >/dev/null 2>&1 < /dev/null &
+if [ "$THUNAR_WAS_OPEN" = true ]; then
+    sleep 0.5
+    setsid thunar >/dev/null 2>&1 < /dev/null &
 fi
 
 # 6.5 Neovim

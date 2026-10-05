@@ -80,7 +80,7 @@ output_path = "~/.config/Code/User/matugen-colors.json"
 
 [templates.ghostty]
 input_path = "~/.config/matugen/templates/ghostty.conf"
-output_path = "~/.config/ghostty/config.ghostty"
+output_path = "~/.config/ghostty/config"
 
 [templates.btop]
 input_path = "~/.config/matugen/templates/btop.theme"
@@ -97,3 +97,7 @@ output_path = "~/.config/mako/config"
 [templates.starship]
 input_path = "~/.config/matugen/templates/starship.toml"
 output_path = "~/.config/starship.toml"
+
+[templates.fastfetch]
+input_path = "~/.config/matugen/templates/fastfetch.jsonc"
+output_path = "~/.config/fastfetch/config.jsonc"

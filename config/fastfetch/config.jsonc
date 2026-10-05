@@ -16,140 +16,146 @@
 
     {
       "type": "custom",
-      "format": "\u001b[1;35m╭────────────────────────────────── SYSTEM ──────────────────────────────────╮\u001b[0m"
+      "format": "\u001b[1;38;2;255;182;136m╭────────────────────────────────── SYSTEM ──────────────────────────────────╮\u001b[0m"
     },
 
     {
       "type": "os",
       "key": "󰣇 OS",
-      "keyColor": "magenta"
+      "keyColor": "#ffb688"
     },
     {
       "type": "host",
       "key": "󰌢 Host",
-      "keyColor": "magenta"
+      "keyColor": "#ffb688"
     },
     {
       "type": "kernel",
       "key": "󰌽 Kernel",
-      "keyColor": "magenta"
+      "keyColor": "#ffb688"
     },
     {
       "type": "uptime",
       "key": "󰅐 Uptime",
-      "keyColor": "magenta"
+      "keyColor": "#ffb688"
     },
     {
       "type": "packages",
       "key": "󰏖 Packages",
-      "keyColor": "magenta"
+      "keyColor": "#ffb688"
     },
     {
       "type": "shell",
       "key": " Shell",
-      "keyColor": "magenta"
+      "keyColor": "#ffb688"
     },
 
     {
       "type": "custom",
-      "format": "\u001b[1;35m╰────────────────────────────────────────────────────────────────────────────╯\u001b[0m"
+      "format": "\u001b[1;38;2;255;182;136m╰────────────────────────────────────────────────────────────────────────────╯\u001b[0m"
     },
 
     {
       "type": "custom",
-      "format": "\u001b[1;34m╭───────────────────────────────── DESKTOP ──────────────────────────────────╮\u001b[0m"
+      "format": "\u001b[1;38;2;229;191;169m╭───────────────────────────────── DESKTOP ──────────────────────────────────╮\u001b[0m"
     },
 
     {
       "type": "display",
       "key": "󰍹 Display",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
     {
       "type": "de",
       "key": "󰘔 DE",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
     {
       "type": "wm",
       "key": "󰖲 WM",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
     {
       "type": "wmtheme",
       "key": "󰋜 WM Theme",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
     {
       "type": "theme",
       "key": "󰔎 Theme",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
     {
       "type": "icons",
       "key": "󰀻 Icons",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
     {
       "type": "font",
       "key": "󰛖 Font",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
     {
       "type": "cursor",
       "key": "󰇀 Cursor",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
     {
       "type": "terminal",
       "key": " Terminal",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
     {
       "type": "terminalfont",
       "key": " Term Font",
-      "keyColor": "blue"
+      "keyColor": "#e5bfa9"
     },
 
     {
       "type": "custom",
-      "format": "\u001b[1;34m╰────────────────────────────────────────────────────────────────────────────╯\u001b[0m"
+      "format": "\u001b[1;38;2;229;191;169m╰────────────────────────────────────────────────────────────────────────────╯\u001b[0m"
     },
 
     {
       "type": "custom",
-      "format": "\u001b[1;32m╭───────────────────────────────── HARDWARE ─────────────────────────────────╮\u001b[0m"
+      "format": "\u001b[1;38;2;202;202;147m╭───────────────────────────────── HARDWARE ─────────────────────────────────╮\u001b[0m"
     },
 
     {
       "type": "cpu",
       "key": " CPU",
-      "keyColor": "green"
+      "keyColor": "#caca93"
     },
     {
       "type": "gpu",
       "key": "󰢮 GPU",
-      "keyColor": "green"
+      "keyColor": "#caca93"
     },
     {
       "type": "memory",
       "key": "󰍛 Memory",
-      "keyColor": "green"
+      "keyColor": "#caca93"
     },
     {
       "type": "swap",
       "key": "󰾴 Swap",
-      "keyColor": "green"
+      "keyColor": "#caca93"
     },
     {
       "type": "disk",
       "key": "󰋊 Disk",
-      "keyColor": "green"
+      "keyColor": "#caca93"
     },
 
     {
       "type": "custom",
-      "format": "\u001b[1;32m╰────────────────────────────────────────────────────────────────────────────╯\u001b[0m"
+      "format": "\u001b[1;38;2;202;202;147m╰────────────────────────────────────────────────────────────────────────────╯\u001b[0m"
     },
+
+    "separator",
+
+    {
+      "type": "colors"
+    }
   ]
 }
