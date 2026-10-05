@@ -21,9 +21,8 @@ case ${chosen} in
         swaylock
         ;;
     $suspend)
-        loginctl suspend
-        ;;
-    $logout)
+        systemctl suspend
+        ;;    $logout)
         swaymsg exit
         ;;
     *)

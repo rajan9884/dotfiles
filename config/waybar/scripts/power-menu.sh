@@ -65,26 +65,34 @@ handle_selection() {
     local choice="$1"
     choice="${choice%"${choice##*[![:space:]]}"}"
 
+    # Suffix match on the label: immune to icon-font substitutions or
+    # stray padding rofi may introduce around the row text.
     case "$choice" in
-        "$I_LOCK  Lock")
+        *Lock)
             swaylock & ;;
 
-        "$I_LOGOUT  Logout")
+        *Logout)
             if confirm_action "logout"; then
                 swaymsg exit
             fi ;;
 
-        "$I_SLEEP  Sleep (suspend)")
+        *suspend*)
             if confirm_action "suspend"; then
-                loginctl suspend
+                if ! err=$(systemctl suspend 2>&1); then
+                    notify "Suspend failed" "${err:-exit code $?}"
+                fi
             fi ;;
 
-        "$I_REBOOT  Reboot")
-            loginctl reboot ;;
+        *Reboot)
+            if ! err=$(systemctl reboot 2>&1); then
+                notify "Reboot failed" "${err:-exit code $?}"
+            fi ;;
 
-        "$I_SHUTDOWN  Shutdown")
+        *Shutdown)
             if confirm_action "shutdown"; then
-                loginctl poweroff
+                if ! err=$(systemctl poweroff 2>&1); then
+                    notify "Shutdown failed" "${err:-exit code $?}"
+                fi
             fi ;;
 
         *) notify "Nothing selected" "Pick a power action" ;;

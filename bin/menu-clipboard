@@ -33,10 +33,10 @@ case "$MODE" in
             case "$choice" in
                 Lock)     swaylock ;;
                 Logout)   swaymsg exit ;;
-                Reboot)   loginctl reboot ;;
-                Shutdown) loginctl poweroff ;;
-                Suspend)  loginctl suspend ;;
-                Hibernate) loginctl hibernate ;;
+                Reboot)   systemctl reboot ;;
+                Shutdown) systemctl poweroff ;;
+                Suspend)  systemctl suspend ;;
+                Hibernate) systemctl hibernate ;;
             esac
         }
         ;;
