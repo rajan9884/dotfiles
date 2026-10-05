@@ -11,7 +11,11 @@ config/hypr/colors.lua
 config/waybar/colors.css
 config/foot/colors.ini
 config/rofi/colors.rasi
-config/ghostty/config.ghostty
+config/ghostty/config
+config/alacritty/colors.toml
+config/zathura/colors
+config/fastfetch/config.jsonc
+config/starship.toml
 config/swayosd/style.css
 config/btop/themes/matugen.theme
 config/nvim/lua/matugen-colors.lua
