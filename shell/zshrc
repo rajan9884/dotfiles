@@ -14,9 +14,10 @@ alias ..="cd ../"
 [ -f "$HOME/dotfiles/shell/git-accounts.sh" ] && source "$HOME/dotfiles/shell/git-accounts.sh"
 
 # ── LS colours + completion colours ──
-# Palette codes (0-15) not 256-index: they follow the matugen-theed
-# terminal palette (ghostty/foot map color4=primary, color6=tertiary_container).
-export LS_COLORS="di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32"
+# NOTE: plain cyan (36) / magenta (35) slots go near-black on monochrome
+# wallpapers (matugen palette), so symlinks use bold+underline white to
+# stay visible instead of following the palette.
+export LS_COLORS="di=01;34:ln=01;04;37:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32"
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # ── Prompt (starship + matugen palette) ──
