@@ -125,6 +125,11 @@ for_window [app_id="^xarchiver$"] floating enable, resize set 800 600, move posi
 for_window [app_id="^webapp-(install|remove)$"] floating enable, resize set 700 400, move position center
 # FileChooser portal (Chromium upload/open): otherwise tiles fullscreen
 for_window [app_id="xdg-desktop-portal-gtk"] floating enable, resize set 900 650, move position center
+# Thunar Preferences is taller than small HiDPI outputs: sway centers it
+# on the full output so its titlebar lands behind waybar (theme compacts
+# dialog content in gtk3.css to keep it close). Nudge down on open so the
+# titlebar clears the bar and Help/Close stay on-screen.
+for_window [title="Thunar Preferences"] move down 14 px
 
 # Lid close locks (ported from the Hyprland lid-switch bind)
 bindswitch lid:on exec $swayscripts/lid-close.sh # Lock on lid close

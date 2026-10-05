@@ -346,6 +346,33 @@ notebook tab:checked {
     border-radius: 10px 10px 0 0;
 }
 
+/* Thunar Preferences is taller than small HiDPI outputs, so compact
+   dialog rows/tabs/buttons and set dialog type to 85% (still very
+   readable at 2x). GType selectors don't match this dialog's CSS nodes,
+   so this uses the plain dialog type — affects dialog windows only,
+   never main app content. */
+dialog checkbutton, dialog radiobutton {
+    padding-top: 0;
+    padding-bottom: 0;
+    /* Indicators are 16px before the 2x scale factor; 12px keeps rows
+       proportional to the 85% dialog type. */
+    -GtkCheckButton-indicator-size: 12;
+    -GtkRadioButton-indicator-size: 12;
+}
+
+dialog notebook tab {
+    padding: 3px 10px;
+}
+
+dialog button {
+    padding: 3px 10px;
+    min-height: 0;
+}
+
+dialog {
+    font-size: 85%;
+}
+
 /* Lists (Open-With app list, places) */
 list {
     background-color: {{colors.surface.default.hex}};
