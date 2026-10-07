@@ -117,9 +117,10 @@ workspace_layout default
 # VS Code: whisper of transparency (Arch parity: code-translucent 0.92/0.88;
 # sway takes a single value — active 0.92 wins, same as alacritty).
 for_window [app_id="^(code|Code|code-oss)$"] opacity 0.92
-# Floating popups: PDF (zathura) + image preview (imv) + archives
+# Floating popups: PDF (zathura) + image preview (imv) + video (mpv) + archives
 for_window [app_id="^org.pwmt.zathura$"] floating enable, resize set 1000 700, move position center
-for_window [app_id="^imv"] floating enable, move position center
+for_window [app_id="^imv$"] floating enable, resize set 1000 700, move position center
+for_window [app_id="^mpv$"] floating enable, resize set 960 540, move position center
 for_window [app_id="^xarchiver$"] floating enable, resize set 800 600, move position center
 # Webapp installer/remover prompts (terminal wrappers): small centered float
 for_window [app_id="^webapp-(install|remove)$"] floating enable, resize set 700 400, move position center
