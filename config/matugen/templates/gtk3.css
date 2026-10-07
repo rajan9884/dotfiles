@@ -1,113 +1,6 @@
 /* Matugen Dynamic GTK3 Colors */
 /* Applied to Thunar, and all GTK3 apps */
 
-/* ── Nautilus-style modern Thunar ───────────────────────────
-   Thunar is GTK3, so it picks up everything above plus these
-   libadwaita-flavored overrides: floating rounded sidebar rows,
-   pill pathbar, flat toolbar/statusbar. All colors follow the
-   wallpaper via matugen — no theme packs. */
-
-.thunar toolbar, window.thunar toolbar {
-    background-color: {{colors.surface.default.hex}};
-    border-bottom: 1px solid {{colors.outline_variant.default.hex}};
-    padding: 6px;
-}
-
-.thunar headerbar {
-    background-color: {{colors.surface.default.hex}};
-    border-bottom: 1px solid {{colors.outline_variant.default.hex}};
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    padding: 6px 10px;
-}
-
-.thunar headerbar button {
-    border-radius: 999px;
-    min-width: 32px;
-    min-height: 32px;
-}
-
-.thunar headerbar button:hover {
-    background-color: alpha({{colors.primary.default.hex}}, 0.14);
-}
-
-/* Pill breadcrumbs */
-.thunar .path-bar button, .thunar .linked button {
-    background-color: transparent;
-    border-radius: 999px;
-    padding: 4px 12px;
-    margin: 1px;
-}
-
-.thunar .path-bar button:hover {
-    background-color: alpha({{colors.primary.default.hex}}, 0.12);
-}
-
-.thunar .path-bar button:checked {
-    background-color: {{colors.primary_container.default.hex}};
-    color: {{colors.on_primary_container.default.hex}};
-}
-
-/* Floating rounded sidebar rows (Nautilus-style) — same surface as the
-   file view so sidebar, address bar and content read as one canvas */
-.thunar placessidebar, .thunar .sidebar {
-    background-color: {{colors.surface.default.hex}};
-    padding: 8px 6px;
-}
-
-.thunar placessidebar row {
-    border-radius: 10px;
-    padding: 5px 10px;
-    margin: 1px 4px;
-}
-
-.thunar placessidebar row:selected {
-    background-color: {{colors.primary_container.default.hex}};
-    color: {{colors.on_primary_container.default.hex}};
-}
-
-.thunar placessidebar row:selected image {
-    color: {{colors.on_primary_container.default.hex}};
-}
-
-/* Roomy file view */
-.thunar .view {
-    padding: 4px;
-}
-
-.thunar treeview {
-    -GtkTreeView-expander-size: 14;
-}
-
-.thunar treeview row {
-    padding: 3px 0;
-}
-
-.thunar statusbar {
-    background-color: {{colors.surface.default.hex}};
-    border-top: 1px solid {{colors.outline_variant.default.hex}};
-}
-
-/* Rubberband + selection */
-.thunar rubberband, rubberband {
-    background-color: alpha({{colors.primary.default.hex}}, 0.18);
-    border: 1px solid {{colors.primary.default.hex}};
-    border-radius: 8px;
-}
-
-/* Info bars (e.g. unmounted volume notice) */
-.thunar infobar {
-    background-color: {{colors.surface_container_high.default.hex}};
-    color: {{colors.on_surface.default.hex}};
-    border-bottom: 1px solid {{colors.outline_variant.default.hex}};
-}
-
-.thunar infobar button {
-    border-radius: 999px;
-}
-
-/* ── Base palette (shared with all GTK3 apps) ─────────────── */
-
 @define-color theme_bg_color {{colors.surface.default.hex}};
 @define-color theme_fg_color {{colors.on_surface.default.hex}};
 @define-color theme_base_color {{colors.surface.default.hex}};
@@ -119,9 +12,33 @@
 @define-color theme_unfocused_bg_color {{colors.surface.default.hex}};
 @define-color theme_unfocused_fg_color {{colors.on_surface_variant.default.hex}};
 
-/* Sidebar */
+/* adw-gtk3 variable bridge — the theme paints window/headerbar/view/
+   sidebar/popover from its OWN @vars (ignoring theme_*), so remap them
+   to matugen slots. This kills the residual #222226/#2e2e32/#36363a
+   grays (and white text) in every GTK3 app, adaptively per wallpaper. */
+@define-color window_bg_color {{colors.surface.default.hex}};
+@define-color window_fg_color {{colors.on_surface.default.hex}};
+@define-color view_bg_color {{colors.surface.default.hex}};
+@define-color view_fg_color {{colors.on_surface.default.hex}};
+@define-color headerbar_bg_color {{colors.surface.default.hex}};
+@define-color headerbar_fg_color {{colors.on_surface.default.hex}};
+@define-color headerbar_border_color {{colors.outline_variant.default.hex}};
+@define-color headerbar_backdrop_color {{colors.surface.default.hex}};
+@define-color sidebar_bg_color {{colors.surface.default.hex}};
+@define-color sidebar_fg_color {{colors.on_surface.default.hex}};
+@define-color sidebar_backdrop_color {{colors.surface.default.hex}};
+@define-color sidebar_border_color {{colors.outline_variant.default.hex}};
+@define-color popover_bg_color {{colors.surface.default.hex}};
+@define-color popover_fg_color {{colors.on_surface.default.hex}};
+@define-color dialog_bg_color {{colors.surface.default.hex}};
+@define-color dialog_fg_color {{colors.on_surface.default.hex}};
+@define-color accent_bg_color {{colors.primary.default.hex}};
+@define-color accent_fg_color {{colors.on_primary.default.hex}};
+@define-color accent_color {{colors.primary.default.hex}};
+
+/* Sidebar — solid surface so it matches the main view (adaptive via matugen) */
 .sidebar, .sidebar .view, placessidebar, placessidebar .view {
-    background-color: {{colors.surface_container.default.hex}};
+    background-color: {{colors.surface.default.hex}};
     color: {{colors.on_surface.default.hex}};
 }
 
@@ -173,11 +90,11 @@ statusbar {
     color: {{colors.on_surface_variant.default.hex}};
 }
 
-/* Context Menu (nm-applet tray menu, popovers) */
+/* Context Menu (nm-applet tray menu, popovers) — solid surface (adaptive via matugen) */
 menu, popover, .popup {
-    background-color: {{colors.surface_container.default.hex}};
+    background-color: {{colors.surface.default.hex}};
     color: {{colors.on_surface.default.hex}};
-    border: 1px solid {{colors.outline_variant.default.hex}};
+    border: 1px solid {{colors.primary.default.hex}};
     border-radius: 12px;
     padding: 6px;
 }
@@ -202,432 +119,326 @@ menu separator, popover separator {
     margin: 6px 8px;
 }
 
-/* ── Popups, menus, dialogs (Thunar properties, Open-With, …) ──
-   Dialogs are their own toplevel windows: without an explicit window
-   background plus raised buttons they keep the theme's light gray.
-   Class variants included (.menu/.menuitem/window.popup) since popup
-   nodes don't always carry the plain element names. */
-
-/* Toplevel window + dialog canvas */
-window, dialog, messagedialog, .background {
-    background-color: {{colors.surface.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-    border-color: {{colors.outline_variant.default.hex}};
-}
-
-window.popup {
-    background-color: {{colors.surface_container.default.hex}};
-    background-image: none;
-    border: 1px solid {{colors.outline_variant.default.hex}};
-    border-radius: 12px;
-}
-
-/* Raised buttons (dialog action areas, choosers) — flat toolbar
-   buttons in Thunar keep their transparent rules above */
+/* Buttons */
 button {
-    background-color: {{colors.surface_container_high.default.hex}};
-    background-image: none;
-    border: 1px solid {{colors.outline_variant.default.hex}};
-    border-radius: 10px;
-    padding: 5px 12px;
     color: {{colors.on_surface.default.hex}};
 }
 
 button:hover {
     background-color: alpha({{colors.primary.default.hex}}, 0.12);
-    background-image: none;
-    border-color: {{colors.primary.default.hex}};
 }
 
-button:checked {
-    background-color: {{colors.primary_container.default.hex}};
-    background-image: none;
-    color: {{colors.on_primary_container.default.hex}};
-    border-color: transparent;
-}
+/* ── Thunar modern (Nautilus-like) ──
+   Rounded pills, soft hovers, flat chrome — all matugen-driven,
+   so every wallpaper switch recolors Thunar automatically. */
 
-button:disabled {
-    background-color: {{colors.surface_container.default.hex}};
-    color: {{colors.on_surface_variant.default.hex}};
-}
-
-/* Context menus, menu bars, combo popups */
-menu, .menu, context-menu, menubar,
-window.popup menu, combobox window.popup {
-    background-color: {{colors.surface_container.default.hex}};
-    background-image: none;
+/* Toolbar chrome: flat, airy, hairline separator */
+ThunarWindow toolbar, ThunarToolbar, .thunar toolbar {
+    padding: 6px 8px;
+    border-bottom: 1px solid {{colors.outline_variant.default.hex}};
+    background-color: {{colors.surface.default.hex}};
     color: {{colors.on_surface.default.hex}};
-    border: 1px solid {{colors.outline_variant.default.hex}};
-    border-radius: 12px;
+}
+
+/* Thunar titlebar + menubar: solid surface like the rest */
+ThunarWindow headerbar, ThunarWindow menubar,
+.thunar headerbar, .thunar menubar {
+    background-color: {{colors.surface.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+    border: none;
+    box-shadow: none;
+}
+
+ThunarWindow toolbar button, ThunarToolbar button,
+.thunar toolbar button, headerbar button {
+    border-radius: 10px;
     padding: 6px;
-}
-
-menuitem, .menuitem, menu menuitem, menubar menuitem,
-popover modelbutton {
-    background-color: transparent;
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
     border: none;
-    border-radius: 8px;
-    padding: 6px 12px;
+    box-shadow: none;
 }
 
-menuitem:hover, .menuitem:hover, menu menuitem:hover,
-menubar menuitem:hover, popover modelbutton:hover {
-    background-color: {{colors.primary.default.hex}};
-    background-image: none;
-    color: {{colors.on_primary.default.hex}};
+ThunarWindow toolbar button:hover, ThunarToolbar button:hover,
+.thunar toolbar button:hover, headerbar button:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.14);
 }
 
-menuitem:disabled, .menuitem:disabled {
-    color: {{colors.on_surface_variant.default.hex}};
+ThunarWindow toolbar button:checked, ThunarToolbar button:checked {
+    background-color: {{colors.primary_container.default.hex}};
+    color: {{colors.on_primary_container.default.hex}};
 }
 
-menuitem arrow, .menuitem arrow {
-    color: {{colors.on_surface_variant.default.hex}};
-}
-
-menuitem:hover arrow {
-    color: {{colors.on_primary.default.hex}};
-}
-
-menu separator, .menu separator {
-    background-color: {{colors.outline_variant.default.hex}};
-    background-image: none;
-    min-height: 1px;
-    margin: 6px 8px;
-}
-
-/* Tooltips */
-tooltip, tooltip.background, .tooltip {
-    background-color: {{colors.surface_container.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-    border: 1px solid {{colors.outline_variant.default.hex}};
-    border-radius: 8px;
-}
-
-/* Notebooks (properties dialog tabs) — generic, all apps */
-notebook, notebook header {
-    background-color: {{colors.surface.default.hex}};
-    background-image: none;
+/* Sidebar: inset list with pill rows */
+.thunar .sidebar, ThunarSidePane, ThunarSidePane .view,
+placessidebar, placessidebar viewport {
     border: none;
 }
 
-/* Notebook pages: the stack holding tab content keeps the theme's
-   light fill unless pinned (white Properties body) */
-notebook stack, notebook viewport,
-.thunar notebook stack, dialog notebook stack {
-    background-color: {{colors.surface.default.hex}};
-    background-image: none;
-    border: none;
-}
-
-notebook tab {
-    background-color: transparent;
-    background-image: none;
-    color: {{colors.on_surface_variant.default.hex}};
-    border: none;
-    border-radius: 10px 10px 0 0;
-    padding: 6px 12px;
-}
-
-notebook tab:hover {
-    background-color: alpha({{colors.primary.default.hex}}, 0.08);
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-}
-
-notebook tab:checked {
-    background-color: {{colors.surface_container_high.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-    border-radius: 10px 10px 0 0;
-}
-
-/* Thunar Preferences is taller than small HiDPI outputs, so compact
-   dialog rows/tabs/buttons and set dialog type to 85% (still very
-   readable at 2x). GType selectors don't match this dialog's CSS nodes,
-   so this uses the plain dialog type — affects dialog windows only,
-   never main app content. */
-dialog checkbutton, dialog radiobutton {
-    padding-top: 0;
-    padding-bottom: 0;
-    /* Indicators are 16px before the 2x scale factor; 12px keeps rows
-       proportional to the 85% dialog type. */
-    -GtkCheckButton-indicator-size: 12;
-    -GtkRadioButton-indicator-size: 12;
-}
-
-dialog notebook tab {
-    padding: 3px 10px;
-}
-
-dialog button {
-    padding: 3px 10px;
-    min-height: 0;
-}
-
-dialog {
-    font-size: 85%;
-}
-
-/* Dialog chrome vs fallback Adwaita: bare `button`/`headerbar` selectors
-   lose to Adwaita's class-qualified rules (headerbar.titlebar,
-   button.text-button, notebook header tabs), so focused dialogs render
-   light while unfocused ones look dark. Re-pin dark surfaces with
-   dialog-qualified selectors that outrank them. */
-dialog headerbar.titlebar, dialog .titlebar {
-    background-color: {{colors.surface_container.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-}
-
-dialog headerbar.titlebar button, dialog headerbar button,
-dialog button.text-button, dialog combobox button {
-    background-color: {{colors.surface_container_high.default.hex}};
-    background-image: none;
-    border: 1px solid {{colors.outline_variant.default.hex}};
+.thunar .sidebar row, ThunarSidePane row, placessidebar row {
     border-radius: 10px;
+    margin: 1px 8px;
+    padding: 7px 10px;
+}
+
+.thunar .sidebar row:hover, ThunarSidePane row:hover,
+placessidebar row:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.10);
+}
+
+.thunar .sidebar row:selected, ThunarSidePane row:selected,
+placessidebar row:selected {
+    background-color: {{colors.primary.default.hex}};
+    color: {{colors.on_primary.default.hex}};
+}
+
+/* Pathbar breadcrumbs: pill segments */
+.thunar .path-bar button, ThunarPathBar button {
+    border-radius: 10px;
+    padding: 4px 12px;
+    margin: 2px 1px;
+    border: none;
+    box-shadow: none;
+}
+
+.thunar .path-bar button:hover, ThunarPathBar button:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.14);
+}
+
+.thunar .path-bar button:checked, ThunarPathBar button:active {
+    background-color: {{colors.primary_container.default.hex}};
+    color: {{colors.on_primary_container.default.hex}};
+}
+
+/* Location entry / search: rounded field */
+.thunar entry, ThunarLocationEntry entry, ThunarSearchBox entry {
+    border-radius: 12px;
+    padding: 6px 12px;
+    border: 1px solid {{colors.outline_variant.default.hex}};
+    background-color: {{colors.surface.default.hex}};
     color: {{colors.on_surface.default.hex}};
 }
 
-dialog headerbar.titlebar button:hover, dialog headerbar button:hover,
-dialog button.text-button:hover, dialog combobox button:hover {
-    background-color: alpha({{colors.primary.default.hex}}, 0.12);
-    background-image: none;
+.thunar entry:focus, ThunarLocationEntry entry:focus {
     border-color: {{colors.primary.default.hex}};
 }
 
-dialog notebook header tab:checked {
-    background-color: {{colors.surface_container_high.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
+/* Main view: soft hover + pill selection */
+.thunar .view:hover, ThunarStandardView .view:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.06);
 }
 
-/* Lists (Open-With app list, places) */
-list {
-    background-color: {{colors.surface.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-}
-
-list row {
-    background-color: transparent;
-    background-image: none;
-    padding: 4px 8px;
-}
-
-list row:selected {
-    background-color: {{colors.primary_container.default.hex}};
-    background-image: none;
-    color: {{colors.on_primary_container.default.hex}};
+.thunar .view:selected, ThunarStandardView .view:selected {
     border-radius: 8px;
-}
-
-/* Column headers + frames/scales inside dialogs */
-treeview header button, column-header button {
-    background-color: {{colors.surface_container.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-    border: none;
-}
-
-frame, .frame {
-    background-color: transparent;
-    background-image: none;
-    border-color: {{colors.outline_variant.default.hex}};
-}
-
-progressbar trough {
-    background-color: {{colors.surface_container_high.default.hex}};
-    background-image: none;
-    border-radius: 999px;
-}
-
-progressbar progress {
-    background-color: {{colors.primary.default.hex}};
-    background-image: none;
-    border-radius: 999px;
-}
-
-/* ── Thunar hard overrides (beat adw-gtk3-dark) ──────────────
-   adw-gtk3-dark paints its own background-image gradients on entries,
-   sidebars, pathbar and buttons — a bare background-color hides UNDER
-   them, which is why the location entry stays white and the sidebar
-   stays theme-gray. Every rule below clears background-image and pins
-   matugen colors, .thunar-prefixed so it outranks theme selectors. */
-
-/* Location entry (Ctrl+L), rename entry, search — same surface as the
-   file view; the primary focus ring + crumb pill carry the accent.
-   Unprefixed mirrors cover every GTK3 app consistently. */
-.thunar entry, window.thunar entry, entry {
-    background-color: {{colors.surface.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-    caret-color: {{colors.primary.default.hex}};
-    border: 1px solid {{colors.outline_variant.default.hex}};
-    border-radius: 10px;
-    padding: 6px 10px;
-}
-
-.thunar entry:focus, entry:focus {
-    border-color: {{colors.primary.default.hex}};
-}
-
-.thunar entry selection, entry selection {
     background-color: {{colors.primary.default.hex}};
     color: {{colors.on_primary.default.hex}};
 }
 
-.thunar entry image, entry image {
-    color: {{colors.on_surface_variant.default.hex}};
+/* Filename labels inside selected cells must follow the selection
+   foreground explicitly — otherwise they keep the pale view text
+   color and wash out against the light selection background. */
+.thunar .view:selected label, ThunarStandardView .view:selected label,
+.thunar iconview:selected label, ThunarStandardView iconview:selected label,
+.thunar treeview:selected label, treeview row:selected label,
+.thunar .sidebar row:selected label, placessidebar row:selected label {
+    color: {{colors.on_primary.default.hex}};
 }
 
-.thunar entry image:hover, entry image:hover {
-    color: {{colors.primary.default.hex}};
+.thunar .view:selected:focus, ThunarStandardView .view:selected:focus {
+    background-color: {{colors.primary.default.hex}};
+    color: {{colors.on_primary.default.hex}};
 }
 
-.thunar entry:disabled, entry:disabled {
-    background-color: {{colors.surface_container.default.hex}};
-    color: {{colors.on_surface_variant.default.hex}};
+rubberband, rubberband.view {
+    border: 1px solid {{colors.primary.default.hex}};
+    border-radius: 8px;
+    background-color: alpha({{colors.primary.default.hex}}, 0.15);
 }
 
-/* Pathbar breadcrumbs + scroll arrows — every state explicit */
-.thunar .path-bar button, .thunar .linked button,
-.thunar .path-bar .slider-button {
-    background-color: transparent;
-    background-image: none;
-    border-color: transparent;
-    color: {{colors.on_surface.default.hex}};
-}
-
-.thunar .path-bar button:hover, .thunar .linked button:hover {
-    background-color: alpha({{colors.primary.default.hex}}, 0.12);
-    background-image: none;
-}
-
-.thunar .path-bar button:checked, .thunar .linked button:checked {
-    background-color: {{colors.primary_container.default.hex}};
-    background-image: none;
-    color: {{colors.on_primary_container.default.hex}};
-}
-
-/* Sidebar — every layer, same surface as the file view (one canvas).
-   Unprefixed mirrors included: they guarantee coverage even where the
-   window/widget path doesn't carry the .thunar class. */
-.thunar placessidebar, .thunar placessidebar viewport,
-.thunar placessidebar scrolledwindow, .thunar placessidebar list,
-.thunar .sidebar, .thunar .sidebar viewport,
-placessidebar, placessidebar viewport,
-placessidebar scrolledwindow, placessidebar list,
-.sidebar, .sidebar viewport {
-    background-color: {{colors.surface.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
+/* Tabs: pill bar under the toolbar */
+.thunar notebook, ThunarWindow notebook {
     border: none;
 }
 
-/* Catch-all for anything nested inside the sidebar (inner boxes, stacks,
-   separators) so no theme-gray floats above the canvas. Specific row,
-   hover and scrollbar rules below outrank this and repaint on top. */
-.thunar placessidebar viewport *,
-.thunar .sidebar *,
-placessidebar viewport *,
-.sidebar * {
+.thunar notebook tab, ThunarWindow notebook tab {
+    border-radius: 10px 10px 0 0;
+    padding: 6px 14px;
+    margin: 2px 2px 0 2px;
+}
+
+.thunar notebook tab:checked, ThunarWindow notebook tab:checked {
+    background-color: {{colors.surface_container.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+}
+
+/* Statusbar: quiet footer */
+ThunarStatusbar, .thunar statusbar {
+    padding: 4px 10px;
+    font-size: smaller;
+    border-top: 1px solid {{colors.outline_variant.default.hex}};
     background-color: {{colors.surface.default.hex}};
-    background-image: none;
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+/* Thunar scrollbars: slim overlay pills */
+.thunar scrollbar slider, ThunarWindow scrollbar slider {
+    min-width: 8px;
+    min-height: 8px;
+}
+
+/* ── Mousepad: GNOME Text Editor-like, full-bleed ──
+   Chrome in matugen surface (no gray), text area painted by the
+   Matugen gtksourceview-4 scheme. All variables, auto-recolors. */
+
+MousepadWindow, MousepadWindow .background {
+    background-color: {{colors.surface.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+}
+
+MousepadWindow headerbar, MousepadWindow .titlebar,
+MousepadWindow toolbar, MousepadWindow menubar {
+    background-color: {{colors.surface.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+    border: none;
+    box-shadow: none;
+}
+
+MousepadWindow toolbar {
+    border-bottom: 1px solid {{colors.outline_variant.default.hex}};
+}
+
+MousepadWindow headerbar button, MousepadWindow toolbar button {
+    border-radius: 10px;
+    border: none;
+    box-shadow: none;
+    color: {{colors.on_surface.default.hex}};
+}
+
+MousepadWindow headerbar button:hover, MousepadWindow toolbar button:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.14);
+}
+
+/* Full-bleed text area (also covers any GTK3 editor if the
+   MousepadWindow selector ever misses after an update) */
+MousepadWindow textview, MousepadWindow textview.view, MousepadWindow textview text,
+textview, textview.view, textview text {
+    background-color: {{colors.surface.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+}
+
+MousepadWindow textview selection, textview selection {
+    background-color: {{colors.primary.default.hex}};
+    color: {{colors.on_primary.default.hex}};
+}
+
+/* Tabs: quiet pill bar, active tab in primary */
+MousepadWindow notebook {
+    border: none;
+    background-color: {{colors.surface.default.hex}};
+}
+
+MousepadWindow notebook tab {
+    border-radius: 10px 10px 0 0;
+    background-color: transparent;
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+MousepadWindow notebook tab:checked {
+    background-color: {{colors.surface_container.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+}
+
+/* Statusbar: quiet footer, no gray block */
+MousepadWindow statusbar {
+    background-color: {{colors.surface.default.hex}};
+    color: {{colors.on_surface_variant.default.hex}};
+    border-top: 1px solid {{colors.outline_variant.default.hex}};
+}
+
+/* ── CSD window outline ──
+   Sway draws no border around client-decorated windows (border=csd),
+   so floating GTK dialogs (e.g. the xdg-desktop-portal-gtk file
+   chooser) melt into dark backgrounds — adw-gtk3's own decoration
+   shadow is dark-on-dark. A 1px outline in the palette outline slot
+   plus a soft drop shadow keeps them separated. Tiled / maximized /
+   fullscreen windows are excluded (no floating edge to outline). */
+decoration {
+    box-shadow: 0 0 0 1px {{colors.outline.default.hex}},
+                 0 12px 48px rgba(0, 0, 0, 0.45);
+}
+
+decoration:backdrop {
+    box-shadow: 0 0 0 1px alpha({{colors.outline.default.hex}}, 0.45),
+                 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.maximized decoration,
+.tiled decoration,
+.fullscreen decoration {
+    box-shadow: none;
+}
+
+/* ── Auth dialogs (polkit-gnome): palette colors, stock geometry ──
+   Only background/foreground/border colors — no padding, radius,
+   sizes or borders touched. Scoped to dialog action buttons + entry
+   so file-chooser content etc. keeps theme shapes.
+   NOTE: the agent loads gtk.css once at startup, so after a
+   wallpaper switch restart it (pkill + re-exec, see sway config)
+   before the new colors show in the next prompt. */
+dialog.background,
+messagedialog.background {
+    background-color: {{colors.surface.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+}
+
+dialog entry,
+messagedialog entry {
+    background-color: {{colors.surface_container_high.default.hex}};
+    color: {{colors.on_surface.default.hex}};
     border-color: {{colors.outline_variant.default.hex}};
 }
 
-.thunar placessidebar scrollbar slider,
-placessidebar scrollbar slider {
-    background-color: {{colors.outline.default.hex}};
-    background-image: none;
-    border-radius: 10px;
+dialog entry:focus,
+messagedialog entry:focus {
+    border-color: {{colors.primary.default.hex}};
 }
 
-.thunar placessidebar row, .thunar .sidebar row,
-placessidebar row, .sidebar row {
-    background-color: transparent;
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-    border: none;
-    border-radius: 10px;
-    padding: 5px 10px;
-    margin: 1px 4px;
+dialog entry selection,
+messagedialog entry selection {
+    background-color: {{colors.primary.default.hex}};
+    color: {{colors.on_primary.default.hex}};
 }
 
-.thunar placessidebar row:hover, .thunar .sidebar row:hover,
-placessidebar row:hover, .sidebar row:hover {
-    background-color: alpha({{colors.primary.default.hex}}, 0.08);
-    background-image: none;
-}
-
-.thunar placessidebar row:selected, .thunar .sidebar row:selected {
-    background-color: {{colors.primary_container.default.hex}};
-    background-image: none;
-    color: {{colors.on_primary_container.default.hex}};
-}
-
-.thunar placessidebar row:selected image {
-    color: {{colors.primary.default.hex}};
-}
-
-.thunar placessidebar row image {
-    color: {{colors.on_surface_variant.default.hex}};
-}
-
-/* Details-view column headers */
-.thunar treeview header button, .thunar column-header button {
-    background-color: {{colors.surface_container.default.hex}};
-    background-image: none;
-    color: {{colors.on_surface.default.hex}};
-    border: none;
-}
-
-.thunar treeview header button:hover {
+dialog .dialog-action-area button,
+dialog .dialog-action-box button,
+messagedialog .dialog-action-area button,
+messagedialog .dialog-action-box button {
     background-color: {{colors.surface_container_high.default.hex}};
-    background-image: none;
-}
-
-/* Tabs */
-.thunar notebook, .thunar notebook header {
-    background-color: {{colors.surface.default.hex}};
-    background-image: none;
-    border: none;
-}
-
-.thunar notebook tab {
-    background-color: transparent;
-    background-image: none;
-    color: {{colors.on_surface_variant.default.hex}};
-    border: none;
-    border-radius: 10px 10px 0 0;
-    padding: 6px 12px;
-}
-
-.thunar notebook tab:checked {
-    background-color: {{colors.surface_container_high.default.hex}};
-    background-image: none;
     color: {{colors.on_surface.default.hex}};
 }
 
-/* Toolbar / headerbar buttons — flat, no theme gradient */
-.thunar toolbar button, .thunar headerbar button {
-    background-color: transparent;
-    background-image: none;
-    border-color: transparent;
-    color: {{colors.on_surface.default.hex}};
+dialog .dialog-action-area button:hover,
+dialog .dialog-action-box button:hover,
+messagedialog .dialog-action-area button:hover,
+messagedialog .dialog-action-box button:hover {
+    background-color: alpha({{colors.primary.default.hex}}, 0.16);
 }
 
-.thunar toolbar button:hover, .thunar headerbar button:hover {
-    background-color: alpha({{colors.primary.default.hex}}, 0.12);
-    background-image: none;
+dialog button.suggested-action,
+messagedialog button.suggested-action {
+    background-color: {{colors.primary.default.hex}};
+    color: {{colors.on_primary.default.hex}};
 }
 
-.thunar toolbar, window.thunar toolbar, .thunar headerbar,
-.thunar statusbar {
-    background-image: none;
+/* polkit-gnome predates .suggested-action: its affirmative button is
+   just the dialog default (last in the action area), so paint it by
+   position + GTK default class. Still color-only. */
+dialog .dialog-action-area button.default,
+dialog .dialog-action-area button:last-child,
+dialog .dialog-action-box button.default,
+dialog .dialog-action-box button:last-child,
+messagedialog .dialog-action-area button.default,
+messagedialog .dialog-action-area button:last-child,
+messagedialog .dialog-action-box button.default,
+messagedialog .dialog-action-box button:last-child {
+    background-color: {{colors.primary.default.hex}};
+    color: {{colors.on_primary.default.hex}};
 }

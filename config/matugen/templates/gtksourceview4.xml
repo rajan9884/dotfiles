@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Matugen Dynamic Syntax Scheme (gtksourceview-5) -->
-<!-- Applied to GNOME Text Editor via ~/.local/share/gtksourceview-5/styles/Matugen.xml -->
+<!-- Matugen Dynamic Syntax Scheme (gtksourceview-4) -->
+<!-- Applied to Mousepad via ~/.local/share/gtksourceview-4/styles/Matugen.xml -->
+<!-- Same palette as the gtksourceview-5 Matugen scheme; regenerated every wallpaper switch. -->
 <style-scheme id="matugen" _name="Matugen" version="1.0">
   <author>rajan</author>
   <_description>Matugen Material palette</_description>
@@ -24,8 +25,11 @@
   <!-- Global Settings -->
   <style name="text"                 foreground="fg" background="bg"/>
   <style name="selection"            foreground="accent_fg" background="accent"/>
+  <style name="selection-unfocused"  foreground="fg" background="surface_hi"/>
   <style name="cursor"               foreground="accent"/>
+  <style name="secondary-cursor"     foreground="accent"/>
   <style name="current-line"         background="surface_hi"/>
+  <style name="current-line-number"  foreground="accent" bold="true"/>
   <style name="line-numbers"         foreground="outline" background="bg"/>
   <style name="draw-spaces"          foreground="faint"/>
   <style name="right-margin"         foreground="faint" background="faint"/>

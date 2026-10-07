@@ -1,36 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Thunar custom actions: terminal-here (Foot primary, Alacritty alt) -->
 <actions>
 <action>
 	<icon>utilities-terminal</icon>
-	<name>Open Foot Here</name>
+	<name>Open Terminal Here</name>
 	<submenu></submenu>
-	<unique-id>open-foot-here</unique-id>
-	<command>foot --working-directory=%f</command>
-	<description>Open Foot terminal in this folder</description>
+	<unique-id>1791191601703013-1</unique-id>
+	<command>exo-open --working-directory %f --launch TerminalEmulator</command>
+	<description>Example for a custom action</description>
+	<range></range>
 	<patterns>*</patterns>
 	<startup-notify/>
 	<directories/>
-</action>
-<action>
-	<icon>utilities-terminal</icon>
-	<name>Open Alacritty Here</name>
-	<submenu></submenu>
-	<unique-id>open-alacritty-here</unique-id>
-	<command>alacritty --working-directory %f</command>
-	<description>Open Alacritty terminal in this folder</description>
-	<patterns>*</patterns>
-	<startup-notify/>
-	<directories/>
-</action>
-<action>
-	<icon>image-x-generic</icon>
-	<name>Set as Wallpaper</name>
-	<submenu></submenu>
-	<unique-id>set-as-wallpaper</unique-id>
-	<command>sh -c '~/.config/sway/scripts/sway-wall.sh %f'</command>
-	<description>Set image as wallpaper and re-theme the desktop</description>
-	<patterns>*.jpg;*.jpeg;*.png;*.webp</patterns>
-	<image-files/>
 </action>
 </actions>

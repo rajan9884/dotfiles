@@ -58,6 +58,10 @@ output_path = "~/.local/share/gtksourceview-5/styles/Matugen.xml"
 input_path = "~/.config/matugen/templates/sushi-builder-dark.xml"
 output_path = "~/.local/share/gtksourceview-4/styles/builder-dark.style-scheme.xml"
 
+[templates.sourceview4]
+input_path = "~/.config/matugen/templates/gtksourceview4.xml"
+output_path = "~/.local/share/gtksourceview-4/styles/Matugen.xml"
+
 [templates.swayosd]
 input_path = "~/.config/matugen/templates/swayosd.css"
 output_path = "~/.config/swayosd/style.css"
