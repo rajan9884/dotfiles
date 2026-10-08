@@ -33,4 +33,21 @@ case "$ACTION" in
         ;;
 esac
 
-swayosd-client --brightness=+0 --device "$DEV" 2>/dev/null
+LEVEL=$(brightnessctl --device="$DEV" get 2>/dev/null)
+KBMAX=$(brightnessctl --device="$DEV" max 2>/dev/null)
+if [[ "$LEVEL" =~ ^[0-9]+$ && "$KBMAX" =~ ^[0-9]+$ ]] && ((KBMAX > 0)); then
+    KBPCT=$(( LEVEL * 100 / KBMAX ))
+    (( KBPCT > 100 )) && KBPCT=100
+    KBFRAC=$(awk -v l="$LEVEL" -v m="$KBMAX" 'BEGIN{ f=(m>0)?l/m:0; if (f>1) f=1; if (f<0) f=0; printf "%.2f", f }')
+    if (( KBPCT > 0 )); then
+        KBICON="keyboard-brightness-symbolic"
+        KBTEXT="$KBPCT%"
+    else
+        KBICON="keyboard-brightness-symbolic"
+        KBTEXT="Off"
+    fi
+    timeout 3 swayosd-client --custom-icon "$KBICON" --custom-progress "$KBFRAC" --custom-progress-text "$KBTEXT" 2>/dev/null
+else
+    timeout 3 swayosd-client --custom-icon keyboard-brightness-symbolic \
+        --custom-progress 0 --custom-progress-text "No keyboard" 2>/dev/null
+fi

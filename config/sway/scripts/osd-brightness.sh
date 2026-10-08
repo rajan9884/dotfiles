@@ -37,7 +37,7 @@ esac
 
 INFO=$(brightnessctl -c backlight -m 2>/dev/null | head -1)
 if [[ -z "$INFO" ]]; then
-    timeout 3 swayosd-client --custom-icon display-brightness \
+    timeout 3 swayosd-client --custom-icon display-brightness-off-symbolic \
         --custom-progress 0 --custom-progress-text "No backlight" 2>/dev/null
     exit 0
 fi
@@ -49,7 +49,17 @@ PCT=$(printf '%s' "$INFO" | cut -d, -f4 | tr -d '%')
 [[ "$PCT" =~ ^[0-9]+$ ]] || PCT=0
 FRAC=$(awk -v c="$CUR" -v m="$MAXV" 'BEGIN{ f=(m>0)?c/m:0; if (f>1) f=1; if (f<0) f=0; printf "%.2f", f }')
 
-timeout 3 swayosd-client --custom-icon display-brightness --custom-progress "$FRAC" --custom-progress-text "$PCT%" 2>/dev/null
+if (( PCT >= 70 )); then
+    BICON="display-brightness-high-symbolic"
+elif (( PCT >= 35 )); then
+    BICON="display-brightness-medium-symbolic"
+elif (( PCT > 0 )); then
+    BICON="display-brightness-low-symbolic"
+else
+    BICON="display-brightness-off-symbolic"
+fi
+
+timeout 3 swayosd-client --custom-icon "$BICON" --custom-progress "$FRAC" --custom-progress-text "$PCT%" 2>/dev/null
 # Persist raw value for login restore (see sway config backlight-restore).
 mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}" 2>/dev/null
 printf '%s\n' "$CUR" > "${XDG_STATE_HOME:-$HOME/.local/state}/backlight" 2>/dev/null || true

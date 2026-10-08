@@ -57,7 +57,7 @@ fi
 
 # Audio stack unreachable: still show an OSD so the key feels alive.
 if [[ -z "$PCT" ]]; then
-    run_timeout swayosd-client --custom-icon audio-volume-muted \
+    run_timeout swayosd-client --custom-icon audio-volume-muted-symbolic \
         --custom-progress 0 --custom-progress-text "No audio"
     exit 0
 fi
@@ -70,16 +70,16 @@ fi
 
 if run_timeout pactl get-sink-mute "$SINK" | grep -q yes \
     || run_timeout wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -qi '\[MUTED\]'; then
-    ICON="audio-volume-muted"
+    ICON="audio-volume-muted-symbolic"
     TEXT="Muted"
 elif [ "$PCT" -ge 70 ]; then
-    ICON="audio-volume-high"
+    ICON="audio-volume-high-symbolic"
     TEXT="$PCT%"
 elif [ "$PCT" -ge 35 ]; then
-    ICON="audio-volume-medium"
+    ICON="audio-volume-medium-symbolic"
     TEXT="$PCT%"
 else
-    ICON="audio-volume-low"
+    ICON="audio-volume-low-symbolic"
     TEXT="$PCT%"
 fi
 
