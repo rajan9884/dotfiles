@@ -8,7 +8,6 @@
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias ff="fzf --preview 'bat --color=always {}'"
-alias nix-clean='nix-collect-garbage -d && nix store optimise && du -sh /nix'
 alias ..="cd ../"
 # Dual-GitHub helpers: git-work / git-personal / git-whoami
 [ -f "$HOME/dotfiles/shell/git-accounts.sh" ] && source "$HOME/dotfiles/shell/git-accounts.sh"
@@ -81,7 +80,3 @@ case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$P
 
 # Desktop info on login
 command -v fastfetch >/dev/null 2>&1 && fastfetch
-
-# Added by Antigravity CLI installer
-export PATH="/home/rj9884/.local/bin:$PATH"
-export PATH=/home/rj9884/.opencode/bin:$PATH

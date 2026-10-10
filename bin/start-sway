@@ -5,10 +5,6 @@
 # seat backend: leave LIBSEAT_BACKEND unset so libseat auto-selects logind.
 # (Void forces seatd; on Arch systemd-logind is active and seatd is
 #  inactive, so forcing seatd makes sway exit immediately.)
-# Local prebuilt stack: swayfx + scenefx live in ~/.local (built from
-# upstream, no root needed). Must precede the exec below so the loader
-# finds libscenefx-0.5.so.0 without ldconfig.
-export LD_LIBRARY_PATH="$HOME/.local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export CLUTTER_BACKEND=wayland
 export DESKTOP_SESSION=sway
 export ELM_DISPLAY=wl
