@@ -80,3 +80,5 @@ case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$P
 
 # Desktop info on login
 command -v fastfetch >/dev/null 2>&1 && fastfetch
+
+export PATH=/home/rj9884/.opencode/bin:$PATH
