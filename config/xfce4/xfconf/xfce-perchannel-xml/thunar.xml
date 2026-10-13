@@ -10,7 +10,7 @@
   <property name="last-side-pane" type="string" value="THUNAR_SIDEPANE_TYPE_SHORTCUTS"/>
   <property name="last-sort-column" type="string" value="THUNAR_COLUMN_NAME"/>
   <property name="last-sort-order" type="string" value="GTK_SORT_ASCENDING"/>
-  <property name="last-statusbar-visible" type="bool" value="false"/>
+  <property name="last-statusbar-visible" type="bool" value="true"/>
   <property name="last-view" type="string" value="ThunarIconView"/>
   <property name="misc-case-sensitive" type="bool" value="false"/>
   <property name="misc-date-style" type="string" value="THUNAR_DATE_STYLE_SHORT"/>
@@ -19,14 +19,16 @@
   <property name="misc-recursive-permissions" type="string" value="THUNAR_RECURSIVE_PERMISSIONS_ASK"/>
   <property name="misc-single-click" type="bool" value="false"/>
   <property name="misc-file-size-binary" type="bool" value="true"/>
-  <property name="last-window-width" type="int" value="698"/>
+  <property name="last-window-width" type="int" value="1404"/>
   <property name="last-window-height" type="int" value="819"/>
   <property name="last-window-maximized" type="bool" value="false"/>
-  <property name="last-separator-position" type="int" value="208"/>
+  <property name="last-separator-position" type="int" value="138"/>
   <property name="shortcuts-icon-size" type="string" value="THUNAR_ICON_SIZE_24"/>
   <property name="tree-icon-size" type="string" value="THUNAR_ICON_SIZE_16"/>
   <property name="misc-symbolic-icons-in-sidepane" type="bool" value="false"/>
   <property name="misc-thumbnail-draw-frames" type="bool" value="false"/>
   <property name="misc-use-csd" type="bool" value="false"/>
   <property name="last-details-view-column-widths" type="string" value="50,50,128,50,50,90,50,50,983,50,50,58,50,64"/>
+  <property name="last-toolbar-items" type="string" value="menu:1,back:1,forward:1,open-parent:1,open-home:1,new-tab:1,new-window:0,toggle-split-view:0,undo:0,redo:0,zoom-out:0,zoom-in:0,zoom-reset:0,view-as-icons:0,view-as-detailed-list:0,view-as-compact-list:0,view-switcher:0,location-bar:1,reload:0,search:1,uca-action-1791191601703013-1:0"/>
+  <property name="misc-confirm-close-multiple-tabs" type="bool" value="false"/>
 </channel>

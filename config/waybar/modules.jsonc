@@ -69,7 +69,7 @@
         "return-type": "json",
         "interval": 5,
         "signal": 13,
-        "on-click": "~/.config/sway/scripts/idle-toggle.sh",
+        "on-click": "~/.config/hypr/scripts/idle-toggle.sh",
         "tooltip": true
     },
 

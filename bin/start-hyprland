@@ -1,0 +1,58 @@
+#!/bin/sh
+# start-hyprland — Wayland/Hyprland session environment for Arch (systemd-logind).
+
+export CLUTTER_BACKEND=wayland
+export DESKTOP_SESSION=hyprland
+export ELM_DISPLAY=wl
+export GDK_BACKEND=wayland,x11
+export MOZ_ENABLE_WAYLAND=1
+export QT_QPA_PLATFORM="wayland;xcb"
+export QT_QPA_PLATFORMTHEME="qt6ct;qt5ct"
+export SDL_VIDEODRIVER=wayland
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=hyprland
+export ELECTRON_OZONE_PLATFORM_HINT=wayland
+
+# intel gpu specific (this machine: 13th Gen Raptor Lake Iris Xe, iHD driver)
+export LIBVA_DRIVER_NAME=iHD #i965 for old hw
+unset VDPAU_DRIVER
+
+# themes
+export QT_SELECT=Rosepine-Dark
+export QT_STYLE_OVERRIDE=Rosepine-Dark
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+
+# cursor (Bibata-Modern-Ice @ 24px — must be set before Hyprland starts)
+export XCURSOR_THEME=Bibata-Modern-Ice
+export XCURSOR_SIZE=24
+export HYPRCURSOR_THEME=Bibata-Modern-Ice
+export HYPRCURSOR_SIZE=24
+
+# xdg base dirs
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:-/etc/xdg}"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# xdg user dirs (standard locations, matching ~/.config/user-dirs.dirs)
+export XDG_DESKTOP_DIR="$HOME/Desktop"
+export XDG_DOCUMENTS_DIR="$HOME/Documents"
+export XDG_DOWNLOAD_DIR="$HOME/Downloads"
+export XDG_MUSIC_DIR="$HOME/Music"
+export XDG_PICTURES_DIR="$HOME/Pictures"
+export XDG_PUBLICSHARE_DIR="$HOME/Public"
+export XDG_TEMPLATES_DIR="$HOME/Templates"
+export XDG_VIDEOS_DIR="$HOME/Videos"
+
+# start Hyprland (config: ~/.config/hypr, entry hyprland.lua)
+if [ "$(tty)" = "/dev/tty1" ]; then
+  _hyprlog="${XDG_STATE_HOME:-$HOME/.local/state}/hyprland-boot.log"
+  if [ -f "$_hyprlog" ] && [ "$(stat -c %s "$_hyprlog" 2>/dev/null || echo 0)" -gt 2097152 ]; then
+    mv -f "$_hyprlog" "$_hyprlog.old"
+  fi
+  unset _hyprlog
+  exec dbus-run-session -- Hyprland >>"${XDG_STATE_HOME:-$HOME/.local/state}/hyprland-boot.log" 2>&1
+fi

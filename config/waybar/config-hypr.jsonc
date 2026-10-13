@@ -1,0 +1,173 @@
+// ──────────────────────────────────────────────
+//   Waybar Configuration — Noro Theme (Exact Match)
+// ──────────────────────────────────────────────
+{
+    "layer": "top",
+    "position": "top",
+    "height": 45,
+    "spacing": 0,
+    "margin-top": 0,
+    "margin-left": 15,
+    "margin-right": 15,
+    "modules-left": [
+        "custom/launcher",
+        "custom/record",
+        "custom/voxtype",
+        "clock",
+        "custom/user"
+    ],
+    "modules-center": [
+        "hyprland/workspaces",
+        "backlight",
+        "pulseaudio",
+        "custom/group"
+    ],
+    "modules-right": [
+        "tray",
+        "custom/idle",
+        "custom/clipboard",
+        "custom/power-profile",
+        "battery",
+        "custom/wifi",
+        "custom/power"
+    ],
+    "custom/launcher": {
+        "format": "",
+        "on-click": "rofi -show drun",
+        "tooltip": false
+    },
+    "custom/record": {
+        "exec": "~/.config/waybar/scripts/recorder.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "~/.config/waybar/scripts/recorder.sh toggle"
+    },
+    "custom/voxtype": {
+        "exec": "~/.config/waybar/scripts/voxtype.sh",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "voxtype record stop"
+    },
+    "tray": {
+        "icon-size": 18,
+        "spacing": 8,
+        "show-passive-items": true
+    },
+    "clock": {
+        "format": "{:%H:%M}",
+        "tooltip": false
+    },
+    "custom/user": {
+        "exec": "whoami",
+        "format": "{}",
+        "interval": "once",
+        "tooltip": false
+    },
+    // ── Workspaces ────────────────────────────────
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "on-click": "activate",
+"format-icons": {
+        "1": "󰖟",
+        "2": "󰍍",
+        "3": "󰉋",
+        "4": "󰨞",
+        "5": "5",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9",
+        "10": "10"
+    },
+        "persistent-workspaces": {"1": [], "2": [], "3": [], "4": []}
+    },
+    "backlight": {
+        "device": "intel_backlight",
+        "format": "{icon} {percent}%",
+        "format-icons": [
+            "󰃞",
+            "󰃟",
+            "󰃠"
+        ],
+        "on-scroll-up": "brightnessctl set 5%+ >/dev/null",
+        "on-scroll-down": "brightnessctl set 5%- >/dev/null",
+        "tooltip": false
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰖁 Muted",
+        "format-bluetooth": "{icon} {volume}%",
+        "format-bluetooth-muted": "󰖁 Muted",
+        "format-icons": {
+            "default": [
+                "󰕿",
+                "󰖀",
+                "󰕾"
+            ]
+        },
+        "scroll-step": 5,
+        "on-click": "alacritty --class=pulsemixer -e pulsemixer",
+        "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "tooltip": false
+    },
+    "battery": {
+        "bat": "BAT1",
+        "format": "{capacity}% {icon}",
+        "format-charging": "{capacity}% 󱐋",
+        "format-plugged": "{capacity}% 󱐋",
+        "format-icons": [
+            "󰂎",
+            "󰁺",
+            "󰁻",
+            "󰁼",
+            "󰁽",
+            "󰁾",
+            "󰁿",
+            "󰂀",
+            "󰂁",
+            "󰂂",
+            "󰁹"
+        ],
+        "tooltip": false,
+        "interval": 30
+    },
+    "custom/power-profile": {
+        "exec": "~/.config/waybar/scripts/power-profile.sh",
+        "return-type": "text",
+        "interval": 5,
+        "on-click": "~/.local/bin/power-profiles menu",
+        "tooltip": false
+    },
+    "custom/group": {
+        "exec": "~/.config/waybar/scripts/group-indicator.sh",
+        "return-type": "json",
+        "interval": 2,
+        "tooltip": true
+    },
+    "custom/clipboard": {
+        "format": "",
+        "on-click": "~/.local/bin/menu-clipboard",
+        "tooltip": false
+    },
+    "custom/wifi": {
+        "exec": "~/.config/waybar/scripts/wifi-status.sh",
+        "return-type": "json",
+        "interval": 5,
+        "on-click": "~/.config/waybar/scripts/wifi-menu.sh",
+        "signal": 14,
+        "tooltip": true
+    },
+    "custom/idle": {
+        "exec": "~/.config/waybar/scripts/idle-inhibit.sh",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 13,
+        "on-click": "~/.config/hypr/scripts/idle-toggle.sh",
+        "tooltip": true
+    },
+    "custom/power": {
+        "format": "⏻",
+        "on-click": "~/.config/waybar/scripts/power-menu.sh",
+        "tooltip": false
+    }
+}
