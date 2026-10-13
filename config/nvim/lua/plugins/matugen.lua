@@ -42,6 +42,26 @@ return {
         end
         return string.format("#%02x%02x%02x", up(r), up(g), up(b))
       end
+      local function mix(base, tint, amt)
+        -- Blend base toward tint by amt (0 = base, 1 = tint).
+        -- Returns base unchanged if either color is missing/invalid.
+        if type(base) ~= "string" or type(tint) ~= "string" then
+          return base
+        end
+        local br = tonumber(base:sub(2, 3), 16)
+        local bgc = tonumber(base:sub(4, 5), 16)
+        local bb = tonumber(base:sub(6, 7), 16)
+        local tr = tonumber(tint:sub(2, 3), 16)
+        local tg = tonumber(tint:sub(4, 5), 16)
+        local tb = tonumber(tint:sub(6, 7), 16)
+        if not (br and bgc and bb and tr and tg and tb) then
+          return base
+        end
+        local function blend(b, t)
+          return math.floor(b + (t - b) * amt + 0.5)
+        end
+        return string.format("#%02x%02x%02x", blend(br, tr), blend(bgc, tg), blend(bb, tb))
+      end
       opts.on_colors = function(colors)
         -- base
         if c.bg then
@@ -53,7 +73,16 @@ return {
           colors.bg_search = c.surface or c.bg
           colors.bg_sidebar = c.bg
           colors.bg_statusline = c.bg
-          colors.bg_visual = c.surface_high or c.surface_variant or c.surface or c.bg
+          -- Visual selection must stay readable on any wallpaper. With
+          -- near-monochrome wallpapers surface tones sit only a few shades
+          -- above bg (e.g. bg #131314 vs surface #1f2020), so a plain
+          -- surface selection is invisible. Tint toward primary instead:
+          -- still wallpaper-hued, but always clearly above bg.
+          if primary then
+            colors.bg_visual = mix(c.surface_high or c.surface_variant or c.surface or c.bg, primary, 0.45)
+          else
+            colors.bg_visual = lighten(c.surface_high or c.surface_variant or c.surface or c.bg, 0.4)
+          end
           colors.black = c.bg_dark or c.bg
           colors.terminal_black = c.bg_dark or c.bg
         end
