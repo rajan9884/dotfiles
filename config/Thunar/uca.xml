@@ -12,4 +12,16 @@
 	<startup-notify/>
 	<directories/>
 </action>
+<action>
+	<icon>document-preview</icon>
+	<name>Preview (Read-Only)</name>
+	<submenu></submenu>
+	<unique-id>1791901813919256-2</unique-id>
+	<command>/home/rj9884/.local/bin/text-preview %F</command>
+	<description>Quick read-only floating preview (Space, q to close). Cannot modify the file.</description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<text-files/>
+</action>
 </actions>

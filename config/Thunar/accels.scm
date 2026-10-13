@@ -2,8 +2,8 @@
 ; this file is an automated accelerator map dump
 ;
 ; (gtk_accel_path "<Actions>/ThunarBookmarks/0fdc11a914921497644e0a243b2f9b9d" "")
-; (gtk_accel_path "<Actions>/ThunarBookmarks/5fd21ea27ccc27f6fdd2a6d6532150c3" "")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/sort-by-type" "")
+; (gtk_accel_path "<Actions>/ThunarBookmarks/5fd21ea27ccc27f6fdd2a6d6532150c3" "")
 ; (gtk_accel_path "<Actions>/ThunarStatusBar/toggle-last-modified" "")
 ; (gtk_accel_path "<Actions>/Thunarwindow/menu" "")
 ; (gtk_accel_path "<Actions>/ThunarActionManager/cut" "<Primary>x")
@@ -21,6 +21,7 @@
 ; (gtk_accel_path "<Actions>/ThunarWindow/switch-previous-tab" "<Primary>Page_Up")
 ; (gtk_accel_path "<Actions>/ThunarBookmarks/2fa8e8231a0598e2d1b02a46274ad843" "")
 ; (gtk_accel_path "<Actions>/ThunarActionManager/open" "<Primary>o")
+(gtk_accel_path "<Actions>/ThunarActions/uca-action-1791901813919256-2" "space")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/sort-ascending" "")
 ; (gtk_accel_path "<Actions>/ThunarWindow/toggle-split-view" "F3")
 ; (gtk_accel_path "<Actions>/ThunarActionManager/copy-2" "<Primary>Insert")
